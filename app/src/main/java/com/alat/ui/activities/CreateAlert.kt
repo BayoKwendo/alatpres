@@ -403,8 +403,6 @@ class CreateAlert : AppCompatActivity() {
         mssidn = pref!!.getString("mssdn", null)
 
 
-        Toast.makeText(this@CreateAlert, "" + fullname , Toast.LENGTH_LONG).show();
-
 
 
         alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
@@ -441,6 +439,8 @@ class CreateAlert : AppCompatActivity() {
         params["rl"] = setLevel!!
         params["mssdn"] = mssidn!!
         params["location"] = setLoc!!
+        Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
+
 
 
         val api: AddAlert = retrofit.create(AddAlert::class.java)
@@ -525,7 +525,6 @@ class CreateAlert : AppCompatActivity() {
     }
 
     private fun dialogue_error() {
-
         promptPopUpView = PromptPopUpView(this)
 
         AlertDialog.Builder(this)
