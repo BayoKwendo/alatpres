@@ -18,6 +18,30 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/alertname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:errorEnabled="true"
+            app:layout_constraintBottom_toTopOf="@+id/other_name"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginTop="@dimen/_5sdp"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/alert"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Set Name"
+                android:inputType="text"
+                android:maxLength="1000"
+                android:padding="@dimen/_10sdp"
+                android:textSize="@dimen/_13ssp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <fr.ganfra.materialspinner.MaterialSpinner
             android:id="@+id/spinner"
             android:layout_width="match_parent"
@@ -81,7 +105,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/loc"
                 android:backgroundTint="@color/colorAccent"
-                android:hint="Location"
+                android:hint="Set Location"
                 android:inputType="text"
                 android:maxLength="1000"
                 android:padding="@dimen/_10sdp"

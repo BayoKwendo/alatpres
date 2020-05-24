@@ -142,10 +142,10 @@ class CreateRG : Fragment() {
         btnLogin = view.findViewById(R.id.buttonRG)
 
 
-        loc!!.setOnClickListener {
-            searchPlace()
-        }
-        loc!!.requestFocus()
+//        loc!!.setOnClickListener {
+//            searchPlace()
+//        }
+//        loc!!.requestFocus()
         textInputLocation!!.setOnClickListener {
             searchPlace()
         }
