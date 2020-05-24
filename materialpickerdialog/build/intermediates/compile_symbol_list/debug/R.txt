@@ -557,6 +557,7 @@ int color cardview_light_background 0x0
 int color cardview_shadow_end_color 0x0
 int color cardview_shadow_start_color 0x0
 int color colorAccent 0x0
+int color colorOrange 0x0
 int color colorPrimary 0x0
 int color colorPrimaryDark 0x0
 int color colorPrimaryTransparent 0x0

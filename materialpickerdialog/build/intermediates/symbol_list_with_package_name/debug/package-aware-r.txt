@@ -558,6 +558,7 @@ color cardview_light_background
 color cardview_shadow_end_color
 color cardview_shadow_start_color
 color colorAccent
+color colorOrange
 color colorPrimary
 color colorPrimaryDark
 color colorPrimaryTransparent

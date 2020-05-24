@@ -2,13 +2,12 @@ package com.alat.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Filter
-import android.widget.Filterable
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.alat.R
 import com.alat.model.rgModel
@@ -21,22 +20,23 @@ class AlertAdapter(
 ) : RecyclerView.Adapter<AlertAdapter.MyViewHolder>(),
     Filterable {
     private var contactListFiltered: List<rgModel>
-
+    var itemView: View? = null
     inner class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         var name: TextView
         var id: TextView
-
-
         var thumbnail: ImageView? = null
 
         init {
+
             name = view.findViewById(R.id.name)
+
             id = view.findViewById(R.id.id)
 
-
             view.setOnClickListener { // send selected contact in callback
+
                 listener.onContactSelected(contactListFiltered[adapterPosition])
+
             }
         }
     }
@@ -45,22 +45,34 @@ class AlertAdapter(
         parent: ViewGroup,
         viewType: Int
     ): MyViewHolder {
-        val itemView = LayoutInflater.from(parent.context)
+         itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.alert_row_item, parent, false)
-        return MyViewHolder(itemView)
+
+        return MyViewHolder(itemView!!)
     }
 
     @SuppressLint("SetTextI18n")
     override fun onBindViewHolder(
         holder: MyViewHolder,
-        position: Int
-    ) {
+        position: Int) {
         val contact = contactListFiltered[position]
+
+        if(contact.rl == "Level 3") {
+            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.error))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+        }else if (contact.rl == "Level 2"){
+            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+        }else if (contact.rl == "Level 1"){
+            itemView!!.setBackgroundColor(Color.YELLOW)
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+
+        }else if (contact.rl == "Neutralized"){
+            itemView!!.setBackgroundColor(Color.GREEN)
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+        }
         holder.name.text = contact.alert_type
-        holder.id.text = contact.id.toString()
-
-
-    }
+        holder.id.text = contact.id.toString() }
 
     override fun getItemCount(): Int {
         return contactListFiltered.size

@@ -46,7 +46,6 @@
             android:id="@+id/spinner"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/_20sdp"
             app:ms_arrowColor="@color/colorAccent"
             android:padding="@dimen/_10sdp"
             app:ms_arrowSize="16dp"
