@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primaryColorLight">#C5CAE9</color>
+    <color name="primaryColor">#3F51B5</color>
+    <color name="primaryColorDark">#303F9F</color>
+    <color name="accentColor">#FF4081</color>
+    <color name="highlighter_transparent">#33FF4081</color>
+
+
+    <color name="colorPrimary">#0f4356</color>
+    <color name="colorPrimaryDark">#0f4356</color>
+    <color name="colorPrimaryTransparent">#F20f4457</color>
+
+    <color name="colorAccent">#ff8528</color>
+
+
+    <color name="MPD_primaryColor">#3F51B5</color>
+    <color name="MPD_primaryColorLight">#C5CAE9</color>
+    <color name="MPD_backGroundColor">#FFF</color>
+    <color name="MPD_pickerSelectedTextColor">#FFF</color>
+    <color name="MPD_pickerItemColorUnSelected">#00FFFFFF</color>
+    <color name="MPD_pickerItemColorSelected">@color/MPD_primaryColor</color>
+    <color name="MPD_pickerItemTextColorUnSelected">#444</color>
+    <color name="MPD_pickerItemTextColorSelected">#ccffffff</color>
+</resources>

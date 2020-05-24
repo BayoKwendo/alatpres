@@ -1,0 +1,32 @@
+[
+  {
+    "hasFocus": true,
+    "level": "Level 1"
+  },
+  {
+    "hasFocus": false,
+    "level": "Level 2"
+  },
+  {
+    "hasFocus": false,
+    "level": "Level 3"
+  },
+  {
+    "hasFocus": false,
+    "level": "Level 4"
+  },
+  {
+    "hasFocus": false,
+    "level": "Level 5"
+  }
+]
+
+
+
+
+
+
+
+
+
+

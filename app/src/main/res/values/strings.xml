@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">ALATPRES</string>
+    <string name="forgot_password">Forgot Password?</string>
+    <string name="as_an_enterprise">As an Enterprise</string>
+    <string name="as_a_normal_user_individual">As a Normal User(Individual)</string>
+    <string name="dismiss">Dismiss</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="google_maps_key">AIzaSyDJnDn_O0nybXXsBypZ_5wTu1lVXOgHIjU</string>
+    <string name="no_alert_currently">No Alert Currently</string>
+
+
+</resources>
