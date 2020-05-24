@@ -1,0 +1,3 @@
+rootProject.name='Alat'
+include ':app'
+include ':app', ':materialpickerdialog'

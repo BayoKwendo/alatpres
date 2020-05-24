@@ -1,0 +1,28 @@
+[
+  {
+    "hasFocus": true,
+    "employ": "1-100"
+  },
+  {
+    "hasFocus": false,
+    "employ": "100-1000"
+  },
+  {
+    "hasFocus": false,
+    "employ": "1000-10000"
+  },
+  {
+    "hasFocus": false,
+    "employ": "10000+"
+  }
+]
+
+
+
+
+
+
+
+
+
+

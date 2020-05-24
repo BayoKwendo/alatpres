@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">MaterialNumberPicker</string>
+
+    <string name="MPD_action_done">done</string>
+    <string name="MPD_action_cancel">cancel</string>
+    <string name="MPD_empty_message">value can not be empty</string>
+    <string name="MPD_incorrect_message">please select correct value</string>
+    <string name="baringo">Baringo County</string>
+
+    <string name="level">Rescue Level</string>
+
+    <string name="MPD_male">Male</string>
+    <string name="employ">1–100</string>
+    <string name="org">Non-Governmental Organization</string>
+
+</resources>
