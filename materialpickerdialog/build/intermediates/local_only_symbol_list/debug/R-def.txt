@@ -10,6 +10,7 @@ color MPD_primaryColor
 color MPD_primaryColorLight
 color accentColor
 color colorAccent
+color colorOrange
 color colorPrimary
 color colorPrimaryDark
 color colorPrimaryTransparent
