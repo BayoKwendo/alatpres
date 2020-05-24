@@ -68,6 +68,10 @@ class CreateAlert : AppCompatActivity() {
     var PICK_FILE_REQUEST = 100;
 
     private var textInputLocation: TextInputLayout? = null
+
+    private var textInputAlert: TextInputLayout? = null
+    private var alert: EditText? = null
+
     var rg: String? = null
     private var destinationAddress: String? = null
     private var mfile: ImageView? = null
@@ -76,6 +80,9 @@ class CreateAlert : AppCompatActivity() {
     private var loc: EditText? = null
     var btnLogin: Button? = null
     private var setLevel: String? = null
+
+    private var alert_namess: String? = null
+
     private var setLoc: String? = null
 
     private var fullname: String? = null
@@ -103,16 +110,19 @@ class CreateAlert : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        textInputLocation = findViewById(R.id.location)
+        textInputLocation = findViewById(R.id.alertname)
+        alert = findViewById(R.id.alert)
+
+        textInputAlert = findViewById(R.id.location)
         loc = findViewById(R.id.loc)
 
-        loc!!.setOnClickListener {
-            searchPlace()
-        }
-        loc!!.requestFocus()
-        textInputLocation!!.setOnClickListener {
-            searchPlace()
-        }
+//        loc!!.setOnClickListener {
+//            searchPlace()
+//        }
+//        loc!!.requestFocus()
+//        textInputLocation!!.setOnClickListener {
+//            searchPlace()
+//        }
 
 
         textInputlevel = findViewById(R.id.level_layout)
@@ -336,9 +346,22 @@ class CreateAlert : AppCompatActivity() {
     }
     private fun checkError(): Boolean {
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+
+        alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+
+
         setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
 
+        if (Utils.checkIfEmptyString(alert_namess)) {
 
+            textInputAlert!!.error = "Setting an alert name is compulsory"
+            textInputAlert!!.requestFocus()
+            showKeyBoard()
+
+            //showKeyBoard()
+            return false
+
+        } else textInputAlert!!.error = null
         if (Utils.checkIfEmptyString(setLevel)) {
 
             textInputlevel!!.error = "Setting Level Is Mandatory"
@@ -350,10 +373,10 @@ class CreateAlert : AppCompatActivity() {
 
         } else textInputlevel!!.error = null
 
-        if(selectedItem == null){
-            Toast.makeText(this@CreateAlert, "Type of Alert is Mandatory!! Please select", Toast.LENGTH_LONG).show()
-            return false
-        }
+//        if(selectedItem == null){
+//            Toast.makeText(this@CreateAlert, "Type of Alert is Mandatory!! Please select", Toast.LENGTH_LONG).show()
+//            return false
+//        }
 
         if(selectedItem2 == null){
             Toast.makeText(this@CreateAlert, "Select Response Group!! Please select", Toast.LENGTH_LONG).show()
@@ -384,6 +407,8 @@ class CreateAlert : AppCompatActivity() {
 
 
 
+        alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
         setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
 
@@ -409,6 +434,7 @@ class CreateAlert : AppCompatActivity() {
             .build()
 
         val params: HashMap<String, String> = HashMap()
+        params["alert_name"] = alert_namess!!
         params["fullname"] = fullname!!
         params["alert_type"] = selectedItem!!
         params["rg"] = selectedItem2!!
