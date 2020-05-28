@@ -538,6 +538,7 @@ int color abc_tint_seek_thumb 0x0
 int color abc_tint_spinner 0x0
 int color abc_tint_switch_track 0x0
 int color accentColor 0x0
+int color accentGreen 0x0
 int color accent_material_dark 0x0
 int color accent_material_light 0x0
 int color background_floating_material_dark 0x0

@@ -38,8 +38,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.lang.reflect.Array.get
+import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
 class LoginActivity : AppCompatActivity() {
@@ -138,6 +140,10 @@ class LoginActivity : AppCompatActivity() {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+
             .addNetworkInterceptor(object : Interceptor {
                 @Throws(IOException::class)
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
@@ -150,6 +156,8 @@ class LoginActivity : AppCompatActivity() {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
+            .addConverterFactory(ScalarsConverterFactory.create())
+
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

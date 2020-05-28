@@ -64,14 +64,13 @@ class AlertAdapter(
             itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
             holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
         }else if (contact.rl == "Level 1"){
-            itemView!!.setBackgroundColor(Color.YELLOW)
+            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow))
             holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
-
         }else if (contact.rl == "Neutralized"){
-            itemView!!.setBackgroundColor(Color.GREEN)
+            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.accentGreen))
             holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
         }
-        holder.name.text = contact.alert_type
+        holder.name.text = contact.alert_name
         holder.id.text = contact.id.toString() }
 
     override fun getItemCount(): Int {

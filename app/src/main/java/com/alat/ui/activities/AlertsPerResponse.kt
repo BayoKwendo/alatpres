@@ -6,14 +6,14 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.Menu
-import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -44,11 +44,11 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
+import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
 import kotlin.collections.set
 
 @Suppress("UNREACHABLE_CODE")
@@ -121,12 +121,15 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
     private fun getStudent() {
 
 
-        mToolbar!!.title = response_group
+        mToolbar!!.title = response_group + "\tRG"
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
             .addNetworkInterceptor(object : Interceptor {
                 @Throws(IOException::class)
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
@@ -194,7 +197,11 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                     array.toString(),
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
+
+            Collections.reverse(items);
+
             contactList!!.clear()
+
             contactList!!.addAll(items)
             mAdapter!!.notifyDataSetChanged()
 
@@ -255,7 +262,7 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                 true
             }
             android.R.id.home -> {
-                startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
+                BackAlert()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -265,13 +272,48 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
     }
 
 
+   fun BackAlert() {
+       AlertDialog.Builder(this)
+           .setMessage("Are you sure want to go back?")
+           .setCancelable(false)
+           .setPositiveButton("Yes") { _, id ->
+               startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
+           }
+           .setNegativeButton("No", null)
+           .show().withCenteredButtons()
+   }
+
+    private fun AlertDialog.withCenteredButtons() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
+    }
+
+
     override fun onBackPressed() {
         // close search view on back button pressed
         if (!searchView!!.isIconified) {
             searchView!!.isIconified = true
             return
         }
-        startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
+        BackAlert()
 
     }
 
@@ -285,7 +327,8 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
 
         val i =
             Intent(this, AlertDetails::class.java)
-        i.putExtra("alertSelect", contact!!.id.toString())
+             i.putExtra("alertSelect", contact!!.id.toString())
+             i.putExtra("level", contact.rl)
         startActivity(i)
     }
 }

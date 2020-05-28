@@ -53,7 +53,7 @@ class RGAdapter(
         position: Int
     ) {
         val contact = contactListFiltered[position]
-        holder.name.text = contact.group_name
+        holder.name.text = contact.group_name +"\tRG"
         holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
 
     }

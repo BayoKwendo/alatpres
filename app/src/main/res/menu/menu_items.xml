@@ -16,8 +16,6 @@
     <item android:id="@+id/about"
         android:title="About Us" />
 
-    <item android:id="@+id/help"
-        android:title="Help" />
-    <item android:id="@+id/logout"
+      <item android:id="@+id/logout"
         android:title="Logout" />
 </menu>

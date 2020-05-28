@@ -8,14 +8,17 @@
             android:id="@+id/alert"
             android:icon="@drawable/alert"
             android:title="Alerts" />
-        <item
-            android:id="@+id/join_resp"
-            android:icon="@drawable/rg"
-            android:title="Join Response Group" />
+
         <item
             android:id="@+id/create_resp"
             android:icon="@drawable/addrg"
             android:title="Create Response Group" />
+        <item
+            android:id="@+id/join_resp"
+            android:icon="@drawable/rg"
+            android:title="Join Response Group" />
+
+
         <item
             android:id="@+id/generate_rep"
             android:icon="@drawable/generate"
