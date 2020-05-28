@@ -18,5 +18,6 @@ public interface GetAlertPost {
             @Query("fullname") String name,
             @Query("rg") String rg,
             @Query("location") String location,
+            @Query("notes") String notes,
             @Query("created") String created1);
 }

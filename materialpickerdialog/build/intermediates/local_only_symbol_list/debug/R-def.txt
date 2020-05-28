@@ -9,6 +9,7 @@ color MPD_pickerSelectedTextColor
 color MPD_primaryColor
 color MPD_primaryColorLight
 color accentColor
+color accentGreen
 color colorAccent
 color colorOrange
 color colorPrimary

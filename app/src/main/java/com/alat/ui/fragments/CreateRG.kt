@@ -5,10 +5,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -46,7 +48,9 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 class CreateRG : Fragment() {
 
@@ -154,11 +158,14 @@ class CreateRG : Fragment() {
         btnLogin!!.setOnClickListener {
             if (!checkError()) return@setOnClickListener
             else {
-                bayo()
-
-                btnLogin!!.text = "Submitting.."
-
-                mProgress?.show()
+                if (!isNetworkAvailable()) {
+                    internet()
+                    promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
+                }else {
+                    bayo()
+                    btnLogin!!.text = "Submitting.."
+                    mProgress?.show()
+                }
 
             }
         }
@@ -256,6 +263,9 @@ class CreateRG : Fragment() {
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
             .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
             .addNetworkInterceptor(object : Interceptor {
                 @Throws(IOException::class)
                 override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
@@ -357,19 +367,80 @@ class CreateRG : Fragment() {
     }
 
 
-    private fun dialogue() {
+    private fun isNetworkAvailable(): Boolean {
+        // Using ConnectivityManager to check for Network Connection
+        val connectivityManager = (
+            activity!!.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+        val activeNetworkInfo = connectivityManager
+            .activeNetworkInfo
+        return activeNetworkInfo != null
+    }
 
-        promptPopUpView = PromptPopUpView(activity!!)
+
+    private fun internet() {
+        promptPopUpView = PromptPopUpView(activity)
 
         AlertDialog.Builder(activity!!)
-            .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
+
+            .setPositiveButton(
+                "Retry"
+            ) { dialog, _ -> dialog.dismiss()
+                activity!!.recreate()
+            }
+
+            .setNegativeButton(
+                "Cancel"
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show().withCenteredButtons()
+    }
+
+    private fun dialogue() {
+
+        promptPopUpView = PromptPopUpView(activity)
+
+        AlertDialog.Builder(activity!!)
+            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
                 //      finish()
 
             }
+            .setNegativeButton("Exit") { _: DialogInterface?, _: Int ->
+                //      finish()
+                startActivity(Intent(activity, HomePage::class.java))
+            }
             .setCancelable(false)
             .setView(promptPopUpView)
-            .show()
+            .show().withCenteredButtons()
     }
+
+    private fun AlertDialog.withCenteredButtons() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
+    }
+
+
 
     private fun dialogue_error() {
 

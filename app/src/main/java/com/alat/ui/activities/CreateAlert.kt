@@ -6,8 +6,10 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.net.ConnectivityManager
 import android.os.Bundle
 import android.util.Log
+import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -43,6 +45,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
+import java.util.concurrent.TimeUnit
 
 
 class CreateAlert : AppCompatActivity() {
@@ -78,6 +81,8 @@ class CreateAlert : AppCompatActivity() {
     private var textInputlevel: TextInputLayout? = null
     private var level: EditText? = null
     private var loc: EditText? = null
+    private var notes: EditText? = null
+
     var btnLogin: Button? = null
     private var setLevel: String? = null
 
@@ -88,6 +93,9 @@ class CreateAlert : AppCompatActivity() {
     private var fullname: String? = null
     private var mssidn: String? = null
     private var userid: String? = null
+
+    private var addnotes: String? = null
+
 
     var pref: SharedPreferences? = null
 
@@ -114,6 +122,8 @@ class CreateAlert : AppCompatActivity() {
         alert = findViewById(R.id.alert)
 
         textInputAlert = findViewById(R.id.location)
+        notes = findViewById(R.id.notes)
+
         loc = findViewById(R.id.loc)
 
 //        loc!!.setOnClickListener {
@@ -178,12 +188,14 @@ class CreateAlert : AppCompatActivity() {
         btnLogin!!.setOnClickListener {
             if (!checkError()) return@setOnClickListener
             else {
-                bayo()
-
-                btnLogin!!.text = "Submitting.."
-
-                mProgress?.show()
-
+                if (!isNetworkAvailable()) {
+                    internet()
+                    promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
+                }else {
+                    bayo()
+                    btnLogin!!.text = "Submitting.."
+                    mProgress?.show()
+                }
             }
         }
 
@@ -202,6 +214,16 @@ class CreateAlert : AppCompatActivity() {
         } else {
             super.onOptionsItemSelected(item)
         }
+    }
+
+
+    private fun isNetworkAvailable(): Boolean {
+        // Using ConnectivityManager to check for Network Connection
+        val connectivityManager = (this
+            .getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager)
+        val activeNetworkInfo = connectivityManager
+            .activeNetworkInfo
+        return activeNetworkInfo != null
     }
 
 
@@ -227,20 +249,26 @@ class CreateAlert : AppCompatActivity() {
 
         val group_name: String? = null
         val alerts = 0
-
-        val okHttpClient = OkHttpClient.Builder()
-            .addInterceptor { chain ->
-                val request = chain.request().newBuilder()
-//                    .addHeader("Authorization", "Bearer " + preferenceHelper!!.token)
-                    .build()
-                chain.proceed(request)
-            }
-            .build()
-
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
-            .client(okHttpClient)
-            .addConverterFactory(ScalarsConverterFactory.create())
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
             .build()
         val api: GetRGs = retrofit.create(GetRGs::class.java)
         val call: Call<String>? = api.getRG(group_name, alerts)
@@ -352,6 +380,8 @@ class CreateAlert : AppCompatActivity() {
 
         setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
 
+
+
         if (Utils.checkIfEmptyString(alert_namess)) {
 
             textInputAlert!!.error = "Setting an alert name is compulsory"
@@ -403,6 +433,9 @@ class CreateAlert : AppCompatActivity() {
         mssidn = pref!!.getString("mssdn", null)
 
 
+        addnotes = notes!!.text.toString().trim { it <= ' ' }
+
+
 
 
         alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
@@ -439,10 +472,9 @@ class CreateAlert : AppCompatActivity() {
         params["rl"] = setLevel!!
         params["mssdn"] = mssidn!!
         params["location"] = setLoc!!
-        Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
+        params["notes"] = addnotes!!
 
-
-
+      //  Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
 
         val api: AddAlert = retrofit.create(AddAlert::class.java)
         val call: Call<ResponseBody> = api.addAlert(params)
@@ -492,7 +524,9 @@ class CreateAlert : AppCompatActivity() {
                 mProgress?.dismiss()
                 level!!.setText("")
                 loc!!.setText("")
+                notes!!.setText("")
 
+                alert!!.setText("")
                 btnLogin!!.text = "Submit"
 
             } else{
@@ -511,19 +545,74 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
+
+
+
+    private fun internet() {
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+
+            .setPositiveButton(
+                "Retry"
+            ) { dialog, _ -> dialog.dismiss()
+                recreate()
+            }
+
+            .setNegativeButton(
+                "Cancel"
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show().withCenteredButtons()
+    }
+
+
     private fun dialogue() {
 
         promptPopUpView = PromptPopUpView(this)
 
-        AlertDialog.Builder(this)
-            .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
+            AlertDialog.Builder(this)
+            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
                 //      finish()
 
             }
+            .setNegativeButton("Exit") { _: DialogInterface?, _: Int ->
+                //      finish()
+                startActivity(Intent(this@CreateAlert, HomePage::class.java))
+            }
             .setCancelable(false)
             .setView(promptPopUpView)
-            .show()
+                .show().withCenteredButtons()
     }
+
+
+    private fun AlertDialog.withCenteredButtons() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
+    }
+
 
     private fun dialogue_error() {
         promptPopUpView = PromptPopUpView(this)

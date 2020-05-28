@@ -52,6 +52,22 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertDetails"
             android:label="Alert Detail"/>
+        <activity android:name=".ui.activities.AlertReport" />
+        <activity android:name=".ui.activities.GroupID"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.AddTopicActivity"
+            android:label="Add Comment/Post"/>
+        <activity android:name=".ui.activities.AlertsToResponse"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.AlertDiscussion"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.JoinGlobal"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.AlertGlobal"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.AddGlobalActivity"
+            android:label="Add Comment/Post"/>
+        <activity android:name=".ui.activities.FriendRequests" />
     </application>
 
 </manifest>

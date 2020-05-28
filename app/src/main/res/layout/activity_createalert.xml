@@ -5,18 +5,19 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".MainActivity">
-
+  <androidx.core.widget.NestedScrollView
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:layout_constraintEnd_toEndOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintTop_toTopOf="parent">
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
         android:layout_marginLeft="@dimen/_15sdp"
         android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginRight="@dimen/_15sdp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        android:layout_marginRight="@dimen/_15sdp">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/alertname"
@@ -35,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:id="@+id/alert"
                 android:backgroundTint="@color/colorAccent"
-                android:hint="Set Name"
+                android:hint="Alert Title"
                 android:inputType="text"
                 android:maxLength="1000"
                 android:padding="@dimen/_10sdp"
@@ -51,7 +52,7 @@
             app:ms_arrowSize="16dp"
             app:ms_floatingLabelColor="#00FF00"
             app:ms_floatingLabelText="Alert"
-            app:ms_hint="Select Type of Alert"
+            app:ms_hint="Select Type of Alert (Optional)"
             app:ms_multiline="false" />
 
         <fr.ganfra.materialspinner.MaterialSpinner
@@ -110,7 +111,16 @@
                 android:padding="@dimen/_10sdp"
                 android:textSize="@dimen/_13ssp" />
         </com.google.android.material.textfield.TextInputLayout>
-
+        <EditText
+            android:background="@drawable/textbox"
+            android:layout_width="match_parent"
+            android:gravity="top|left"
+            android:ems="10"
+            android:id="@+id/notes"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:padding="@dimen/_10sdp"
+            android:layout_height="150dp"
+            android:hint="Add Notes (Optional)" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -124,7 +134,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight=".7"
-                android:text="Add Note/Attachment (Optional)"
+                android:text="Add Attachment (Optional)"
                 android:textColor="@color/colorBlack"
                 android:typeface="monospace" />
 
@@ -151,6 +161,7 @@
             android:textSize="15sp" />
 
     </androidx.appcompat.widget.LinearLayoutCompat>
+</androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
 

@@ -9,7 +9,10 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 public interface AddResponse {
-    @Headers("Content-Type: application/json")
+    @Headers({
+            "Accept: application/json",
+            "Content-Type: application/json"
+    })
 
 //    @FormUrlEncoded
     @POST("api/rg/create.php")

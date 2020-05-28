@@ -6,6 +6,8 @@
     <color name="accentColor">#FF4081</color>
     <color name="highlighter_transparent">#33FF4081</color>
 
+    <color name="accentGreen">#006400</color>
+
 
     <color name="colorPrimary">#0f4356</color>
     <color name="colorPrimaryDark">#0f4356</color>

@@ -11,8 +11,20 @@ class rgModel {
 
     var rl: String? = null
 
+    var alert_name: String? = null
+
+
 
     var id: Int? = null
+
+
+    var content: String? = null
+
+    var fullname: String? = null
+
+    var rg_id: String? = null
+
+    var date_posted: String? = null
 
 
 }
