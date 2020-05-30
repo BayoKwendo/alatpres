@@ -268,7 +268,7 @@ class CreateAlert : AppCompatActivity() {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
             .build()
         val api: GetRGs = retrofit.create(GetRGs::class.java)
         val call: Call<String>? = api.getRG(group_name, alerts)

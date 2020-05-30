@@ -58,7 +58,7 @@ class FriendAdapter(
         position: Int) {
         val contact = contactListFiltered[position]
 
-        holder.name.text = contact.fullname + "Wants to Join the group you created of ID\t" + contact.rg_id
+        holder.name.text = contact.fullname + "\nWants to Join the group you created of ID\t" + contact.rg_id
         holder.rg_mode.text = "From\t" + contact.fullname }
 
     override fun getItemCount(): Int {

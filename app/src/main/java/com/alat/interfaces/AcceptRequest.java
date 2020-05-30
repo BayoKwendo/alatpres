@@ -8,12 +8,12 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface FriendReques {
+public interface AcceptRequest {
     @Headers("Content-Type: application/json")
 
     // @FormUrlEncoded
-    @POST("api/rg/requestMember.php")
-    Call<ResponseBody> AddM(@Body Map<String, String> body);
+    @POST("api/rg/acceptRequest.php")
+    Call<ResponseBody> accept(@Body Map<String, String> body);
 }
 
 

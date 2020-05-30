@@ -5,6 +5,14 @@
 <!--        android:icon="@drawable/addalaert"-->
 <!--        android:title="ALERT"-->
 <!--        app:showAsAction="ifRoom" />-->
+
+    <item
+        android:id="@+id/action_share"
+        android:icon="@drawable/share"
+        android:title="sh"
+        app:showAsAction = "always"
+        app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/>
+
     <item
         android:id="@+id/action_search"
         android:icon="@drawable/search"
@@ -12,6 +20,17 @@
         android:title="Search"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
+    <item
+        android:id="@+id/action_invite"
+        android:icon="@drawable/invitation"
+        android:title="sh"
+        app:showAsAction = "always"/>
+
+    <item android:id="@+id/join"
+        android:title="Join Requests" />
+
+    <item android:id="@+id/invites"
+        android:title="Invitations" />
 
     <item android:id="@+id/about"
         android:title="About Us" />

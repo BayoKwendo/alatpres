@@ -27,11 +27,7 @@
         <activity android:name="com.alat.ui.activities.auth.LoginActivity"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+           </activity>
         <activity android:name="com.alat.ui.activities.auth.Enterprise"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".HomePage"
@@ -46,8 +42,16 @@
 
 
         </activity>
-        <activity android:name=".CreateRG"
-            android:label="Create Alert"/>
+        <activity android:name=".ui.activities.SplashActivity"
+            android:theme="@style/AppTheme.NoActionBar">
+
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+
+
+        </activity>
         <activity android:name=".ui.activities.AlertsPerResponse"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertDetails"
@@ -67,7 +71,10 @@
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AddGlobalActivity"
             android:label="Add Comment/Post"/>
-        <activity android:name=".ui.activities.FriendRequests" />
+        <activity android:name=".ui.activities.FriendRequests"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.GroupsRequests"
+            android:theme="@style/AppTheme.NoActionBar"/>
     </application>
 
 </manifest>

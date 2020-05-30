@@ -35,9 +35,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 {
     private var toolbar: androidx.appcompat.widget.Toolbar? = null
     private var promptPopUpView: PromptPopUpView? = null
-    var floatingActionButton: FloatingActionButton? = null
-
-    var global: FloatingActionButton? = null
 
     val navigationView: NavigationView? = null
     var linear2:LinearLayout ? = null
@@ -58,23 +55,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         supportActionBar
         setSupportActionBar(toolbar)
 
-        linear2 = findViewById(R.id.linear)
 
-        linear = findViewById(R.id.linear2)
-
-        floatingActionButton =
-            findViewById<View>(R.id.floating_action_button) as FloatingActionButton
-
-        global =
-            findViewById<View>(R.id.joinGlobal) as FloatingActionButton
-
-        global!!.setOnClickListener {
-            startActivity(Intent(this, JoinGlobal::class.java))
-        }
-
-        floatingActionButton!!.setOnClickListener {
-            startActivity(Intent(this, CreateAlert::class.java))
-        }
 
 
         if (!isNetworkAvailable()) {
@@ -123,46 +104,34 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         when (item.itemId) {
             R.id.alert -> {
                 fragment = alerts()
-                linear2!!.visibility = View.VISIBLE
-                linear!!.visibility = View.VISIBLE
 
                 toolbar!!.title = "ALERTS";
             }
             R.id.join_resp -> {
                 fragment = JoinRG()
-                linear2!!.visibility = View.GONE
-                linear!!.visibility = View.GONE
 
                 toolbar!!.title = "RGs to Join";
             }
             R.id.create_resp -> {
                 fragment = CreateRG()
-                linear2!!.visibility = View.GONE
-                linear!!.visibility = View.GONE
 
                 toolbar!!.title = "Create Response Group";
             }
             R.id.generate_rep -> {
 
                 fragment = GenerateReport()
-                linear2!!.visibility = View.GONE
-                linear!!.visibility = View.GONE
 
                 toolbar!!.title = "Generate Reports";
             }
             R.id.manage_alert -> {
 
                 fragment = ManageAlert()
-                linear2!!.visibility = View.GONE
-                linear!!.visibility = View.GONE
 
                 toolbar!!.title = "Manage Alerts";
 
             }
             R.id.profile -> {
                 fragment = Profile()
-                linear2!!.visibility = View.GONE
-                linear!!.visibility = View.GONE
 
                 toolbar!!.title = "Profile";
             }

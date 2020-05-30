@@ -3,19 +3,29 @@ package com.alat.ui.activities
 import android.app.ProgressDialog
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.widget.Button
-import android.widget.ScrollView
+import android.widget.RelativeLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.interfaces.GetAlertPost
+import com.itextpdf.text.BadElementException
+import com.itextpdf.text.Document
+import com.itextpdf.text.DocumentException
+import com.itextpdf.text.Image
+import com.itextpdf.text.pdf.PdfWriter
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -26,12 +36,12 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
+import java.net.MalformedURLException
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -64,12 +74,8 @@ class AlertReport : AppCompatActivity() {
      */
     private val SECTOR = 100 // Default value for one pdf file.
 
-    private var START = 0
-    private var END = SECTOR
-    private var NO_OF_PDF_FILE = 1
-    private var NO_OF_FILE = 0
-    private var LIST_SIZE = 0
-    private var progressDialog: ProgressDialog? = null
+
+    private var mProgress: ProgressDialog? = null
     var rg: String? = null
     var view: View? = null
 
@@ -77,17 +83,27 @@ class AlertReport : AppCompatActivity() {
     var usr: String? = null
     var loc: String? = null
     var created: String? = null
-   var scrollView: ScrollView? = null
+   var scrollView: RelativeLayout? = null
+
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_summary_report)
+
+
+        val state = Environment.getExternalStorageState()
+
+        if (!Environment.MEDIA_MOUNTED.equals(state)) { Toast.makeText(this@AlertReport, "Your internal Storage is not writable", Toast.LENGTH_LONG).show()
+        }
+
+
         mid = intent.getStringExtra("alertSelect")
         rl = intent.getStringExtra("level")
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         alert_type = findViewById(R.id.textView9)
 
-        scrollView = findViewById(R.id.scrollView)
+        scrollView = findViewById(R.id.relation)
 
         response_group = findViewById(R.id.textView7)
         fullnaem =findViewById(R.id.textView21)
@@ -96,41 +112,122 @@ class AlertReport : AppCompatActivity() {
         createdOn = findViewById(R.id.textView11)
         view = findViewById(R.id.view)
 
-         generate!!.setOnClickListener {
+        mProgress = ProgressDialog(this)
+            mProgress!!.setMessage("Saving...")
+        mProgress!!.setCancelable(true)
 
-           //  convertCertViewToImage()
+        val pdfDir = File(Environment.getExternalStoragePublicDirectory(
+            Environment.DIRECTORY_DOCUMENTS), "ALATPRES")
+
+        if (!pdfDir.exists())
+        { pdfDir.mkdir() }
+        generate!!.isEnabled = false;
+        generate!!.setOnClickListener {
+
+                mProgress!!.show()
+                val pdfFile = File(pdfDir, "aalertpresReport.pdf")
+
+            scrollView!!.isDrawingCacheEnabled = true;
+            val screen =
+                getBitmapFromView(scrollView!!)
+
+
+
+                try
+                {
+                    val document = Document()
+                    PdfWriter.getInstance(document, FileOutputStream(pdfFile))
+                    document.open()
+
+                    Toast.makeText(this@AlertReport, "Great!! Your Summary Report is Created and Saved. Check your Documents folder", Toast.LENGTH_LONG).show()
+
+                    mProgress!!.dismiss()
+
+                    val stream = ByteArrayOutputStream()
+                    screen!!.compress(Bitmap.CompressFormat.PNG, 100, stream)
+                    val byteArray = stream.toByteArray()
+                    addImage(document, byteArray)
+                    document.close()
+                }
+                catch (e:Exception) {
+                    e.printStackTrace()
+                }
+
+
+            //  convertCertViewToImage()
          }
         getStudent()
 
     }
 
-    fun convertCertViewToImage() {
-        scrollView!!.setDrawingCacheEnabled(true)
-        scrollView!!.measure(
-            View.MeasureSpec.makeMeasureSpec(
-                0,
-                View.MeasureSpec.UNSPECIFIED
-            ),
-            View.MeasureSpec.makeMeasureSpec(
-                0,
-                View.MeasureSpec.UNSPECIFIED
-            )
-        )
-        scrollView!!.layout(0, 0, scrollView!!.getMeasuredWidth(), scrollView!!.getMeasuredHeight())
-        scrollView!!.buildDrawingCache()
-        val bm: Bitmap = Bitmap.createBitmap(scrollView!!.getDrawingCache())
-        scrollView!!.setDrawingCacheEnabled(false) // clear drawing cache
-        val share =
-            Intent(Intent.ACTION_SEND)
-        share.type = "image/jpg"
-        val bytes = ByteArrayOutputStream()
-        bm.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val f =
-            File(getExternalFilesDir(null)!!.absolutePath + File.separator + "Certificate" + File.separator + "myCertificate.jpg")
-        f.createNewFile()
-        val fo = FileOutputStream(f)
-        fo.write(bytes.toByteArray())
+
+
+
+    private fun addImage(
+        document: Document,
+        byteArray: ByteArray) {
+
+        var image: Image? = null
+        try {
+            image = Image.getInstance(byteArray)
+        } catch (e: BadElementException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        } catch (e: MalformedURLException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        } catch (e: IOException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
+        // image.scaleAbsolute(150f, 150f);
+        try {
+            document.add(image)
+        } catch (e: DocumentException) {
+            // TODO Auto-generated catch block
+            e.printStackTrace()
+        }
     }
+
+    fun getBitmapFromView(view: View): Bitmap? {
+        //Define a bitmap with the same size as the view
+        val returnedBitmap = Bitmap.createBitmap(
+            view.width,
+            view.height,
+            Bitmap.Config.ARGB_8888
+        )
+        //Bind a canvas to it
+        val canvas = Canvas(returnedBitmap)
+        //Get the view's background
+        val bgDrawable: Drawable? = view.background
+        if (bgDrawable != null) //has background drawable, then draw it on the canvas
+            bgDrawable.draw(canvas) else  //does not have background drawable, then draw white background on the canvas
+            canvas.drawColor(Color.WHITE)
+        // draw the view on the canvas
+        view.draw(canvas)
+        //return the bitmap
+        return returnedBitmap
+    }
+//    private fun getBitmapFromView(v: RelativeLayout): Bitmap? {
+//        v.layoutParams = RelativeLayout.LayoutParams(
+//            RelativeLayout.LayoutParams.WRAP_CONTENT,
+//            RelativeLayout.LayoutParams.WRAP_CONTENT
+//        )
+//        v.measure(
+//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+//            View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED)
+//        )
+//        v.layout(0, 0, v.measuredWidth, v.measuredHeight)
+//        val b = Bitmap.createBitmap(
+//            v.measuredWidth,
+//            v.measuredHeight,
+//            Bitmap.Config.ARGB_8888
+//        )
+//        val c = Canvas(b)
+//        v.draw(c)
+//        return b
+//    }
+
 
     private fun getStudent() {
 
@@ -172,6 +269,8 @@ class AlertReport : AppCompatActivity() {
                 //Toast.makeText()
                 if (response.isSuccessful) {
                     if (response.body() != null) {
+
+
                         Log.d("onSuccess", response.body().toString())
                         //Toast.makeText(this@LoginActivity, "Success"  + response.body(), Toast.LENGTH_LONG).show()
                         val jsonresponse = response.body().toString()
@@ -196,22 +295,16 @@ class AlertReport : AppCompatActivity() {
             val jsonObject = JSONObject(jsonresponse)
             alertyp = jsonObject.getString("alert_type")
             alert_type!!.text = alertyp
-
             rg = jsonObject.getString("rg")
             response_group!!.text = rg
+            generate!!.isEnabled = true
             usr = jsonObject.getString("fullname")
             fullnaem!!.text = usr
-
             levelresp!!.text = rl
             var currentTime: String =
                 SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             created = jsonObject.getString("created")
-
             createdOn!!.text = currentTime
-
-
-
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }
@@ -240,137 +333,6 @@ class AlertReport : AppCompatActivity() {
 
 
 
-    //    private fun generatePdfReport() {
-//
-//
-//        // NO_OF_FILE : This is identify to one file or many file have to created
-//        LIST_SIZE = pdfModels.size()
-//        NO_OF_FILE = LIST_SIZE / SECTOR
-//        if (LIST_SIZE % SECTOR !== 0) {
-//            NO_OF_FILE++
-//        }
-//        if (LIST_SIZE > SECTOR) {
-//            IS_MANY_PDF_FILE = true
-//        } else {
-//            END = LIST_SIZE
-//        }
-//        createPDFFile()
-//    }
-//
-//    private fun createProgressBarForPDFCreation(maxProgress: Int) {
-//        progressDialog = ProgressDialog(this)
-//        progressDialog.setMessage(
-//            String.format(
-//                getString(R.string.msg_progress_pdf),
-//                maxProgress.toString()
-//            )
-//        )
-//        progressDialog.setCancelable(false)
-//        progressDialog.setIndeterminate(false)
-//        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL)
-//        progressDialog.setMax(maxProgress)
-//        progressDialog.show()
-//    }
-//
-//    private fun createProgressBarForMergePDF() {
-//        progressDialog = ProgressDialog(this)
-//        progressDialog.setMessage(getString(R.string.msg_progress_merger_pdf))
-//        progressDialog.setCancelable(false)
-//        progressDialog.show()
-//    }
-//
-//    /**
-//     * This function call with recursion
-//     * This recursion depend on number of file (NO_OF_PDF_FILE)
-//     */
-//    private fun createPDFFile() {
-//
-//        // Find sub list for per pdf file data
-//        val pdfDataList: List<PDFModel> = pdfModels.subList(START, END)
-//        PdfBitmapCache.clearMemory()
-//        PdfBitmapCache.initBitmapCache(applicationContext)
-//        val pdfCreationUtils =
-//            PDFCreationUtils(this@PdfCreationActivity, pdfDataList, LIST_SIZE, NO_OF_PDF_FILE)
-//        if (NO_OF_PDF_FILE === 1) {
-//            createProgressBarForPDFCreation(PDFCreationUtils.TOTAL_PROGRESS_BAR)
-//        }
-//        pdfCreationUtils.createPDF(object : PDFCallback() {
-//            fun onProgress(i: Int) {
-//                progressDialog.setProgress(i)
-//            }
-//
-//            fun onCreateEveryPdfFile() {
-//                // Execute may pdf files and this is depend on NO_OF_FILE
-//                if (IS_MANY_PDF_FILE) {
-//                    NO_OF_PDF_FILE++
-//                    if (NO_OF_FILE === NO_OF_PDF_FILE - 1) {
-//                        progressDialog.dismiss()
-//                        createProgressBarForMergePDF()
-//                        pdfCreationUtils.downloadAndCombinePDFs()
-//                    } else {
-//
-//                        // This is identify to manage sub list of current pdf model list data with START and END
-//                        START = END
-//                        if (LIST_SIZE % SECTOR !== 0) {
-//                            if (NO_OF_FILE === NO_OF_PDF_FILE) {
-//                                END = START - SECTOR + LIST_SIZE % SECTOR
-//                            }
-//                        }
-//                        END = SECTOR + END
-//                        createPDFFile()
-//                    }
-//                } else {
-//                    // Merge one pdf file when all file is downloaded
-//                    progressDialog.dismiss()
-//                    createProgressBarForMergePDF()
-//                    pdfCreationUtils.downloadAndCombinePDFs()
-//                }
-//            }
-//
-//            fun onComplete(filePath: String?) {
-//                progressDialog.dismiss()
-//                if (filePath != null) {
-//                    btnPdfPath.setVisibility(View.VISIBLE)
-//                    btnPdfPath.setText("PDF path : $filePath")
-//                    Toast.makeText(
-//                        this@PdfCreationActivity,
-//                        "pdf file $filePath",
-//                        Toast.LENGTH_LONG
-//                    ).show()
-//                    btnSharePdfFile.setVisibility(View.VISIBLE)
-//                    btnSharePdfFile.setOnClickListener(View.OnClickListener { sharePdf(filePath) })
-//                }
-//            }
-//
-//            fun onError(e: Exception) {
-//                Toast.makeText(this@PdfCreationActivity, "Error  " + e.message, Toast.LENGTH_LONG)
-//                    .show()
-//            }
-//        })
-//    }
-//
-//
-//    private fun sharePdf(fileName: String) {
-//        val emailIntent =
-//            Intent(Intent.ACTION_SEND_MULTIPLE)
-//        emailIntent.type = "text/plain"
-//        emailIntent.flags = Intent.FLAG_ACTIVITY_NO_HISTORY
-//        val uris: ArrayList<Uri> = ArrayList<Uri>()
-//        val fileIn = File(fileName)
-//        val u: Uri = FileProvider.getUriForFile(this, BuildConfig.APPLICATION_ID, fileIn)
-//        uris.add(u)
-//        emailIntent.putParcelableArrayListExtra(Intent.EXTRA_STREAM, uris)
-//        try {
-//            startActivity(
-//                Intent.createChooser(
-//                    emailIntent,
-//                    getString(R.string.send_to)
-//                )
-//            )
-//        } catch (e: ActivityNotFoundException) {
-//            Toast.makeText(this, getString(R.string.error_file), Toast.LENGTH_SHORT).show()
-//        }
-//    }
     override fun onBackPressed() {
         // close search view on back button pressed
 

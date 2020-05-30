@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.alat"
-        minSdkVersion 16
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 2
         versionName "1.0.1"
@@ -45,8 +45,8 @@ dependencies {
 
     api project(':materialpickerdialog')
     implementation 'de.hdodenhof:circleimageview:3.1.0'
-
-
+    implementation 'com.itextpdf:itextg:5.5.9'
+    implementation 'com.github.native-ss:xml-to-pdf:1.0.0'
 
     implementation 'com.google.android.material:material:1.1.0'
 

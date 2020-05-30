@@ -15,7 +15,9 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.ShareActionProvider
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuItemCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -32,7 +34,11 @@ import com.alat.interfaces.GetRGs
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
 import com.alat.ui.activities.AlertsPerResponse
+import com.alat.ui.activities.CreateAlert
+import com.alat.ui.activities.GroupsRequests
+import com.alat.ui.activities.JoinGlobal
 import com.alat.ui.activities.auth.LoginActivity
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Interceptor
@@ -46,7 +52,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
@@ -55,7 +60,7 @@ import java.util.concurrent.TimeUnit
 class alerts : Fragment(),
     RGAdapter.ContactsAdapterListener {
 
-    private var toolbar : Toolbar? = null
+    private var toolbar: Toolbar? = null
 
 
     private val TAG = HomePage::class.java.simpleName
@@ -70,7 +75,9 @@ class alerts : Fragment(),
     private var promptPopUpView: PromptPopUpView? = null
 
 
+    var floatingActionButton: FloatingActionButton? = null
 
+    var global: FloatingActionButton? = null
 
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
@@ -80,9 +87,11 @@ class alerts : Fragment(),
 
     var MYCODE = 1000
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.activity_alert, container, false)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.activity_home, container, false)
         setHasOptionsMenu(true)
         preferenceHelper = PreferenceModel(activity!!)
         recyclerView = view.findViewById(R.id.recycler_view)
@@ -106,6 +115,19 @@ class alerts : Fragment(),
         recyclerView!!.adapter = mAdapter
 
 
+        floatingActionButton =
+            view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
+
+        global =
+            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
+
+        global!!.setOnClickListener {
+            startActivity(Intent(activity!!, JoinGlobal::class.java))
+        }
+
+        floatingActionButton!!.setOnClickListener {
+            startActivity(Intent(activity!!, CreateAlert::class.java))
+        }
         view.context
         return view
     }
@@ -121,9 +143,6 @@ class alerts : Fragment(),
 
         //you can set the title for your toolbar here for different fragments different title
     }
-
-
-
 
 
     private fun getStudent() {
@@ -166,25 +185,25 @@ class alerts : Fragment(),
                         val jsonresponse = response.body().toString()
 
 
-                        if (response.code().toString() == "200"){
+                        if (response.code().toString() == "200") {
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }
 
                         parseLoginData(jsonresponse)
                     } else {
-                         errorNull!!.visibility = View.VISIBLE
+                        errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
 
                         Log.i("onEmptyResponse", "Returned empty response")
-                     //   Toast.makeText(context,"Nothing returned",Toast.LENGTH_LONG).show();
+                        //   Toast.makeText(context,"Nothing returned",Toast.LENGTH_LONG).show();
                     }
-                }else{
+                } else {
                     Log.d("bayo", response.errorBody()!!.string())
                     errorNull!!.visibility = View.VISIBLE
                     mProgressLayout!!.visibility = View.GONE
 
-                   // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
+                    // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
 
 
                     internet()
@@ -197,7 +216,7 @@ class alerts : Fragment(),
             override fun onFailure(call: Call<String?>, t: Throwable) {
                 //   btn.text = "Proceed"
                 Log.i("onEmptyResponse", "" + t) //
-               // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
+                // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
 
                 internet()
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
@@ -205,6 +224,7 @@ class alerts : Fragment(),
             }
         })
     }
+
     private fun parseLoginData(jsonresponse: String) {
         try {
             val o = JSONObject(jsonresponse)
@@ -246,6 +266,7 @@ class alerts : Fragment(),
             .setView(promptPopUpView)
             .show()
     }
+
     private fun dialogue_error() {
 
         promptPopUpView = PromptPopUpView(activity)
@@ -303,12 +324,21 @@ class alerts : Fragment(),
     }
 
 
-
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_items, menu)
 
-        // Associate searchable configuration with the SearchView
+
+        val item = menu.findItem(R.id.action_share)
+        // Fetch and store ShareActionProvider
+
+        val item6 = menu.findItem(R.id.action_invite)
+        item6.isVisible = false
+
+        val mShareActionProvider: ShareActionProvider? =
+            MenuItemCompat.getActionProvider(item) as ShareActionProvider?
+        mShareActionProvider?.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME)
+
+        mShareActionProvider?.setShareIntent(createShareIntent())
         val searchManager =
             activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView = menu.findItem(R.id.action_search)
@@ -337,6 +367,25 @@ class alerts : Fragment(),
         })
     }
 
+
+    // Create and return the Share Intent
+    private fun createShareIntent(): Intent? {
+        val shareIntent =
+            Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(
+            Intent.EXTRA_TEXT, """
+          ALATPRES
+
+     Get AlatPres.
+     https://play.google.com/store/apps/details?id=com.alatpres
+     """.trimIndent()
+        )
+        val intent =
+            Intent.createChooser(shareIntent, "Share Via")
+        return shareIntent
+    }
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -346,6 +395,12 @@ class alerts : Fragment(),
             R.id.action_search -> {
                 true
             }
+            R.id.join -> {
+                startActivity(Intent(activity, GroupsRequests::class.java))
+
+            }
+
+
             R.id.logout -> {
                 logout()
             }
@@ -357,14 +412,15 @@ class alerts : Fragment(),
     }
 
 
-private fun logout(){
+    private fun logout() {
         SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
             .setTitleText("Are you sure?")
             .setContentText("You will be required to login again to access ALATPRES!")
             .setConfirmText("Yes, sign me out!")
             .setConfirmClickListener {
 
-                    sDialog -> sDialog.dismissWithAnimation()
+                    sDialog ->
+                sDialog.dismissWithAnimation()
 
                 pref =
                     context!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -381,6 +437,7 @@ private fun logout(){
             }
             .show()
     }
+
     fun onBackPressed() {
         // close search view on back button pressed
         if (!searchView!!.isIconified()) {
@@ -410,9 +467,8 @@ private fun logout(){
 
         val i =
             Intent(activity, AlertsPerResponse::class.java)
-           i.putExtra("groupSelect", contact!!.group_name.toString())
-           startActivity(i)
-
+        i.putExtra("groupSelect", contact!!.group_name.toString())
+        startActivity(i)
 
 
     }

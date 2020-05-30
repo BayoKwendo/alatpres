@@ -6,14 +6,12 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -127,7 +125,7 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
     private fun getStudent() {
 
 
-        mToolbar!!.title = response_group_name + "\t\tRG"
+        mToolbar!!.title = response_group_name + "\tRG"
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -222,6 +220,22 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         mToolbar!!.inflateMenu(R.menu.menu_items);
 
+
+
+
+        var item = menu?.findItem(R.id.action_share)
+        val item2 = menu?.findItem(R.id.join)
+        val item3 = menu?.findItem(R.id.invites)
+        val item4 = menu?.findItem(R.id.about)
+        val item5 = menu?.findItem(R.id.logout)
+
+        item?.isVisible = false
+        item2?.isVisible = false
+        item3?.isVisible = false
+        item4?.isVisible = false
+        item5?.isVisible = false
+
+
         // Associate searchable configuration with the SearchView
         val searchManager =
             getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -264,7 +278,7 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
                 true
             }
             android.R.id.home -> {
-                startActivity(Intent(this@AlertsToResponse, HomePage::class.java))
+                BackAlert()
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -280,7 +294,7 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
             searchView!!.isIconified = true
             return
         }
-        startActivity(Intent(this@AlertsToResponse, HomePage::class.java))
+        BackAlert()
 
     }
 
@@ -299,4 +313,41 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
              i.putExtra("groupID", response_group_id)
         startActivity(i)
     }
+
+
+
+    fun BackAlert() {
+        AlertDialog.Builder(this)
+            .setMessage("Leaving Group for now??")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, id ->
+                startActivity(Intent(this@AlertsToResponse, HomePage::class.java))
+            }
+            .setNegativeButton("No", null)
+            .show().withCenteredButtons()
+    }
+
+    private fun AlertDialog.withCenteredButtons() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
+    }
+
 }
