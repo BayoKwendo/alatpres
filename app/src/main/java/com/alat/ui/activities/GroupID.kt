@@ -105,7 +105,7 @@ class GroupID : AppCompatActivity() {
 
         mProgress2 = ProgressDialog(this)
         mProgress2!!.setMessage("Sending Request...")
-        mProgress2!!.setCancelable(true)
+        mProgress2!!.setCancelable(false)
         btnbacks = findViewById<View>(R.id.btn_backs1) as Button
 
 

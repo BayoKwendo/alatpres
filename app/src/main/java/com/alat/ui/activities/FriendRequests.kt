@@ -3,6 +3,7 @@ package com.alat.ui.activities
 import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -13,10 +14,12 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +30,7 @@ import com.alat.adapters.FriendAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
-import com.alat.interfaces.GetAlerts
+import com.alat.interfaces.*
 import com.alat.model.rgModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -51,9 +54,9 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 
 @Suppress("UNREACHABLE_CODE")
-class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListener  {
+class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListener {
 
-   var response_group: String? = null
+    var response_group: String? = null
 
     private val TAG = FriendRequests::class.java.simpleName
     private var recyclerView: RecyclerView? = null
@@ -67,6 +70,13 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
     var errorNull: TextView? = null
+
+
+    var rg_id: String? = null
+
+
+    var user_idNo: String? = null
+
     private var mProgress: ProgressDialog? = null
     var MYCODE = 1000
 
@@ -75,14 +85,14 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alert)
-        mToolbar =  findViewById(R.id.toolbar);
+        mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar!!);
 
         response_group = intent.getStringExtra("groupSelect")
 
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Friend Requests";
+        supportActionBar!!.title = "Join Requests";
 
 
 
@@ -104,6 +114,10 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
                 36
             )
         )
+
+        mProgress = ProgressDialog(this)
+        mProgress!!.setMessage("Processing...")
+        mProgress!!.setCancelable(true)
         recyclerView!!.adapter = mAdapter
 
         mProgressLayout!!.visibility = View.VISIBLE
@@ -117,7 +131,7 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
     private fun getStudent() {
 
 
-        mToolbar!!.title = response_group + "\tRG"
+        //mToolbar!!.title = response_group + "\tRG"
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -143,11 +157,11 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
 
         val params: HashMap<String, String> = HashMap()
         params["rg_id"] = response_group!!
-        params["userid"] = response_group!!
+        //params["userid"] = response_group!!
 
 
-        val api: GetAlerts = retrofit.create(GetAlerts::class.java)
-        val call: Call<ResponseBody> = api.GetAlert(params)
+        val api: FriendReq = retrofit.create(FriendReq::class.java)
+        val call: Call<ResponseBody> = api.Requests(params)
 
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
@@ -164,26 +178,24 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "200") {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }
                     parseLoginData(remoteResponse)
                 } else {
-                    mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())
-                    mProgress?.dismiss()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 Log.i("onEmptyResponse", "" + t) //
-                mProgress?.dismiss()
-            }
+               }
         })
     }
+
     private fun parseLoginData(remoteResponse: String) {
         try {
             val o = JSONObject(remoteResponse)
@@ -215,52 +227,14 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        mToolbar!!.inflateMenu(R.menu.menu_items);
-
-        // Associate searchable configuration with the SearchView
-        val searchManager =
-            getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView = menu!!.findItem(R.id.action_search)
-            .actionView as SearchView
-        searchView!!.setSearchableInfo(
-            searchManager
-                .getSearchableInfo(componentName)
-        )
-        searchView!!.maxWidth = Int.MAX_VALUE
-
-        // listening to search query text change
-        searchView!!.setOnQueryTextListener(object :
-            SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String): Boolean {
-                // filter recycler view when query submitted
-                mAdapter!!.filter.filter(query)
-
-                return false
-            }
-
-            override fun onQueryTextChange(query: String): Boolean {
-                // filter recycler view when text is changed
-                mAdapter!!.filter.filter(query)
-                return false
-            }
-        })
-        return super.onCreateOptionsMenu(menu);
-    }
-
-
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
-            R.id.action_search -> {
-                true
-            }
+
             android.R.id.home -> {
-                BackAlert()
+                startActivity(Intent(this@FriendRequests, GroupsRequests::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -269,21 +243,56 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
         return true
     }
 
+    override fun onBackPressed() {
+        // close search view on back button pressed
+        startActivity(Intent(this@FriendRequests, GroupsRequests::class.java))
 
-   fun BackAlert() {
-       AlertDialog.Builder(this)
-           .setMessage("Are you sure want to go back?")
-           .setCancelable(false)
-           .setPositiveButton("Yes") { _, id ->
-               startActivity(Intent(this@FriendRequests, HomePage::class.java))
-           }
-           .setNegativeButton("No", null)
-           .show().withCenteredButtons()
-   }
+
+    }
+
+    override fun onContactSelected(contact: rgModel?) {
+
+        rg_id = contact!!.rg_id
+        user_idNo = contact.userid
+
+        BackAlert()
+    }
+
+
+    fun BackAlert() {
+//
+//        Toast.makeText(
+//            this,
+//            "Selected: " +  user_idNo,
+//            Toast.LENGTH_LONG
+//        ).show()
+
+        AlertDialog.Builder(this)
+            .setMessage("Accept this Join Request?")
+            .setCancelable(true)
+            .setPositiveButton("Accept") { _, id ->
+                accept()
+                mProgress!!.show()
+                // startActivity(Intent(this@FriendRequests, HomePage::class.java))
+            }
+            .setNegativeButton("Reject"){_, id ->
+               reject()
+                mProgress!!.show()
+            }
+            .show().withCenteredButtons()
+    }
 
     private fun AlertDialog.withCenteredButtons() {
         val positive = getButton(AlertDialog.BUTTON_POSITIVE)
         val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        negative.setTextColor(ContextCompat.getColor(context, R.color.error))
+
+
+        positive.setBackgroundColor(ContextCompat.getColor(context, R.color.success))
+
+        positive.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+
 
         //Disable the material spacer view in case there is one
         val parent = positive.parent as? LinearLayout
@@ -305,28 +314,216 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
     }
 
 
-    override fun onBackPressed() {
-        // close search view on back button pressed
-        if (!searchView!!.isIconified) {
-            searchView!!.isIconified = true
-            return
+    private fun accept() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["rg_id"] = rg_id!!
+        params["userid"] = user_idNo!!
+
+        val api: AcceptRequest = retrofit.create(AcceptRequest::class.java)
+        val call: Call<ResponseBody> = api.accept(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Call request header", call.request().headers.toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+
+                    if (response.code().toString() == "200") {
+                        parseLoginDatas(remoteResponse)
+                    }
+                } else {
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
+    }
+
+    private fun parseLoginDatas(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+            if (jsonObject.getString("status") == "true") {
+                dialogue();
+                promptPopUpView?.changeStatus(2, "Done!")
+
+                mProgress!!.dismiss()
+
+            } else {
+                dialogue_error();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                mProgress!!.dismiss()
+
+                // Toast.makeText(this@AddTopicActivity, "Please Something went wrong", Toast.LENGTH_LONG).show()
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
         }
-        BackAlert()
+
 
     }
 
-    override fun onContactSelected(contact: rgModel?) {
-//           Toast.makeText(
-//            this,
-//            "Selected: " +contact!!.id ,
-//            Toast.LENGTH_LONG
-//        ).show()
+
+    private fun reject() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
 
 
-        val i =
-            Intent(this, AlertDetails::class.java)
-             i.putExtra("alertSelect", contact!!.id.toString())
-             i.putExtra("level", contact.rl)
-        startActivity(i)
+        params["rg_id"] = rg_id!!
+        params["userid"] = user_idNo!!
+
+        val api: RejectRequest = retrofit.create(RejectRequest::class.java)
+        val call: Call<ResponseBody> = api.reject(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Call request header", call.request().headers.toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+
+                    if (response.code().toString() == "200") {
+                        parseLoginDatass(remoteResponse)
+                    }
+                } else {
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
     }
+
+    private fun parseLoginDatass(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+            if (jsonObject.getString("status") == "true") {
+                dialogue();
+                promptPopUpView?.changeStatus(2, "Done!")
+
+                mProgress!!.dismiss()
+
+
+            } else {
+                dialogue_error();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+                mProgress!!.dismiss()
+
+                // Toast.makeText(this@AddTopicActivity, "Please Something went wrong", Toast.LENGTH_LONG).show()
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+
+    }
+
+    private fun dialogue() {
+
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+            .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
+                //recreate()
+                val i = Intent(this, FriendRequests::class.java)
+                i.putExtra("groupSelect", response_group)
+                //i.putExtra("groupName", contact.group_name)
+
+                startActivity(i)
+            }
+
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
+    private fun dialogue_error() {
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
+
 }

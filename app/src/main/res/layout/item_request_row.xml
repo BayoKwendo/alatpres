@@ -13,9 +13,8 @@
         android:textStyle="bold"
         tools:text="Sample topic name"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="1"/>
+        android:layout_marginTop="10dp"
+        />
 
     <TextView
         android:id="@+id/tv_topic_starter"
@@ -26,9 +25,8 @@
         android:layout_below="@+id/tv_topic_name"
         tools:text="Created by: Laban"
         android:layout_marginHorizontal="8dp"
-        android:layout_marginTop="5dp"
-        android:ellipsize="end"
-        android:maxLines="1"/>
+        android:layout_marginTop="7dp"
+        />
 
     <TextView
         android:id="@+id/tv_date_created"

@@ -404,7 +404,7 @@ class CreateRG : Fragment() {
         promptPopUpView = PromptPopUpView(activity)
 
         AlertDialog.Builder(activity!!)
-            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
+            .setPositiveButton("Add RG") { _: DialogInterface?, _: Int ->
                 //      finish()
 
             }

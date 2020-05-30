@@ -14,6 +14,7 @@ class rgModel {
     var alert_name: String? = null
 
 
+    var userid: String? = null
 
     var id: Int? = null
 

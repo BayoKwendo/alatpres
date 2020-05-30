@@ -302,6 +302,25 @@ class JoinRG : Fragment(),
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_items, menu)
 
+
+        var item = menu.findItem(R.id.action_share)
+        val item2 = menu.findItem(R.id.join)
+        val item3 = menu.findItem(R.id.invites)
+        val item4 = menu.findItem(R.id.about)
+        val item5 = menu.findItem(R.id.logout)
+        val item6 = menu.findItem(R.id.action_invite)
+
+        item.isVisible = false
+        item2.isVisible = false
+        item3.isVisible = false
+        item4.isVisible = false
+        item5.isVisible = false
+        item6.isVisible = false
+
+
+
+
+
         // Associate searchable configuration with the SearchView
         val searchManager =
             activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
@@ -340,9 +359,7 @@ class JoinRG : Fragment(),
             R.id.action_search -> {
                 true
             }
-            R.id.logout -> {
-                logout()
-            }
+
 
             else -> super.onOptionsItemSelected(item)
         }
@@ -351,30 +368,7 @@ class JoinRG : Fragment(),
     }
 
 
-    private fun logout(){
-        SweetAlertDialog(activity, SweetAlertDialog.WARNING_TYPE)
-            .setTitleText("Are you sure?")
-            .setContentText("You will be required to login again to access ALATPRES!")
-            .setConfirmText("Yes, sign me out!")
-            .setConfirmClickListener {
 
-                    sDialog -> sDialog.dismissWithAnimation()
-
-                pref =
-                    context!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
-                val editor: SharedPreferences.Editor = pref!!.edit()
-                editor.putBoolean("isLogin", false)
-                editor.clear()
-                editor.apply(); // commit changes
-
-
-                startActivity(Intent(activity, LoginActivity::class.java))
-
-
-            }
-            .show()
-    }
     fun onBackPressed() {
         // close search view on back button pressed
         if (!searchView!!.isIconified()) {

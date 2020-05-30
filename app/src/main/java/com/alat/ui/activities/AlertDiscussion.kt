@@ -239,9 +239,24 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
         mToolbar!!.inflateMenu(R.menu.menu_items);
 
+
+
+        var item = menu.findItem(R.id.action_share)
+        val item2 = menu.findItem(R.id.join)
+        val item3 = menu.findItem(R.id.invites)
+        val item4 = menu.findItem(R.id.about)
+        val item5 = menu.findItem(R.id.logout)
+      //  val item6 = menu.findItem(R.id.action_invite)
+
+        item.isVisible = false
+        item2.isVisible = false
+        item3.isVisible = false
+        item4.isVisible = false
+        item5.isVisible = false
+       // item6.isVisible = false
         // Associate searchable configuration with the SearchView
         val searchManager =
             getSystemService(Context.SEARCH_SERVICE) as SearchManager

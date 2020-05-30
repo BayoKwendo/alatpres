@@ -29,7 +29,6 @@
             android:id="@+id/alerts"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="ddddddd"
             android:layout_gravity="end"
             android:gravity="end"
             android:layout_marginRight="@dimen/_20sdp"
