@@ -1,11 +1,155 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".ui.activity.LoginActivity">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-</androidx.core.widget.NestedScrollView>
+
+        <TextView
+            android:id="@+id/back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/gothamroundbold"
+            android:gravity="start"
+            android:layout_marginTop="@dimen/_20sdp"
+            android:text="SUBSCRIPTION PACKAGES"
+            android:layout_marginLeft="@dimen/_10sdp"
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/_12ssp"
+            app:layout_constraintBottom_toBottomOf="@+id/header_image"
+            app:layout_constraintStart_toStartOf="@+id/textView2" />
+
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/rsp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_arrowColor="@color/colorAccent"
+            app:ms_arrowSize="16dp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:ms_floatingLabelColor="#00FF00"
+            app:ms_floatingLabelText="Response Service Provider "
+            app:ms_hint="Response Service Provider Only"
+            app:ms_multiline="false" />
+
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/nature_response"
+            android:layout_width="match_parent"
+            android:visibility="gone"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_5sdp"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:ms_arrowColor="@color/colorAccent"
+            app:ms_arrowSize="16dp"
+            android:paddingBottom="@dimen/_10sdp "
+            app:ms_floatingLabelColor="#00FF00"
+            app:ms_floatingLabelText="nature of Your Response Servic"
+            app:ms_hint="Select nature of Your Response Service"
+            app:ms_multiline="false" />
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="@+id/counties_layout"
+            app:layout_constraintStart_toStartOf="@+id/counties_layout"
+            app:layout_constraintTop_toBottomOf="@+id/counties_layout">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Set your user ID"
+                android:inputType="text"
+                android:maxLength="15"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_13ssp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_user_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="@+id/user_id"
+            app:layout_constraintStart_toStartOf="@+id/user_id"
+            app:layout_constraintTop_toBottomOf="@+id/user_id">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Confirm your user ID"
+                android:inputType="text"
+                android:maxLength="15"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_13ssp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="@+id/confirm_user_id"
+            app:layout_constraintStart_toStartOf="@+id/confirm_user_id"
+            app:layout_constraintTop_toBottomOf="@+id/confirm_user_id">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Enter your password"
+                android:inputType="textPassword"
+                android:maxLength="15"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_13ssp" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/confirm_password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="@dimen/_30sdp"
+            android:layout_marginRight="@dimen/_30sdp"
+            app:errorEnabled="true"
+            app:layout_constraintEnd_toEndOf="@+id/password"
+            app:layout_constraintStart_toStartOf="@+id/password"
+            app:layout_constraintTop_toBottomOf="@+id/password">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:backgroundTint="@color/colorAccent"
+                android:hint="Confirm your Password"
+                android:inputType="textPassword"
+                android:maxLength="15"
+                android:padding="@dimen/_10sdp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/_13ssp" />
+        </com.google.android.material.textfield.TextInputLayout>
+    </LinearLayout>
+</FrameLayout>

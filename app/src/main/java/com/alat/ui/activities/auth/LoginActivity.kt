@@ -57,6 +57,8 @@ class LoginActivity : AppCompatActivity() {
     private var promptPopUpView: PromptPopUpView? = null
     var email: String? = null
     var password: String? = null
+    var forgot: TextView? = null
+
     var image: ImageView? = null
 
 
@@ -80,7 +82,7 @@ class LoginActivity : AppCompatActivity() {
             validation()
         }
         Picasso.with(this).load("https://youthsofhope.co.ke/api/logo.png").fit().into(image);
-       // Picasso.get().load().into(image)
+        // Picasso.get().load().into(image)
 
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -90,6 +92,19 @@ class LoginActivity : AppCompatActivity() {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
+        }
+//        Toast.makeText(
+//            this,
+//            "Selected: " +pref!!.getBoolean("isLogin", false) ,
+//            Toast.LENGTH_LONG
+//        ).show()
+
+
+
+
+        forgot = findViewById(R.id.tv_forgot_password)
+        forgot?.setOnClickListener {
+            startActivity(Intent(this, ForgotPassword::class.java))
         }
 
     }
@@ -173,7 +188,6 @@ class LoginActivity : AppCompatActivity() {
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -235,22 +249,36 @@ class LoginActivity : AppCompatActivity() {
             pref =
                 applicationContext.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
-                val editor: SharedPreferences.Editor = pref!!.edit()
-                editor.putBoolean("isLogin", true)
-                editor.putString("fname", jsonObject.getString("firstname"))
-                editor.putString("lname", jsonObject.getString("lastname"))
-                editor.putString("email", jsonObject.getString("email"))
-                editor.putString("dob", jsonObject.getString("DoB"))
-                editor.putString("mssdn", jsonObject.getString("mssdn"))
-                editor.putString("gender", jsonObject.getString("gender"))
-                editor.putString("idNo", jsonObject.getString("idNo"))
-                editor.putString("county", jsonObject.getString("county"))
-                editor.putString("userid", jsonObject.getString("userid"))
-                editor.putString("lname", jsonObject.getString("lastname"))
+            val editor: SharedPreferences.Editor = pref!!.edit()
 
-                editor.clear()
-                editor.apply(); // commit changes
 
+            editor.putBoolean("isLogin", true)
+            editor.putString("fname", jsonObject.getString("firstname"))
+            editor.putString("lname", jsonObject.getString("lastname"))
+            editor.putString("email", jsonObject.getString("email"))
+            editor.putString("dob", jsonObject.getString("DoB"))
+            editor.putString("mssdn", jsonObject.getString("mssdn"))
+            editor.putString("gender", jsonObject.getString("gender"))
+            editor.putString("idNo", jsonObject.getString("idNo"))
+            editor.putString("county", jsonObject.getString("county"))
+            editor.putString("userid", jsonObject.getString("userid"))
+            editor.putString("lname", jsonObject.getString("lastname"))
+//            editor.putString("tax", jsonObject.getString("taxid"))
+//            editor.putString("nature_org", jsonObject.getString("nature_org"))
+//            editor.putString("description", jsonObject.getString("description"))
+//            editor.putString("physical_address", jsonObject.getString("physical_address"))
+//            editor.putString("postal_address", jsonObject.getString("postal_address"))
+//            editor.putString("town", jsonObject.getString("town"))
+//            editor.putString("code", jsonObject.getString("code"))
+//            editor.putString("website", jsonObject.getString("website"))
+//            editor.putString("role_id", jsonObject.getString("role_id"))
+//            editor.putString("mssdn2", jsonObject.getString("mssdn2"))
+//            editor.putString("date_of_incooperation", jsonObject.getString("date_of_incooperation"))
+//            editor.putString("response_provider", jsonObject.getString("response_provider"))
+//            editor.putString("nature_response", jsonObject.getString("nature_response"))
+
+            editor.clear()
+            editor.apply()
 
 
 

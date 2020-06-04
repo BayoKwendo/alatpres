@@ -3,6 +3,14 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
+    signingConfigs {
+        debug {
+            storeFile file('/home/bayo/Music/factsheet.jks')
+            storePassword 'bayo1996'
+            keyAlias 'key0'
+            keyPassword 'bayo1996'
+        }
+    }
     compileSdkVersion 29
     buildToolsVersion "29.0.3"
 
@@ -12,8 +20,8 @@ android {
         applicationId "com.alat"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 2
-        versionName "1.0.1"
+        versionCode 6
+        versionName "1.0.3"
         multiDexEnabled true
 
 
@@ -34,6 +42,12 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
+    buildTypes.each {
+
+        // CONSUMER_KEY & CONSUMER_SECRET Build Variables are referenced from gradle.properties file
+        it.buildConfigField 'String', 'CONSUMER_KEY', DARAJA_CONSUMER_KEY
+        it.buildConfigField 'String', 'CONSUMER_SECRET', DARAJA_CONSUMER_SECRET
+    }
 
 }
 
@@ -41,22 +55,26 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
-    implementation 'androidx.core:core-ktx:1.2.0'
-
+    implementation 'androidx.core:core-ktx:1.3.0'
+    implementation project(':daraja')
     api project(':materialpickerdialog')
     implementation 'de.hdodenhof:circleimageview:3.1.0'
     implementation 'com.itextpdf:itextg:5.5.9'
     implementation 'com.github.native-ss:xml-to-pdf:1.0.0'
-
     implementation 'com.google.android.material:material:1.1.0'
+    implementation 'com.jakewharton.timber:timber:4.7.1'
 
-    implementation 'com.google.android.libraries.places:places:2.2.0'
+    implementation 'com.google.android.libraries.places:places:2.3.0'
+
+
+    implementation 'com.jakewharton:butterknife:10.0.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.0.0'
 
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
 
-    implementation 'androidx.multidex:multidex:2.0.0'
+    implementation 'androidx.multidex:multidex:2.0.1'
 
     //Dimen
     implementation 'com.intuit.ssp:ssp-android:1.0.6'

@@ -10,7 +10,7 @@
     <string name="level">Level 1</string>
 
     <string name="MPD_male">Male</string>
-    <string name="employ">1–100</string>
+    <string name="employ">1–10</string>
     <string name="org">Non-Governmental Organization</string>
 
 </resources>
