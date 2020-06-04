@@ -56,14 +56,10 @@ class MainActivity : AppCompatActivity() {
     private var textInputemail: TextInputLayout? = null
     private var textInputmssidn: TextInputLayout? = null
     private var textInputidno: TextInputLayout? = null
-
     private var textInputuserid: TextInputLayout? = null
     private var textInputconfirmuserid: TextInputLayout? = null
-
     private var textInputpassword: TextInputLayout? = null
     private var textInputconfirmpassword: TextInputLayout? = null
-
-
     private var textInputDoB: EditText? = null
     private var genderselect: EditText? = null
     private var mcounty: EditText? = null
@@ -432,7 +428,13 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
 
+    override fun onBackPressed() {
 
+        val intent = Intent(this@MainActivity, LoginActivity::class.java)
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+        finish()
+    }
 
 
 

@@ -64,8 +64,6 @@ class GenerateReport : Fragment() ,
     private var promptPopUpView: PromptPopUpView? = null
 
 
-
-
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
     var errorNull: TextView? = null

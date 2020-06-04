@@ -100,6 +100,9 @@ class CreateAlert : AppCompatActivity() {
     var pref: SharedPreferences? = null
 
 
+    var fname: String? = null
+    var user: String? = null
+
 
     private var mProgress: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -432,6 +435,7 @@ class CreateAlert : AppCompatActivity() {
 
         mssidn = pref!!.getString("mssdn", null)
 
+        user = pref!!.getString("userid", null)
 
         addnotes = notes!!.text.toString().trim { it <= ' ' }
 
@@ -471,6 +475,7 @@ class CreateAlert : AppCompatActivity() {
         params["rg"] = selectedItem2!!
         params["rl"] = setLevel!!
         params["mssdn"] = mssidn!!
+        params["userid"] = user!!
         params["location"] = setLoc!!
         params["notes"] = addnotes!!
 
@@ -484,7 +489,6 @@ class CreateAlert : AppCompatActivity() {
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

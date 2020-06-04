@@ -38,6 +38,7 @@ import com.alat.ui.activities.CreateAlert
 import com.alat.ui.activities.GroupsRequests
 import com.alat.ui.activities.JoinGlobal
 import com.alat.ui.activities.auth.LoginActivity
+import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -398,6 +399,11 @@ class alerts : Fragment(),
             R.id.join -> {
                 startActivity(Intent(activity, GroupsRequests::class.java))
 
+            }
+
+
+            R.id.about-> {
+                startActivity(Intent(activity, MPESAExpressActivity::class.java))
             }
 
 

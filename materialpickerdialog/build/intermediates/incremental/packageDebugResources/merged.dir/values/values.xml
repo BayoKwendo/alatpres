@@ -30,7 +30,7 @@
     <string name="MPD_male">Male</string>
     <string name="app_name">MaterialNumberPicker</string>
     <string name="baringo">Baringo County</string>
-    <string name="employ">1–100</string>
+    <string name="employ">1–10</string>
     <string name="level">Level 1</string>
     <string name="org">Non-Governmental Organization</string>
 </resources>

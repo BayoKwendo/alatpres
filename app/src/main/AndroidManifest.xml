@@ -21,6 +21,8 @@
         tools:replace="android:icon">
 
         <activity android:name=".MainActivity"
+            android:screenOrientation="locked"
+
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
@@ -28,7 +30,15 @@
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
            </activity>
+
+        <activity android:name=".ui.activities.tests"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+
         <activity android:name="com.alat.ui.activities.auth.Enterprise"
+            android:screenOrientation="locked"
+
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".HomePage"
             android:theme="@style/AppTheme.NoActionBar">
@@ -37,14 +47,16 @@
 
         </activity>
         <activity android:name=".ui.activities.CreateAlert"
+            android:screenOrientation="locked"
+
             android:label="Create Alert"/>
         <activity android:name=".Permission" >
 
 
         </activity>
         <activity android:name=".ui.activities.SplashActivity"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
-
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -53,28 +65,69 @@
 
         </activity>
         <activity android:name=".ui.activities.AlertsPerResponse"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertDetails"
+            android:screenOrientation="locked"
             android:label="Alert Detail"/>
-        <activity android:name=".ui.activities.AlertReport" />
+        <activity android:name=".ui.activities.AlertReport"
+            android:screenOrientation="locked" />
         <activity android:name=".ui.activities.GroupID"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AddTopicActivity"
+            android:screenOrientation="locked"
             android:label="Add Comment/Post"/>
         <activity android:name=".ui.activities.AlertsToResponse"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertDiscussion"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.JoinGlobal"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertGlobal"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AddGlobalActivity"
+            android:screenOrientation="locked"
             android:label="Add Comment/Post"/>
         <activity android:name=".ui.activities.FriendRequests"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.GroupsRequests"
+            android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+
+
+        <activity android:name=".ui.activities.ActiveAlerts"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activities.NeutralizeAlerts"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+
+        <activity android:name=".ui.activities.auth.ForgotPassword"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+
+
+
+
+        </activity>
+
+
+
+        <activity android:name=".ui.activities.mpesa.MPESAExpressActivity"
+            android:screenOrientation="locked">
+
+
+        </activity>
     </application>
 
 </manifest>

@@ -141,6 +141,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|start"
         android:id="@+id/linear2"
+        android:visibility="gone"
         android:orientation="vertical">
 
         <TextView

@@ -13,12 +13,12 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
+import androidx.cardview.widget.CardView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.JGAdapter
@@ -28,9 +28,8 @@ import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.GetRGs
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
-import com.alat.ui.activities.AlertsPerResponse
 import com.alat.ui.activities.GroupID
-import com.alat.ui.activities.auth.LoginActivity
+import com.alat.ui.activities.JoinGlobal
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import okhttp3.Interceptor
@@ -44,7 +43,6 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
@@ -76,18 +74,20 @@ class JoinRG : Fragment(),
     private var mProgress: ProgressDialog? = null
     var pref: SharedPreferences? = null
 
+    var global: CardView? = null
+
     var MYCODE = 1000
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.activity_alert, container, false)
+        val view = inflater.inflate(R.layout.activity_joinrg, container, false)
         setHasOptionsMenu(true)
         preferenceHelper = PreferenceModel(activity!!)
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
         contactList = ArrayList()
         mAdapter = JGAdapter(activity!!, contactList!!, this)
-
+        global= view.findViewById(R.id.cardactive)
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
         val mLayoutManager: RecyclerView.LayoutManager =
@@ -101,9 +101,12 @@ class JoinRG : Fragment(),
                 36
             )
         )
+
         recyclerView!!.adapter = mAdapter
 
-
+         global!!.setOnClickListener {
+             startActivity(Intent(activity!!, JoinGlobal::class.java))
+         }
         view.context
         return view
     }

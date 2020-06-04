@@ -13,6 +13,7 @@ import android.view.animation.AnimationUtils
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.cardview.widget.CardView
 import com.alat.R
 import com.alat.ui.activities.SplashActivity
 import com.alat.ui.activities.auth.LoginActivity
@@ -21,7 +22,7 @@ class SplashActivity : AppCompatActivity(),
     Animation.AnimationListener {
     var animBounce: Animation? = null
     var btnStart: Button? = null
-    var imgPoster: ImageView? = null
+    var imgPoster: CardView? = null
     override fun onAnimationRepeat(animation: Animation) {}
     override fun onAnimationStart(animation: Animation) {}
     @SuppressLint("WrongConstant")
@@ -48,7 +49,7 @@ class SplashActivity : AppCompatActivity(),
         }, 0)
         splashLoaded = true
         imgPoster =
-            findViewById<View>(R.id.imgLogo) as ImageView
+            findViewById<View>(R.id.imgLogo) as CardView
         animBounce = AnimationUtils.loadAnimation(
             applicationContext,
             R.anim.bounce

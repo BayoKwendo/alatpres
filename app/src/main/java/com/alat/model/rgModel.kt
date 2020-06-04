@@ -16,7 +16,7 @@ class rgModel {
 
     var userid: String? = null
 
-    var id: Int? = null
+    var id: String? = null
 
 
     var content: String? = null

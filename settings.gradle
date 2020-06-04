@@ -1,3 +1,2 @@
 rootProject.name='Alat'
-include ':app'
-include ':app', ':materialpickerdialog'
+include ':app', ':materialpickerdialog',':daraja'

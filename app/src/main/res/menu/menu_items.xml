@@ -33,7 +33,7 @@
         android:title="Invitations" />
 
     <item android:id="@+id/about"
-        android:title="About Us" />
+        android:title="MPESA DEMO" />
 
       <item android:id="@+id/logout"
         android:title="Logout" />

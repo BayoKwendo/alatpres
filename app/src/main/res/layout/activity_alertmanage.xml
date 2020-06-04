@@ -37,7 +37,7 @@
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardactive"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="80dp"
                             android:background="@color/error"
                             android:layout_marginTop="15dp"
                             card_view:cardCornerRadius="2dp"
@@ -51,7 +51,7 @@
 
                                 <View
                                     android:layout_width="5dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="90dp"
                                     android:background="@color/colorPrimary"/>
 
                                 <TextView
@@ -73,9 +73,9 @@
 
                         </androidx.cardview.widget.CardView>
                         <androidx.cardview.widget.CardView
-                            android:id="@+id/partners"
+                            android:id="@+id/neutralized"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="80dp"
                             android:layout_marginTop="15dp"
                             card_view:cardCornerRadius="2dp"
                             card_view:cardElevation="8dp">
@@ -86,7 +86,7 @@
                                 android:orientation="horizontal">
                                 <View
                                     android:layout_width="5dp"
-                                    android:layout_height="60dp"
+                                    android:layout_height="90dp"
                                     android:background="@color/colorPrimary"/>
 
                                 <TextView
@@ -110,7 +110,7 @@
                         <androidx.cardview.widget.CardView
                             android:id="@+id/card_ucrs"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="80dp"
                             android:layout_marginTop="15dp"
                             card_view:cardCornerRadius="2dp"
                             card_view:cardElevation="8dp">
@@ -148,7 +148,7 @@
                         <androidx.cardview.widget.CardView
                             android:id="@+id/cardvv"
                             android:layout_width="match_parent"
-                            android:layout_height="50dp"
+                            android:layout_height="80dp"
                             android:layout_marginTop="15dp"
                             card_view:cardCornerRadius="2dp"
                             card_view:cardElevation="8dp">

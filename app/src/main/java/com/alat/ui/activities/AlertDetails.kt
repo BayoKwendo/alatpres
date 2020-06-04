@@ -104,6 +104,9 @@ class AlertDetails : AppCompatActivity() {
         val locations: String? = null
         val notes: String? = null
 
+        val modified: String? = null
+
+
         val created: String? = null
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -131,7 +134,7 @@ class AlertDetails : AppCompatActivity() {
 
         val api: GetAlertPost = retrofit.create(
             GetAlertPost::class.java)
-        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,notes,created)
+        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,notes,created, modified)
         call?.enqueue(object : Callback<String?> {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 Log.d("Responsestring", response.toString())

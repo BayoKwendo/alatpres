@@ -2,6 +2,7 @@ package com.alat.ui.activities
 
 import android.app.ProgressDialog
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Color
@@ -55,6 +56,7 @@ class AlertReport : AppCompatActivity() {
     var generate: Button? = null
     var rl: String? = null
 
+    var pref: SharedPreferences? = null
 
 
     var response_group: TextView? = null
@@ -65,6 +67,12 @@ class AlertReport : AppCompatActivity() {
     var levelresp: TextView? = null
 
     var createdOn: TextView? = null
+
+
+    var neutralized: TextView? = null
+
+
+    var postedBy: TextView? = null
 
 
     private var IS_MANY_PDF_FILE = false
@@ -83,7 +91,14 @@ class AlertReport : AppCompatActivity() {
     var usr: String? = null
     var loc: String? = null
     var created: String? = null
-   var scrollView: RelativeLayout? = null
+
+
+    var modified: String? = null
+
+
+    var posts: String? = null
+
+    var scrollView: RelativeLayout? = null
 
 
 
@@ -97,6 +112,10 @@ class AlertReport : AppCompatActivity() {
         if (!Environment.MEDIA_MOUNTED.equals(state)) { Toast.makeText(this@AlertReport, "Your internal Storage is not writable", Toast.LENGTH_LONG).show()
         }
 
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        usr = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
         mid = intent.getStringExtra("alertSelect")
         rl = intent.getStringExtra("level")
@@ -110,6 +129,11 @@ class AlertReport : AppCompatActivity() {
         levelresp = findViewById(R.id.textView15)
         generate = findViewById(R.id.generate)
         createdOn = findViewById(R.id.textView11)
+
+
+        neutralized = findViewById(R.id.textView23)
+        postedBy = findViewById(R.id.textView28)
+
         view = findViewById(R.id.view)
 
         mProgress = ProgressDialog(this)
@@ -238,6 +262,8 @@ class AlertReport : AppCompatActivity() {
         val notes: String? = null
 
         val created: String? = null
+        val modified: String? = null
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -262,7 +288,7 @@ class AlertReport : AppCompatActivity() {
             .build()
         val api: GetAlertPost = retrofit.create(
             GetAlertPost::class.java)
-        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,notes,created)
+        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,notes,created,modified)
         call?.enqueue(object : Callback<String?> {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 Log.d("Responsestring", response.toString())
@@ -298,9 +324,23 @@ class AlertReport : AppCompatActivity() {
             rg = jsonObject.getString("rg")
             response_group!!.text = rg
             generate!!.isEnabled = true
-            usr = jsonObject.getString("fullname")
+
             fullnaem!!.text = usr
+
+
             levelresp!!.text = rl
+
+
+            modified = jsonObject.getString("modified")
+
+            neutralized!!.text = modified
+
+
+
+            posts = jsonObject.getString("fullname")
+            postedBy!!.text = posts
+
+
             var currentTime: String =
                 SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(Date())
             created = jsonObject.getString("created")

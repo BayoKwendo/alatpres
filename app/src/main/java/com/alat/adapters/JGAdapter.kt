@@ -75,7 +75,7 @@ class JGAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase()) || row.id!!.contains(charSequence)) {
                             filteredList.add(row)
                         }
                     }

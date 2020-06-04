@@ -12,6 +12,17 @@
         android:layout_gravity="center_vertical"
         android:orientation="vertical">
 
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_gravity="center"
+            android:layout_marginBottom="@dimen/_20sdp"
+            android:text="Welcome to ALAPRES"
+            android:textColor="@color/error"
+            android:textSize="25sp"/>
 
         <androidx.cardview.widget.CardView
             android:layout_width="155dp"
@@ -21,10 +32,12 @@
             app:cardBackgroundColor="@color/colorWhite"
             app:layout_constraintBottom_toTopOf="@+id/textView"
             app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginBottom="@dimen/_20sdp"
             app:layout_constraintHorizontal_bias="0.5"
             android:layout_gravity="center"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" >
+
 
             <androidx.cardview.widget.CardView
                 android:layout_width="150dp"
@@ -49,20 +62,7 @@
             android:layout_gravity="center_vertical"
             android:visibility="visible">
 
-            <TextView
-                android:id="@+id/textView"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="48dp"
-                android:layout_marginEnd="8dp"
-                android:text="Sign In to Continue"
-                android:textColor="@color/error"
-                android:textSize="30sp"
-                app:layout_constraintBottom_toTopOf="@+id/input_login_email"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+
 
             <EditText
                 android:id="@+id/input_login_email"
@@ -73,13 +73,12 @@
                 android:layout_marginEnd="8dp"
                 android:ems="10"
                 android:hint="User ID"
-                android:inputType="number"
+                android:inputType="text"
                 android:textColor="@color/colorBlack"
                 android:textColorHint="@color/colorBlack"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintStart_toStartOf="parent" />
 
             <EditText
                 android:id="@+id/input_login_pin"
@@ -106,7 +105,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
                 android:padding="15dp"
-                android:text="@string/forgot_password"
+                android:text="Forgot AlatPressID/Password?"
                 android:textColor="@color/color_url"
                 android:textSize="17sp"
                 android:textStyle="bold"
