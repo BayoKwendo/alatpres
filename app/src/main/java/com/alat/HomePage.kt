@@ -227,63 +227,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         negative.layoutParams = layoutParams
     }
 
-//
-//    override fun onBackPressed() {
-//        val t = System.currentTimeMillis()
-//
-//        val drawer =
-//            findViewById<View>(R.id.drawer_layout) as DrawerLayout
-//        val backstack = supportFragmentManager.backStackEntryCount
-//        if (drawer.isDrawerOpen(GravityCompat.START)) {
-//            drawer.closeDrawer(GravityCompat.START)
-//        } else if (backstack > 0) {
-//
-//                linear2!!.visibility = View.VISIBLE
-//                toolbar!!.title = "ALERTS"
-//                val ft: FragmentTransaction = supportFragmentManager.beginTransaction()
-//                ft.replace(R.id.main_fragment, alerts())
-//                ft.commit()
-//
-//        } else {
-//               if (t - backPressedTime > 3000) {    // 3 secs
-//                    backPressedTime = t
-//                    Toast.makeText(this, "Press back again to exit", Toast.LENGTH_SHORT).show()
-//                } else {
-//                    // clean up
-//                    super.onBackPressed()
-//                }
-//
-//        }
-//
-////        val drawer =
-////            findViewById<View>(R.id.drawer_layout) as DrawerLayout
-////        if (drawer.isDrawerOpen(GravityCompat.START)) {
-////            drawer.closeDrawer(GravityCompat.START)
-////        }
-////        if (supportFragmentManager.backStackEntryCount >= 1) {
-////            navigationView!!.setCheckedItem(R.id.alert)
-////            navigationView.menu.performIdentifierAction(R.id.alert, 0)
-////        }
-////        else{
-////            if (supportFragmentManager.backStackEntryCount == 0) {
-////
-////            } else {
-////                supportFragmentManager.popBackStack()
-////            }
-////        }
-//    }
-//
-
-//    override fun onBackPressed() {
-//        val fragmentManager: android.app.FragmentManager? = fragmentManager
-//        val backCount: Int = fragmentManager!!.backStackEntryCount
-//        if (backCount > 1) {
-//            super.onBackPressed()
-//        } else {
-//            finish()
-//        }
-//    }
-
 
     private var exit = false
     override fun onBackPressed() {
@@ -305,12 +248,14 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     ).show()
                 }
             } else {
+                toolbar!!.title = "ALERTS";
+
                 fragment = alerts::class.java.newInstance()
                 getFragmentManager().popBackStack()
+
                 fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment, "HOME")
                     .commit()
-                linear2!!.visibility = View.VISIBLE
-                toolbar!!.title = "ALERTS";
+
             }
         } catch (e: Exception) {
         }

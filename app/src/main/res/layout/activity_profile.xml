@@ -39,6 +39,8 @@
             app:layout_constraintStart_toStartOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="parent" />
 
+
+
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="0dp"

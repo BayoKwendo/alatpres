@@ -24,15 +24,16 @@ import com.alat.Permission
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
-import com.alat.interfaces.CheckMember
-import com.alat.interfaces.CheckStatus
-import com.alat.interfaces.GetAlerts
-import com.alat.interfaces.requestMember
+import com.alat.interfaces.*
+import com.alat.model.rgModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
@@ -125,8 +126,11 @@ class GroupID : AppCompatActivity() {
 
             if (!isNetworkAvailable()) {
                 internet()
-                promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
-            }else {
+                promptPopUpView?.changeStatus(
+                    1,
+                    "Connection Error\n\n Check your internet connectivity"
+                )
+            } else {
                 mProgress2!!.show()
                 sendRequest()
             }
@@ -144,15 +148,15 @@ class GroupID : AppCompatActivity() {
                     Toast.makeText(applicationContext, "Enter your PIN!", Toast.LENGTH_SHORT).show()
                     return@OnClickListener
                 }
-                    pin == response_id -> {
+                pin == response_id -> {
                     dialogue();
-                    promptPopUpView?.changeStatus(2, "Welcome to \n\n" + response_name )
+                    promptPopUpView?.changeStatus(2, "Welcome to \n\n" + response_name)
                     Handler().postDelayed({
-                       //  Toast.makeText(this@GroupID, "YEEES", Toast.LENGTH_LONG).show()
+                        //  Toast.makeText(this@GroupID, "YEEES", Toast.LENGTH_LONG).show()
                         val i =
                             Intent(this@GroupID, AlertsToResponse::class.java)
-                             i.putExtra("groupID", response_id)
-                             i.putExtra("groupNam", response_name)
+                        i.putExtra("groupID", response_id)
+                        i.putExtra("groupNam", response_name)
 
                         startActivity(i)
 
@@ -180,8 +184,6 @@ class GroupID : AppCompatActivity() {
             .activeNetworkInfo
         return activeNetworkInfo != null
     }
-
-
 
 
     private fun checkMmeber() {
@@ -233,7 +235,7 @@ class GroupID : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "200") {
                         parseLoginDatas(remoteResponse)
                     }
                 } else {
@@ -262,7 +264,9 @@ class GroupID : AppCompatActivity() {
                 const2!!.visibility = View.VISIBLE
 
 
-            }else{ checkStatuss() }
+            } else {
+                checkStatuss()
+            }
 
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -319,7 +323,7 @@ class GroupID : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "200") {
                         parseLoginDatasss(remoteResponse)
                     }
                 } else {
@@ -346,13 +350,14 @@ class GroupID : AppCompatActivity() {
                 const!!.visibility = View.GONE
                 const3!!.visibility = View.VISIBLE
                 const2!!.visibility = View.GONE
-            }else if(jsonObject.getString("status") == "false"){
+            } else if (jsonObject.getString("status") == "false") {
                 mProgressLayout!!.visibility = View.GONE
                 const!!.visibility = View.VISIBLE
                 const2!!.visibility = View.GONE
                 const3!!.visibility = View.GONE
 
-                Toast.makeText(this@GroupID, "Please send request to join", Toast.LENGTH_LONG).show()
+                Toast.makeText(this@GroupID, "Please send request to join", Toast.LENGTH_LONG)
+                    .show()
 
 
             }
@@ -360,9 +365,6 @@ class GroupID : AppCompatActivity() {
             e.printStackTrace()
         }
     }
-
-
-
 
 
     private fun sendRequest() {
@@ -397,7 +399,6 @@ class GroupID : AppCompatActivity() {
         params["rg_id"] = response_id!!
 
 
-
         val api: requestMember = retrofit.create(requestMember::class.java)
         val call: Call<ResponseBody> = api.RequesrM(params)
 
@@ -416,7 +417,7 @@ class GroupID : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "200") {
                         parseLoginData(remoteResponse)
                     }
                 } else {
@@ -447,9 +448,12 @@ class GroupID : AppCompatActivity() {
                 mProgress2!!.dismiss()
 
                 dialogue_success()
-                promptPopUpView?.changeStatus(2, "Your request to join \t$response_name\t RG has been send successfully. Please wait for approval" )
+                promptPopUpView?.changeStatus(
+                    2,
+                    "Your request to join \t$response_name\t RG has been send successfully. Please wait for approval"
+                )
 
-            }else{
+            } else {
                 mProgressLayout!!.visibility = View.GONE
                 const!!.visibility = View.VISIBLE
                 const2!!.visibility = View.GONE
@@ -457,7 +461,10 @@ class GroupID : AppCompatActivity() {
                 mProgress2!!.dismiss()
 
                 dialogue_error()
-                promptPopUpView?.changeStatus(1, "Your request to join \t$response_name\t RG was Unsuccessful. Please Try again" )
+                promptPopUpView?.changeStatus(
+                    1,
+                    "Your request to join \t$response_name\t RG was Unsuccessful. Please Try again"
+                )
 
 
             }
@@ -471,22 +478,20 @@ class GroupID : AppCompatActivity() {
         promptPopUpView = PromptPopUpView(this)
 
         AlertDialog.Builder(this)
-                .setCancelable(false)
-                .setView(promptPopUpView)
-                .show()
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
     }
 
     private fun dialogue_error() {
         promptPopUpView = PromptPopUpView(this)
         AlertDialog.Builder(this)
-                .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
-                 }
-                .setCancelable(true)
-                .setView(promptPopUpView)
-                .show()
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+            }
+            .setCancelable(true)
+            .setView(promptPopUpView)
+            .show()
     }
-
-
 
 
     private fun internet() {
@@ -496,7 +501,8 @@ class GroupID : AppCompatActivity() {
 
             .setPositiveButton(
                 "Retry"
-            ) { dialog, _ -> dialog.dismiss()
+            ) { dialog, _ ->
+                dialog.dismiss()
                 recreate()
             }
 
@@ -510,7 +516,6 @@ class GroupID : AppCompatActivity() {
             .setView(promptPopUpView)
             .show().withCenteredButtons()
     }
-
 
 
     private fun AlertDialog.withCenteredButtons() {
@@ -540,16 +545,12 @@ class GroupID : AppCompatActivity() {
         promptPopUpView = PromptPopUpView(this)
         AlertDialog.Builder(this)
             .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
-                    finish()
+                finish()
             }
             .setCancelable(false)
             .setView(promptPopUpView)
             .show()
     }
-
-
-
-
 
 
 }
