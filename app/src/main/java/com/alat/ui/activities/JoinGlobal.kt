@@ -57,6 +57,18 @@ class JoinGlobal : AppCompatActivity() {
                 finish()
         }
 
+        dialogue();
+        promptPopUpView?.changeStatus(2, "Welcome to \n\n Global Response Group")
+        Handler().postDelayed({
+            //  Toast.makeText(this@JoinGlobal, "YEEES", Toast.LENGTH_LONG).show()
+            val i =
+                Intent(this@JoinGlobal, AlertGlobal::class.java)
+            i.putExtra("alatpres_id", user)
+
+            startActivity(i)
+
+        }, 3000)
+
        // edtPIN!!.setText(response_id)
         btnConfirm!!.setOnClickListener(View.OnClickListener {
             val pin = edtPIN!!.text.toString().trim { it <= ' ' }
@@ -66,17 +78,17 @@ class JoinGlobal : AppCompatActivity() {
                     return@OnClickListener
                 }
                     pin == user -> {
-                    dialogue();
-                    promptPopUpView?.changeStatus(2, "Welcome to \n\n Global Response Group")
-                    Handler().postDelayed({
-                       //  Toast.makeText(this@JoinGlobal, "YEEES", Toast.LENGTH_LONG).show()
-                        val i =
-                            Intent(this@JoinGlobal, AlertGlobal::class.java)
-                             i.putExtra("alatpres_id", user)
-
-                        startActivity(i)
-
-                    }, 2000)
+//                    dialogue();
+//                    promptPopUpView?.changeStatus(2, "Welcome to \n\n Global Response Group")
+//                    Handler().postDelayed({
+//                       //  Toast.makeText(this@JoinGlobal, "YEEES", Toast.LENGTH_LONG).show()
+//                        val i =
+//                            Intent(this@JoinGlobal, AlertGlobal::class.java)
+//                             i.putExtra("alatpres_id", user)
+//
+//                        startActivity(i)
+//
+//                    }, 2000)
                 }
                 else -> {
 

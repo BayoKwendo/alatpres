@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
-<!--    <item android:id="@+id/new_game"-->
-<!--        android:icon="@drawable/addalaert"-->
-<!--        android:title="ALERT"-->
-<!--        app:showAsAction="ifRoom" />-->
 
     <item
         android:id="@+id/action_share"
@@ -14,27 +10,29 @@
         app:actionProviderClass="androidx.appcompat.widget.ShareActionProvider"/>
 
     <item
+        android:id="@+id/action_invite"
+        android:icon="@drawable/invitation"
+        android:title="sh"
+        app:showAsAction = "always"/>
+
+    <item
         android:id="@+id/action_search"
         android:icon="@drawable/search"
         android:orderInCategory="100"
         android:title="Search"
         app:showAsAction="always"
         app:actionViewClass="androidx.appcompat.widget.SearchView"/>
-    <item
-        android:id="@+id/action_invite"
-        android:icon="@drawable/invitation"
-        android:title="sh"
-        app:showAsAction = "always"/>
 
     <item android:id="@+id/join"
         android:title="Join Requests" />
 
     <item android:id="@+id/invites"
+        android:visible="false"
         android:title="Invitations" />
 
     <item android:id="@+id/about"
-        android:title="MPESA DEMO" />
+        android:title="My Account" />
 
-      <item android:id="@+id/logout"
+    <item android:id="@+id/logout"
         android:title="Logout" />
 </menu>

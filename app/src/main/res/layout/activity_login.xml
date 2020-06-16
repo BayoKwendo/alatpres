@@ -105,7 +105,7 @@
                 android:layout_marginTop="5dp"
                 android:layout_marginEnd="8dp"
                 android:padding="15dp"
-                android:text="Forgot AlatPressID/Password?"
+                android:text="Forgot AlatPres ID/Password?"
                 android:textColor="@color/color_url"
                 android:textSize="17sp"
                 android:textStyle="bold"

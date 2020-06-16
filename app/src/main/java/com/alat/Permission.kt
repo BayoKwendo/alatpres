@@ -28,7 +28,11 @@ class Permission : Activity() {
                         Manifest.permission.ACCESS_COARSE_LOCATION,
                         Manifest.permission.INTERNET,
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
-                        Manifest.permission.READ_EXTERNAL_STORAGE
+                        Manifest.permission.READ_EXTERNAL_STORAGE,
+                        Manifest.permission.READ_CONTACTS,
+                        Manifest.permission.WRITE_CONTACTS
+
+
 
                 )
                 .withListener(object : MultiplePermissionsListener {
