@@ -23,6 +23,7 @@
         android:layout_height="wrap_content"
         android:textColor="@color/colorBlack"
         android:textSize="12sp"
+        android:visibility="gone"
         android:layout_below="@+id/tv_topic_name"
         tools:text="Created by: Laban"
         android:layout_marginHorizontal="8dp"

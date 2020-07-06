@@ -25,6 +25,7 @@ import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.CreateEnterprise
+import com.alat.interfaces.CreateProvider
 import com.alat.interfaces.CreateUser
 import com.alat.model.TextViewDatePicke
 import com.alat.model.TextViewDatePicker
@@ -199,12 +200,16 @@ class Enterprise : AppCompatActivity() {
                 arg0: AdapterView<*>?, arg1: View?,
                 arg2: Int, arg3: Long
             ) {
-                if (spinner_2!!.selectedItem == null) {
-                    // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
-                    return
-                } else {
-                    selectedItem2 = spinner_2!!.selectedItem.toString()
+                selectedItem2 = when (spinner_2!!.selectedItem) {
+                    null -> {
+                        // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
+                        "NULL"
 
+                    }
+                    else -> {
+                        spinner_2!!.selectedItem.toString()
+
+                    }
                 }
                 // TODO Auto-generated method stub
             }
@@ -616,21 +621,31 @@ class Enterprise : AppCompatActivity() {
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Unable to create User! please try again")
                     } else if (response.code() == 200) {
-                        mProgress?.dismiss()
-
-                        Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
-                            .show()
-
-                        dialogue()
-                        promptPopUpView?.changeStatus(2, "Registration was successful!")
 
 
-                        Handler().postDelayed({
-                            val intent = Intent(this@Enterprise, LoginActivity::class.java)
-                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                            startActivity(intent)
-                            finish()
-                        }, 3000)
+                        if(selectedItem == "YES"){
+                            createProvider()
+                        } else {
+
+                            mProgress?.dismiss()
+
+                            Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
+                                .show()
+
+                            dialogue()
+                            promptPopUpView?.changeStatus(2, "Registration was successful!")
+
+
+                            Handler().postDelayed({
+                                val intent = Intent(this@Enterprise, LoginActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
+                                finish()
+                            }, 3000)
+
+                        }
+
+
 
 
                     }
@@ -651,6 +666,111 @@ class Enterprise : AppCompatActivity() {
         })
     }
 
+
+    private fun createProvider() {
+        registerVar()
+
+        // Toast.makeText(this@Enterprise, "VALUE" + selectedItem2, Toast.LENGTH_LONG).show();
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(ScalarsConverterFactory.create())
+
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+        params["firstname"] = name!!
+        params["lastname"] = other_name!!
+        params["email"] = email!!
+        params["mssdn"] = mssidn!!
+        params["nature_response"] = selectedItem2!!
+        params["userid"] = user_id!!
+        params["town"] = town!!
+        params["code"] = code!!
+        params["physical_address"] = physical!!
+        params["postal_address"] = postal!!
+        params["county"] = county!!
+
+
+
+
+        val api: CreateProvider = retrofit.create(CreateProvider::class.java)
+        val call: Call<ResponseBody> = api.respon(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+
+                    if (response.code() == 400) {
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Unable to create Provider! please try again")
+                    } else if (response.code() == 200) {
+
+                            mProgress?.dismiss()
+
+                            Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
+                                .show()
+
+                            dialogue()
+                            promptPopUpView?.changeStatus(2, "Registration was successful!")
+
+
+                            Handler().postDelayed({
+                                val intent = Intent(this@Enterprise, LoginActivity::class.java)
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                                startActivity(intent)
+                                finish()
+                            }, 3000)
+
+                    }
+
+
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
     private fun dialogue() {
 
         promptPopUpView = PromptPopUpView(this)

@@ -18,12 +18,19 @@
             android:icon="@drawable/rg"
             android:title="Join Response Group" />
 
+        <item
+            android:id="@+id/exit_resp"
+            android:icon="@drawable/exit"
+           android:title="Exit Response Group" />
 
         <item
             android:id="@+id/generate_rep"
             android:icon="@drawable/generate"
             android:title="Generate Report" />
-
+        <item
+            android:id="@+id/resp_team"
+            android:icon="@drawable/rg"
+            android:title="Response Team Providers" />
         <item
             android:id="@+id/manage_alert"
             android:icon="@drawable/manage"

@@ -1,0 +1,45 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+	package
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:2:5-48
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+	android:versionName
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+	android:versionCode
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:1-11:12
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+	xmlns:android
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:1:11-69
+application
+ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:4:5-9:19
+	android:supportsRtl
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:7:9-35
+	android:label
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:6:9-41
+	android:allowBackup
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml:5:9-35
+uses-sdk
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml reason: use-sdk injection requested
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+	android:targetSdkVersion
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+	android:minSdkVersion
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		ADDED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml
+		INJECTED from /home/bayo/Downloads/Alat/materialpickerdialog/src/main/AndroidManifest.xml

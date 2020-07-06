@@ -16,12 +16,33 @@ class rgModel {
 
     var userid: String? = null
 
+    var attachment: String? = null
+
+
     var id: String? = null
 
+    var checked: Boolean? = false
 
     var content: String? = null
 
     var fullname: String? = null
+
+    var firstname: String? = null
+
+    var lastname: String? = null
+
+
+
+    var mssdn: String? = null
+    var email: String? = null
+
+
+
+    var county: String? = null
+    var town: String? = null
+
+    var nature_response: String? = null
+
 
     var rg_id: String? = null
 

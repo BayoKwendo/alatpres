@@ -260,6 +260,7 @@ class AlertReport : AppCompatActivity() {
         val name: String? = null
         val locations: String? = null
         val notes: String? = null
+        val attachment: String? = null
 
         val created: String? = null
         val modified: String? = null
@@ -288,7 +289,7 @@ class AlertReport : AppCompatActivity() {
             .build()
         val api: GetAlertPost = retrofit.create(
             GetAlertPost::class.java)
-        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,notes,created,modified)
+        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,attachment,notes,created,modified)
         call?.enqueue(object : Callback<String?> {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 Log.d("Responsestring", response.toString())

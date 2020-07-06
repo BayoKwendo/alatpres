@@ -1,6 +1,8 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
+group = 'io.karn'
 
 buildscript {
+    apply from: rootProject.file('gradle/configuration.gradle')
     ext.kotlin_version = '1.3.72'
     repositories {
         google()
@@ -14,9 +16,19 @@ buildscript {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath 'com.novoda:bintray-release:0.8.0'
 
+
+        // NOTE: Do not place your application configuration here; they belong
+        // in the individual module build.gradle files
+        classpath config.build.gradle.androidMaven
+        // Code coverage
+        classpath config.build.gradle.jacoco
+        // Library documentation
+        classpath config.build.gradle.dokka
+    }
+
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
-    }
+    
 }
 
 allprojects {

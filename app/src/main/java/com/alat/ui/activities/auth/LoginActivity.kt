@@ -81,8 +81,8 @@ class LoginActivity : AppCompatActivity() {
         signin!!.setOnClickListener {
             validation()
         }
-        Picasso.with(this).load("https://youthsofhope.co.ke/api/logo.png").fit().into(image);
-        // Picasso.get().load().into(image)
+       // Picasso.with(this).load().fit().into(image);
+        Picasso.get().load("https://youthsofhope.co.ke/api/logo.png").into(image)
 
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -186,6 +186,7 @@ class LoginActivity : AppCompatActivity() {
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
+                //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
                 Log.d("Response raw header", response.headers().toString());
@@ -244,6 +245,7 @@ class LoginActivity : AppCompatActivity() {
 
     private fun saveInfo(response: String) {
         try {
+
             val jsonObject = JSONObject(response)
 
             pref =
@@ -257,12 +259,14 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("lname", jsonObject.getString("lastname"))
             editor.putString("email", jsonObject.getString("email"))
             editor.putString("dob", jsonObject.getString("DoB"))
+            editor.putString("role", jsonObject.getString("role_id"))
             editor.putString("mssdn", jsonObject.getString("mssdn"))
             editor.putString("gender", jsonObject.getString("gender"))
             editor.putString("idNo", jsonObject.getString("idNo"))
             editor.putString("county", jsonObject.getString("county"))
             editor.putString("userid", jsonObject.getString("userid"))
-            editor.putString("lname", jsonObject.getString("lastname"))
+
+
 //            editor.putString("tax", jsonObject.getString("taxid"))
 //            editor.putString("nature_org", jsonObject.getString("nature_org"))
 //            editor.putString("description", jsonObject.getString("description"))
@@ -276,6 +280,7 @@ class LoginActivity : AppCompatActivity() {
 //            editor.putString("date_of_incooperation", jsonObject.getString("date_of_incooperation"))
 //            editor.putString("response_provider", jsonObject.getString("response_provider"))
 //            editor.putString("nature_response", jsonObject.getString("nature_response"))
+
 
             editor.clear()
             editor.apply()

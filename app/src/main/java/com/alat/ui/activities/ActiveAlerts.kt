@@ -32,8 +32,8 @@ import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.ALertDelete
+import com.alat.interfaces.ALertRG
 import com.alat.interfaces.GetActiveAlerts
-import com.alat.interfaces.GetAlerts
 import com.alat.interfaces.UpdateAlertStatus
 import com.alat.model.rgModel
 import com.google.gson.Gson
@@ -51,9 +51,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
-import java.security.AccessController.getContext
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
@@ -74,6 +72,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
     private var promptPopUpView: PromptPopUpView? = null
 
     var alert_id: String? = null
+    var rg: String? = null
 
     var pref: SharedPreferences? = null
 
@@ -358,10 +357,44 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
             }
             .setNegativeButton("Withdraw") { _, id ->
                 // reject()
-                delete()
+                getRGNAME()
                 mProgress!!.show()
             }
-            .show().withCenteredButtons()
+            .show().withCenteredButtonss()
+    }
+
+
+    private fun AlertDialog.withCenteredButtonss() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        negative.setBackgroundColor(ContextCompat.getColor(context, R.color.error))
+
+        negative.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+
+
+        positive.setBackgroundColor(ContextCompat.getColor(context, R.color.success))
+
+        positive.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
     }
 
     private fun AlertDialog.withCenteredButtons() {
@@ -501,6 +534,84 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 
 
 
+    private fun getRGNAME() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["id"] = alert_id!!
+
+        val api: ALertRG = retrofit.create(ALertRG::class.java)
+        val call: Call<ResponseBody> = api.getrg(params)
+
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                Log.d("Responsestring", response.body().toString())
+                //Toast.makeText()
+                if (response.isSuccessful) {
+                    val jsonresponse = response.body()!!.string()
+                    parseLoginDatassss(jsonresponse)
+
+                } else {
+                    Log.d("bayo", response.errorBody()!!.string())
+                    errorNull!!.visibility = View.VISIBLE
+                    mProgressLayout!!.visibility = View.GONE
+
+                    // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                //   btn.text = "Proceed"
+                Log.i("onEmptyResponse", "" + t) //
+                // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                //mProgress?.dismiss()
+            }
+        })
+    }
+
+    private fun parseLoginDatassss(jsonresponse: String) {
+
+        try {
+            val jArray = JSONArray(jsonresponse)
+            for (i in 0 until jArray.length()) {
+                val json_obj: JSONObject = jArray.getJSONObject(i)
+
+                rg =json_obj.getString("rg")
+                delete()
+             }
+
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
 
 
 
@@ -535,6 +646,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         val params: java.util.HashMap<String, String> = java.util.HashMap()
 
         params["id"] = alert_id!!
+        params["rg"] = rg!!
 
         val api: ALertDelete = retrofit.create(ALertDelete::class.java)
         val call: Call<ResponseBody> = api.Delete(params)

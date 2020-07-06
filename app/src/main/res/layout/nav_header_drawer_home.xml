@@ -20,7 +20,7 @@
       android:layout_height="wrap_content">
     <TextView
         android:id="@+id/tvDriverName"
-        android:text="Ben Njue"
+        android:text=""
         android:layout_weight="4"
         android:layout_width="0dp"
         android:layout_height="wrap_content"

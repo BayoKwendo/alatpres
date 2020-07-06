@@ -1,0 +1,24 @@
+[
+  {
+    "hasFocus": true,
+    "gender": "Male"
+  },
+  {
+    "hasFocus": false,
+    "gender": "Female"
+  },
+  {
+    "hasFocus": false,
+    "gender": "Others"
+  }
+]
+
+
+
+
+
+
+
+
+
+

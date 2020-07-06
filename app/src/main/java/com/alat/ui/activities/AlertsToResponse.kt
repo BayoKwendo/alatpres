@@ -533,7 +533,7 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
             .setMessage("Leaving Group for now??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@AlertsToResponse, HomePage::class.java))
+                    startActivity(Intent(this@AlertsToResponse, HomePage::class.java))
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()

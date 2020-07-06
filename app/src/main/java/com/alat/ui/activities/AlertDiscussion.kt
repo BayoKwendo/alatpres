@@ -360,7 +360,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
             .setMessage("Leaving Group for now??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@AlertDiscussion, HomePage::class.java))
+                finish()
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()
@@ -499,8 +499,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
                     return chain.proceed(request)
                 }
             }).build()
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL)
+        val retrofit: Retrofit = Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()
