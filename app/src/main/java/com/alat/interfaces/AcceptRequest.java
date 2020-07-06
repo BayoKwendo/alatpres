@@ -8,7 +8,7 @@ import retrofit2.http.Body;
 import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
-public interface AcceptRequest {
+public interface    AcceptRequest {
     @Headers("Content-Type: application/json")
 
     // @FormUrlEncoded

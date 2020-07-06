@@ -23,11 +23,8 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.helpers.PromptPopUpView
-import com.alat.ui.activities.CreateAlert
-import com.alat.ui.activities.JoinGlobal
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.fragments.*
-import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.android.material.navigation.NavigationView
 
 
@@ -45,6 +42,8 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     var pref: SharedPreferences? = null
 
 
+
+    var fname: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +70,8 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun initDrawer() {
         val drawer =
             findViewById<View>(R.id.drawer_layout) as DrawerLayout
+
+
         val toggle =
             ActionBarDrawerToggle(
                 this,
@@ -81,8 +82,19 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             )
         drawer.addDrawerListener(toggle)
         toggle.syncState()
+
+
         val navigationView =
             findViewById<View>(R.id.nav_view) as NavigationView
+
+
+//        pref =
+//            getSharedPreferences("MyPref", 0) // 0 - for private mode
+//        fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+//        val drawers =
+//            findViewById<View>(R.id.tvDriverName) as TextView
+//
+//        drawers.setText(fname)
         navigationView.setNavigationItemSelectedListener(this)
 
 
@@ -108,14 +120,20 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 toolbar!!.title = "ALERTS";
             }
             R.id.join_resp -> {
-                fragment = JoinRG()
+                fragment = GlobalRG()
 
-                toolbar!!.title = "RGs to Join";
+                toolbar!!.title = "Join Group";
             }
             R.id.create_resp -> {
                 fragment = CreateRG()
 
                 toolbar!!.title = "Create Response Group";
+            }
+
+            R.id.exit_resp -> {
+                fragment = exitResponse()
+
+                toolbar!!.title = "Exit Response Group";
             }
             R.id.generate_rep -> {
 
@@ -129,6 +147,12 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
                 toolbar!!.title = "Manage Alerts";
 
+            }
+
+            R.id.resp_team-> {
+                fragment = ResponseTeam()
+
+                toolbar!!.title = "Response Team Providers";
             }
             R.id.profile -> {
                 fragment = Profile()
@@ -227,9 +251,11 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         negative.layoutParams = layoutParams
     }
 
-
     private var exit = false
     override fun onBackPressed() {
+        val drawer =
+            findViewById<View>(R.id.drawer_layout) as DrawerLayout
+
         if (exit) {
             super.onBackPressed()
             return
@@ -238,24 +264,34 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             val fragmentManager: FragmentManager = supportFragmentManager
             var fragment: Fragment? =
                 fragmentManager.findFragmentByTag("HOME")
+
             if (fragment != null) {
-                if (fragment.isVisible) {
-                    exit = true
-                    Toast.makeText(
-                        this,
-                        "Press Back again to Exit",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START)
+                } else {
+                    if (fragment.isVisible) {
+                        exit = true
+                        Toast.makeText(
+                            this,
+                            "Press Back again to Exit",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             } else {
-                toolbar!!.title = "ALERTS";
+                if (drawer.isDrawerOpen(GravityCompat.START)) {
+                    drawer.closeDrawer(GravityCompat.START)
+                } else {
 
-                fragment = alerts::class.java.newInstance()
-                getFragmentManager().popBackStack()
+                    toolbar!!.title = "ALERTS";
 
-                fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment, "HOME")
-                    .commit()
+                    fragment = alerts::class.java.newInstance()
+                    getFragmentManager().popBackStack()
 
+                    fragmentManager.beginTransaction().replace(R.id.main_fragment, fragment, "HOME")
+                        .commit()
+
+                }
             }
         } catch (e: Exception) {
         }

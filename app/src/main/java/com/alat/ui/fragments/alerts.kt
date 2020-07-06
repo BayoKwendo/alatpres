@@ -33,10 +33,7 @@ import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.GetRGs
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
-import com.alat.ui.activities.AlertsPerResponse
-import com.alat.ui.activities.CreateAlert
-import com.alat.ui.activities.GroupsRequests
-import com.alat.ui.activities.JoinGlobal
+import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -99,7 +96,7 @@ class alerts : Fragment(),
         errorNull = view.findViewById(R.id.texterror)
         contactList = ArrayList()
         mAdapter = RGAdapter(activity!!, contactList!!, this)
-
+        recyclerView!!.setNestedScrollingEnabled(false);
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
         val mLayoutManager: RecyclerView.LayoutManager =
@@ -402,10 +399,16 @@ class alerts : Fragment(),
             }
 
 
-            R.id.about-> {
-                startActivity(Intent(activity, MPESAExpressActivity::class.java))
+            R.id.invites-> {
+                startActivity(Intent(activity, Invitations::class.java))
             }
 
+            R.id.about-> {
+                startActivity(Intent(activity, account::class.java))
+            }
+//            R.id.team-> {
+//                startActivity(Intent(activity, ResponseProviders::class.java))
+//            }
 
             R.id.logout -> {
                 logout()

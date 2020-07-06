@@ -58,13 +58,13 @@
                         android:layout_height="wrap_content"
                         android:layout_marginTop="32dp"
                         android:gravity="center_horizontal"
-                        android:text="John Doe"
-                        android:visibility="gone"
-                        android:textAlignment="center"
                         android:paddingTop="@dimen/_10sdp"
+                        android:text="John Doe"
+                        android:textAlignment="center"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
                         android:textStyle="bold"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toStartOf="@+id/view"
                         app:layout_constraintHorizontal_bias="0.504"
                         app:layout_constraintStart_toEndOf="@+id/view"
@@ -74,13 +74,13 @@
                         android:id="@+id/textVie"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
                         android:gravity="center_horizontal"
+                        android:paddingTop="@dimen/_10sdp"
                         android:text="ALERT SUMMARY REPORT"
                         android:textAlignment="center"
                         android:textColor="@android:color/white"
                         android:textSize="20sp"
-                        android:paddingTop="@dimen/_10sdp"
-                        android:layout_marginTop="@dimen/_20sdp"
                         android:textStyle="bold"
                         app:layout_constraintEnd_toStartOf="@+id/view"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -224,6 +224,7 @@
                         android:textStyle="bold"
                         app:layout_constraintBaseline_toBaselineOf="@+id/textView10"
                         app:layout_constraintStart_toEndOf="@+id/textView10" />
+
                     <TextView
                         android:id="@+id/textView22"
                         android:layout_width="wrap_content"
@@ -249,7 +250,6 @@
                         android:textSize="16sp"
                         app:layout_constraintBaseline_toBaselineOf="@+id/textView22"
                         app:layout_constraintStart_toEndOf="@+id/textView22" />
-
 
 
                     <TextView
@@ -306,30 +306,13 @@
                         app:layout_constraintStart_toEndOf="@+id/textView27" />
 
 
-                    <Button
-                        android:id="@+id/generate"
-                        android:layout_width="150dp"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginTop="20sp"
-                        android:layout_marginEnd="8dp"
-                        android:background="@drawable/button_shape"
-                        android:text="Save in PDF"
-                        android:textColor="@android:color/white"
-                        app:layout_constraintEnd_toEndOf="parent"
-
-                        app:layout_constraintStart_toStartOf="@+id/guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/textView27"
-                        />
-
-
                     <ImageButton
                         android:id="@+id/imageButton3"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:visibility="gone"
                         android:background="@android:color/transparent"
+                        android:visibility="gone"
                         app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
                         app:layout_constraintEnd_toStartOf="@+id/imageButton4"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -344,8 +327,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="250dp"
-                        android:visibility="gone"
                         android:background="@android:color/transparent"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toStartOf="@+id/imageButton5"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toEndOf="@+id/imageButton3"
@@ -353,18 +336,127 @@
                         app:srcCompat="@drawable/ic_android"
                         tools:ignore="VectorDrawableCompat" />
 
+
+                    <LinearLayout
+                        android:id="@+id/actions"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline"
+                        app:layout_constraintTop_toBottomOf="@+id/textView27">
+
+                        <TextView
+                            android:id="@+id/safe"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight=".2"
+                            android:gravity="center"
+                            android:text="SAFE(0)"
+                            android:textColor="@color/safe"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/shouts"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".2"
+                            android:gravity="center"
+                            android:text="SHOUT(0)"
+                            android:textColor="@color/error"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/elevate"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".2"
+                            android:gravity="center"
+                            android:text="ELEVATE(0)"
+                            android:textColor="@color/elevate"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/ignore"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_weight=".2"
+                            android:gravity="center"
+                            android:text="IGNORE(0)"
+                            android:textColor="@android:color/black"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/layar2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/actions">
+
+                        <TextView
+                            android:id="@+id/share"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="8dp"
+                            android:layout_weight=".5"
+                            android:gravity="center"
+                            android:text="Shared(0)"
+                            android:textColor="@color/success"
+                            android:textSize="18sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/neutralized"
+                            android:layout_width="53dp"
+                            android:layout_height="27dp"
+                            android:layout_weight=".5"
+                            android:gravity="center"
+                            android:text="NEUTRALIZED(0)"
+                            android:textColor="@color/safe"
+                            android:textSize="18sp"
+                            android:textStyle="bold"
+                            app:layout_constraintStart_toStartOf="@+id/guideline"
+                            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/generate"
+                        android:layout_width="150dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="32dp"
+                        android:background="@drawable/button_shape"
+                        android:text="Save in PDF"
+                        android:textColor="@android:color/white"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+
+                        app:layout_constraintHorizontal_chainStyle="spread"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/layar2" />
+
                     <ImageButton
                         android:id="@+id/imageButton5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="8dp"
-                        android:visibility="gone"
                         android:background="@android:color/transparent"
-                        app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
-                        app:layout_constraintEnd_toStartOf="@+id/guideline2"
-                        app:layout_constraintHorizontal_bias="0.5"
-                        app:layout_constraintStart_toEndOf="@+id/imageButton4"
-                        app:layout_constraintTop_toTopOf="@+id/imageButton4"
+                        android:visibility="gone"
+
                         app:srcCompat="@drawable/ic_apps"
                         tools:ignore="VectorDrawableCompat" />
                 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -401,7 +401,6 @@ class MainActivity : AppCompatActivity() {
 
         AlertDialog.Builder(this)
 
-
             .setPositiveButton(
                 "PROCESSING....."
             ) { dialog, _ -> dialog.dismiss()
@@ -411,31 +410,19 @@ class MainActivity : AppCompatActivity() {
             .show()
     }
     private fun dialogue_error() {
-
         promptPopUpView = PromptPopUpView(this)
-
         AlertDialog.Builder(this)
         AlertDialog.Builder(this)
-
             .setPositiveButton(
-                "Ok"
-            ) { dialog, _ -> dialog.dismiss()
-            }
-
-
-            .setCancelable(false)
+                "Ok") { dialog, _ -> dialog.dismiss() }
+           .setCancelable(false)
             .setView(promptPopUpView)
-            .show()
-    }
+            .show() }
 
     override fun onBackPressed() {
-
         val intent = Intent(this@MainActivity, LoginActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()
     }
-
-
-
 }

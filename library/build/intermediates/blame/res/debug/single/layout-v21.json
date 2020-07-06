@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/layout-v21/notification_template_custom_big.xml"
+    },
+    {
+        "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/layout-v21/notification_template_icon_group.xml"
+    }
+]

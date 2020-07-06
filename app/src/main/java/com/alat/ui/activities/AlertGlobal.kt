@@ -4,6 +4,7 @@ import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -72,7 +73,9 @@ class AlertGlobal : AppCompatActivity(), ResponseAdapter.ContactsAdapterListener
     var errorNull: TextView? = null
     var addMessage: FloatingActionButton? = null
     private var mProgress: ProgressDialog? = null
-        var group_id: String? = null
+    var roleID: String? = null
+    var pref: SharedPreferences? = null
+
 
 
     var mToolbar: Toolbar? = null
@@ -94,6 +97,13 @@ class AlertGlobal : AppCompatActivity(), ResponseAdapter.ContactsAdapterListener
         addMessage = findViewById(R.id.fab_add_topic)
 
 
+        pref =
+            getSharedPreferences("MyPref", 0) // 0 - for private mode
+        roleID = pref!!.getString("role", null)
+
+        if(roleID == "1"){
+            addMessage!!.visibility = View.GONE
+        }
 
         addMessage!!.setOnClickListener {
             val i =

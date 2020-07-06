@@ -1,19 +1,26 @@
 package com.alat.ui.activities
 
 import adil.dev.lib.materialnumberpicker.dialog.LevelDialog
+import android.Manifest
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.media.MediaScannerConnection
 import android.net.ConnectivityManager
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.*
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.alat.HomePage
@@ -23,17 +30,21 @@ import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.AddAlert
 import com.alat.interfaces.GetRGs
+import com.alat.interfaces.MultiInterface
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
-import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputLayout
+import com.karumi.dexter.Dexter
+import com.karumi.dexter.MultiplePermissionsReport
+import com.karumi.dexter.PermissionToken
+import com.karumi.dexter.listener.PermissionRequest
+import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.squareup.picasso.Picasso
 import fr.ganfra.materialspinner.MaterialSpinner
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.ResponseBody
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import org.json.JSONException
@@ -44,8 +55,14 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 
 class CreateAlert : AppCompatActivity() {
@@ -55,8 +72,21 @@ class CreateAlert : AppCompatActivity() {
         "Fraud/Vandalism[FRAUD]", "Disturbing of Peace",
         "Riot/Demonstrations [RT]",
         "Terrorism [TM]", "Industrial Accident [ACC]", "Traffic Incidence [TI]",
-        "Drugs & Alcohol [DRUG]"
-    )
+        "Drugs & Alcohol [DRUG]",
+        "Fire [FR]",
+        "Medical Emergency [MED]",
+        "Natural Disaster [ND]",
+        "Domestic Violence/Homicide [DV]",
+        "Sex Crime/Rape [RAPE]",
+        "Murder Case [MDR]",
+        "General Violence [GV]",
+        "Bribery [BR]",
+        "Illegal Business [IB]",
+        "Child Abuse [CA]",
+        "Female Genital Mutilation [FGM]",
+        "Prostitution/Pornography [PHY]",
+        "Kidnapping [KID]",
+        "Gambling [GAME]")
 
     var spinner: MaterialSpinner? = null
     var spinner_2: MaterialSpinner? = null
@@ -64,6 +94,29 @@ class CreateAlert : AppCompatActivity() {
 
     var selectedItem2: String? = null
     private var promptPopUpView: PromptPopUpView? = null
+
+    private val IMAGE_DIRECTORY = "/demonuts_upload_gallery"
+
+    var bitmap: Bitmap? = null
+
+    var path: String? = null
+
+    var SelectImageGallery: Button? = null
+    var UploadImageServer:Button? = null
+
+    var imageView: ImageView? = null
+
+    var imageName: EditText? = null
+
+    var progressDialog: ProgressDialog? = null
+
+    var GetImageNameEditText: String? = null
+
+    var ImageName = "image_name"
+
+    var ImagePath = "image_path"
+
+    var ServerUploadPath = "https://youthsofhope.co.ke/api/upLoad.php"
 
 
     var AUTOCOMPLETE_REQUEST_CODE = 1
@@ -98,11 +151,12 @@ class CreateAlert : AppCompatActivity() {
 
 
     var pref: SharedPreferences? = null
+    private val GALLERY = 1
 
 
     var fname: String? = null
     var user: String? = null
-
+    var check: Boolean? = null
 
     private var mProgress: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -126,7 +180,8 @@ class CreateAlert : AppCompatActivity() {
 
         textInputAlert = findViewById(R.id.location)
         notes = findViewById(R.id.notes)
-
+        imageView = findViewById(R.id.imageView);
+         imageView!!.visibility = View.GONE
         loc = findViewById(R.id.loc)
 
 //        loc!!.setOnClickListener {
@@ -172,18 +227,12 @@ class CreateAlert : AppCompatActivity() {
         }
         mfile = findViewById(R.id.file)
         mfile!!.setOnClickListener(View.OnClickListener { v: View? ->
-
-            val intent = Intent()
-            intent.type = "*/*"
-            //allows to select data and return it
-            intent.action = Intent.ACTION_GET_CONTENT
-            //starts new activity to select file and return data
-            startActivityForResult(
-                Intent.createChooser(
-                    intent,
-                    "Choose File to Upload.."
-                ), PICK_FILE_REQUEST
+            val galleryIntent = Intent(
+                Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI
             )
+
+            startActivityForResult(galleryIntent, GALLERY)
         })
         btnLogin = findViewById(R.id.buttonLogin)
 
@@ -194,10 +243,9 @@ class CreateAlert : AppCompatActivity() {
                 if (!isNetworkAvailable()) {
                     internet()
                     promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
-                }else {
-                    bayo()
-                    btnLogin!!.text = "Submitting.."
-                    mProgress?.show()
+                }
+                else {
+                       subm()
                 }
             }
         }
@@ -425,8 +473,300 @@ class CreateAlert : AppCompatActivity() {
         return true
     }
 
-    private fun bayo() {
 
+    private fun parseLoginData(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+
+            if (jsonObject.getString("status") == "true") {
+               // ImageUploadToServerFunction()
+                mProgress?.dismiss()
+                level!!.setText("")
+                loc!!.setText("")
+                notes!!.setText("")
+               // ImageUploadToServerFunction()
+                alert!!.setText("")
+                btnLogin!!.text = "Submit"
+
+                imageView!!.visibility = View.GONE
+                        dialogue();
+                   promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+
+            } else {
+
+                dialogue_error();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                //Log.d("BAYO", response.code().toString())
+                btnLogin!!.text = "Submit"
+                level  !!.setText("")
+                loc!!.setText("")
+
+                mProgress?.dismiss()
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+
+
+
+
+    private fun internet() {
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+
+            .setPositiveButton(
+                "Retry"
+            ) { dialog, _ -> dialog.dismiss()
+                recreate()
+            }
+
+            .setNegativeButton(
+                "Cancel"
+            ) { dialog, _ ->
+                dialog.dismiss()
+            }
+
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show().withCenteredButtons()
+    }
+
+
+    private fun dialogue() {
+
+        promptPopUpView = PromptPopUpView(this)
+
+            AlertDialog.Builder(this)
+            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
+                //      finish()
+
+            }
+            .setNegativeButton("Exit") { _: DialogInterface?, _: Int ->
+                //      finish()
+
+                startActivity(Intent(this@CreateAlert, HomePage::class.java))
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+                .show().withCenteredButtons()
+    }
+
+
+    private fun AlertDialog.withCenteredButtons() {
+        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        //Disable the material spacer view in case there is one
+        val parent = positive.parent as? LinearLayout
+        parent?.gravity = Gravity.CENTER_HORIZONTAL
+        val leftSpacer = parent?.getChildAt(1)
+        leftSpacer?.visibility = View.GONE
+
+        //Force the default buttons to center
+        val layoutParams = LinearLayout.LayoutParams(
+            LinearLayout.LayoutParams.MATCH_PARENT,
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
+
+        layoutParams.weight = 1f
+        layoutParams.gravity = Gravity.CENTER
+
+        positive.layoutParams = layoutParams
+        negative.layoutParams = layoutParams
+    }
+
+
+    private fun dialogue_error() {
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+//
+//    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+//        super.onActivityResult(requestCode, resultCode, data)
+//
+//        }
+//    }
+
+    override fun onActivityResult(
+        RC: Int,
+        RQC: Int,
+        I: Intent?
+    ) {
+        super.onActivityResult(RC, RQC, I)
+        if (RC == 1 && RQC == Activity.RESULT_OK && I != null && I.data != null) {
+            val contentURI = I.data
+            try {
+                 bitmap =
+                    MediaStore.Images.Media.getBitmap(
+                        this.contentResolver,
+                        contentURI
+                    )
+                imageView!!.setImageBitmap(bitmap)
+                imageView!!.visibility = View.VISIBLE
+
+
+                 path = saveImage(bitmap!!)
+
+
+
+
+            } catch (e: IOException) {
+                e.printStackTrace()
+                Toast.makeText(
+                    this@CreateAlert,
+                    e.toString(),
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+//       else if (RC == AUTOCOMPLETE_REQUEST_CODE) {
+//            if (RQC == AppCompatActivity.RESULT_OK) {
+//                val place = Autocomplete.getPlaceFromIntent(I!!)
+//                destinationAddress = place.name
+//
+//                loc!!.setText(destinationAddress.toString())
+//
+//
+//                // lblAddress
+//            } else if (RQC == AutocompleteActivity.RESULT_ERROR) {
+//                // TODO: Handle the error.
+//                val status = Autocomplete.getStatusFromIntent(I!!)
+//                Toast.makeText(this, "Some went wrong. Search again", Toast.LENGTH_SHORT).show()
+//                // Log.i(TAG, status.getStatusMessage())
+//            }
+//        }
+    }
+
+    fun subm(){
+
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+
+
+        if (setLevel == "Level 1"){
+            mProgress?.show()
+            if(path == null){
+                uploadImages()
+            }else {
+                uploadImage(path!!)
+            }
+        }else {
+            done()
+        }
+    }
+
+    fun done() {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmation")
+            .setMessage("Are you sure you want to initiate a dispatch from your response teams?\n It is punishable in law to raise false alarm\n\nProceed??")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, id ->
+                btnLogin!!.text = "Submitting.."
+                if(path == null){
+                    uploadImages()
+                }else {
+                    uploadImage(path!!)
+                }
+                mProgress?.show()
+            }
+            .setNegativeButton("No") { _, id ->
+            }
+            .show().withCenteredButtons()
+    }
+
+
+    private fun uploadImage(path: String) {
+
+
+
+
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+
+        mssidn = pref!!.getString("mssdn", null)
+
+        user = pref!!.getString("userid", null)
+
+        addnotes = notes!!.text.toString().trim { it <= ' ' }
+
+        alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+        setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
+
+        //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
+
+        val imgname = Calendar.getInstance().timeInMillis.toString()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(MultiInterface.IMAGEURL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        //Create a file object using file path
+        val file = File(path)
+        // Parsing any Media type file
+        val requestBody =
+            RequestBody.create("*/*".toMediaTypeOrNull(), file)
+        val fileToUpload =
+            MultipartBody.Part.createFormData("filename", file.name, requestBody)
+        val filename =
+            RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
+        val getResponse: MultiInterface = retrofit.create(MultiInterface::class.java)
+        val call: Call<String> = getResponse.uploadImage(fileToUpload, alert_namess,fullname,selectedItem,selectedItem2,setLevel,mssidn,user,setLoc,addnotes, filename)
+        Log.d("assss", imgname)
+        call.enqueue(object : Callback<String?> {
+           override fun onResponse(
+                @NonNull call: Call<String?>,
+                @NonNull response: Response<String?>) {
+               if (response.isSuccessful) {
+                   val remoteResponse = response.body()!!
+                   Log.d("test", remoteResponse)
+
+
+//
+//                                 Toast.makeText(
+//                applicationContext,
+//                jsonObject.getString("message"),
+//                Toast.LENGTH_SHORT
+//            ).show()
+                    parseLoginData(remoteResponse)
+                   mProgress?.dismiss()
+
+               } else {
+                   mProgress?.dismiss()
+                   dialogue_error();
+                   promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                   Log.d("BAYO", response.code().toString())
+                   btnLogin!!.text = "Submit"
+                   mProgress?.dismiss()
+               }
+            }
+
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.d("TAG", "File Saved::--->" + t.toString())
+
+            }
+
+
+        })
+    }
+
+
+
+
+    private fun uploadImages() {
 
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -479,7 +819,7 @@ class CreateAlert : AppCompatActivity() {
         params["location"] = setLoc!!
         params["notes"] = addnotes!!
 
-      //  Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
+        //  Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
 
         val api: AddAlert = retrofit.create(AddAlert::class.java)
         val call: Call<ResponseBody> = api.addAlert(params)
@@ -519,259 +859,195 @@ class CreateAlert : AppCompatActivity() {
         })
     }
 
-    private fun parseLoginData(jsonresponse: String) {
-        try {
-            val jsonObject = JSONObject(jsonresponse)
-            if (jsonObject.getString("status") == "true") {
-                dialogue();
-                promptPopUpView?.changeStatus(2, "SUCCESSFUL")
-                mProgress?.dismiss()
-                level!!.setText("")
-                loc!!.setText("")
-                notes!!.setText("")
+    private fun requestMultiplePermissions() {
+        Dexter.withActivity(this)
+            .withPermissions(
+                Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                Manifest.permission.READ_EXTERNAL_STORAGE
+            )
+            .withListener(object : MultiplePermissionsListener {
+                override fun onPermissionsChecked(report: MultiplePermissionsReport) {
+                    // check if all permissions are granted
+                    if (report.areAllPermissionsGranted()) {
+                        Toast.makeText(
+                            applicationContext,
+                            "All permissions are granted by user!",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
 
-                alert!!.setText("")
-                btnLogin!!.text = "Submit"
+                    // check for permanent denial of any permission
+                    if (report.isAnyPermissionPermanentlyDenied) {
+                        // show alert dialog navigating to Settings
+                    }
+                }
 
-            } else{
-                dialogue_error();
-                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                //Log.d("BAYO", response.code().toString())
-                btnLogin!!.text = "Submit"
-                level  !!.setText("")
-                loc!!.setText("")
-
-                mProgress?.dismiss()
+                override fun onPermissionRationaleShouldBeShown(
+                    permissions: List<PermissionRequest>,
+                    token: PermissionToken
+                ) {
+                    token.continuePermissionRequest()
+                }
+            }).withErrorListener {
+                Toast.makeText(
+                    applicationContext,
+                    "Some Error! ",
+                    Toast.LENGTH_SHORT
+                ).show()
             }
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
+            .onSameThread()
+            .check()
     }
 
-
-
-
-
-    private fun internet() {
-        promptPopUpView = PromptPopUpView(this)
-
-        AlertDialog.Builder(this)
-
-            .setPositiveButton(
-                "Retry"
-            ) { dialog, _ -> dialog.dismiss()
-                recreate()
-            }
-
-            .setNegativeButton(
-                "Cancel"
-            ) { dialog, _ ->
-                dialog.dismiss()
-            }
-
-            .setCancelable(false)
-            .setView(promptPopUpView)
-            .show().withCenteredButtons()
-    }
-
-
-    private fun dialogue() {
-
-        promptPopUpView = PromptPopUpView(this)
-
-            AlertDialog.Builder(this)
-            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
-                //      finish()
-
-            }
-            .setNegativeButton("Exit") { _: DialogInterface?, _: Int ->
-                //      finish()
-                startActivity(Intent(this@CreateAlert, HomePage::class.java))
-            }
-            .setCancelable(false)
-            .setView(promptPopUpView)
-                .show().withCenteredButtons()
-    }
-
-
-    private fun AlertDialog.withCenteredButtons() {
-        val positive = getButton(AlertDialog.BUTTON_POSITIVE)
-        val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
-
-        //Disable the material spacer view in case there is one
-        val parent = positive.parent as? LinearLayout
-        parent?.gravity = Gravity.CENTER_HORIZONTAL
-        val leftSpacer = parent?.getChildAt(1)
-        leftSpacer?.visibility = View.GONE
-
-        //Force the default buttons to center
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
+    fun saveImage(myBitmap: Bitmap): String? {
+        val bytes = ByteArrayOutputStream()
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+        val wallpaperDirectory = File(
+            Environment.getExternalStorageDirectory()
+                .toString() + IMAGE_DIRECTORY
         )
-
-        layoutParams.weight = 1f
-        layoutParams.gravity = Gravity.CENTER
-
-        positive.layoutParams = layoutParams
-        negative.layoutParams = layoutParams
-    }
-
-
-    private fun dialogue_error() {
-        promptPopUpView = PromptPopUpView(this)
-
-        AlertDialog.Builder(this)
-            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
-
-            }
-            .setCancelable(false)
-            .setView(promptPopUpView)
-            .show()
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
-            if (resultCode == RESULT_OK) {
-                val place = Autocomplete.getPlaceFromIntent(data!!)
-                destinationAddress = place.name
-
-                loc!!.setText(destinationAddress.toString())
-
-
-                // lblAddress
-            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                // TODO: Handle the error.
-                val status = Autocomplete.getStatusFromIntent(data!!)
-                Toast.makeText(this, "Some went wrong. Search again", Toast.LENGTH_SHORT).show()
-                // Log.i(TAG, status.getStatusMessage())
-            }
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs()
         }
-
-
-//        else if (requestCode == PICK_FILE_REQUEST) {
-//                if (data == null) {
-//                    //no data present
-//                    return
-//                }
-//                val selectedFileUri: Uri? = data.data
-//                selectedFilePath = FilePath.getPath(this, selectedFileUri)
-//                Log.i(
-//                    FragmentActivity.TAG,
-//                    "Selected File Path:$selectedFilePath"
-//                )
-//                if (selectedFilePath != null && !selectedFilePath.equals("")) {
-//                    tvFileName.setText(selectedFilePath)
-//                } else {
-//                    Toast.makeText(this, "Cannot upload file to server", Toast.LENGTH_SHORT).show()
-//                }
-//            }
-
+        try {
+            val f = File(
+                wallpaperDirectory, Calendar.getInstance()
+                    .timeInMillis.toString() + ".jpg"
+            )
+            f.createNewFile()
+            val fo = FileOutputStream(f)
+            fo.write(bytes.toByteArray())
+            MediaScannerConnection.scanFile(
+                this,
+                arrayOf(f.path),
+                arrayOf("image/jpeg"),
+                null
+            )
+            fo.close()
+            Log.d("TAG", "File Saved::--->" + f.absolutePath)
+            return f.absolutePath
+        } catch (e1: IOException) {
+            e1.printStackTrace()
+        }
+        return ""
     }
 
-//
-//    fun uploadFile(selectedFilePath: String): Int {
-//        var serverResponseCode = 0
-//        val connection: HttpURLConnection
-//        val dataOutputStream: DataOutputStream
-//        val lineEnd = "\r\n"
-//        val twoHyphens = "--"
-//        val boundary = "*****"
-//        var bytesRead: Int
-//        var bytesAvailable: Int
-//        var bufferSize: Int
-//        val buffer: ByteArray
-//        val maxBufferSize = 1 * 1024 * 1024
-//        val selectedFile = File(selectedFilePath)
-//        val parts = selectedFilePath.split("/").toTypedArray()
-//        val fileName = parts[parts.size - 1]
-//        return if (!selectedFile.isFile()) {
-//            dialog.dismiss()
-//            runOnUiThread { tvFileName.setText("Source File Doesn't Exist: $selectedFilePath") }
-//            0
-//        } else {
-//            try {
-//                val fileInputStream = FileInputStream(selectedFile)
-//                val url = URL(SERVER_URL)
-//                connection = url.openConnection() as HttpURLConnection
-//                connection.setDoInput(true) //Allow Inputs
-//                connection.setDoOutput(true) //Allow Outputs
-//                connection.setUseCaches(false) //Don't use a cached Copy
-//                connection.setRequestMethod("POST")
-//                connection.setRequestProperty("Connection", "Keep-Alive")
-//                connection.setRequestProperty("ENCTYPE", "multipart/form-data")
-//                connection.setRequestProperty(
-//                    "Content-Type",
-//                    "multipart/form-data;boundary=$boundary"
-//                )
-//                connection.setRequestProperty("uploaded_file", selectedFilePath)
-//
-//                //creating new dataoutputstream
-//                dataOutputStream = DataOutputStream(connection.getOutputStream())
-//
-//                //writing bytes to data outputstream
-//                dataOutputStream.writeBytes(twoHyphens + boundary + lineEnd)
-//                dataOutputStream.writeBytes(
-//                    "Content-Disposition: form-data; name=\"uploaded_file\";filename=\""
-//                            + selectedFilePath + "\"" + lineEnd
-//                )
-//                dataOutputStream.writeBytes(lineEnd)
-//
-//                //returns no. of bytes present in fileInputStream
-//                bytesAvailable = fileInputStream.available()
-//                //selecting the buffer size as minimum of available bytes or 1 MB
-//                bufferSize = Math.min(bytesAvailable, maxBufferSize)
-//                //setting the buffer as byte array of size of bufferSize
-//                buffer = ByteArray(bufferSize)
-//
-//                //reads bytes from FileInputStream(from 0th index of buffer to buffersize)
-//                bytesRead = fileInputStream.read(buffer, 0, bufferSize)
-//
-//                //loop repeats till bytesRead = -1, i.e., no bytes are left to read
-//                while (bytesRead > 0) {
-//                    //write the bytes read from inputstream
-//                    dataOutputStream.write(buffer, 0, bufferSize)
-//                    bytesAvailable = fileInputStream.available()
-//                    bufferSize = Math.min(bytesAvailable, maxBufferSize)
-//                    bytesRead = fileInputStream.read(buffer, 0, bufferSize)
-//                }
-//                dataOutputStream.writeBytes(lineEnd)
-//                dataOutputStream.writeBytes(twoHyphens + boundary + twoHyphens + lineEnd)
-//                serverResponseCode = connection.getResponseCode()
-//                val serverResponseMessage: String = connection.getResponseMessage()
-//                Log.i(
-//                    FragmentActivity.TAG,
-//                    "Server Response is: $serverResponseMessage: $serverResponseCode"
-//                )
-//
-//                //response code of 200 indicates the server status OK
-//                if (serverResponseCode == 200) {
-//                    runOnUiThread { tvFileName.setText("File Upload completed.\n\n You can see the uploaded file here: \n\nhttp://coderefer.com/extras/uploads/$fileName") }
-//                }
-//
-//                //closing the input and output streams
-//                fileInputStream.close()
-//                dataOutputStream.flush()
-//                dataOutputStream.close()
-//            } catch (e: FileNotFoundException) {
-//                e.printStackTrace()
-//                runOnUiThread {
-//                    Toast.makeText(this@NewClassPdf, "File Not Found", Toast.LENGTH_SHORT)
-//                        .show()
-//                }
-//            } catch (e: MalformedURLException) {
-//                e.printStackTrace()
-//                Toast.makeText(this@NewClassPdf, "URL error!", Toast.LENGTH_SHORT).show()
-//            } catch (e: IOException) {
-//                e.printStackTrace()
-//                Toast.makeText(this@NewClassPdf, "Cannot Read/Write File!", Toast.LENGTH_SHORT)
-//                    .show()
-//            }
-//            dialog.dismiss()
-//            serverResponseCode
-//        }
+
+
 }
+
+
+//private fun bayo(path: String) {
+//
+//
+//    val imgname = Calendar.getInstance().timeInMillis.toString()
+//
+//    //Create a file object using file path
+//    val file = File(path)
+//    // Parsing any Media type file
+//    val requestBody =
+//        RequestBody.create("*/*".toMediaTypeOrNull(), file)
+//    val fileToUpload =
+//        MultipartBody.Part.createFormData("filename", file.name, requestBody)
+//    val filename =
+//        RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
+//
+//
+//
+//    pref =
+//        this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+//
+//    fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+//
+//    mssidn = pref!!.getString("mssdn", null)
+//
+//    user = pref!!.getString("userid", null)
+//
+//    addnotes = notes!!.text.toString().trim { it <= ' ' }
+//
+//
+//
+//
+//    alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+//
+//    setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+//    setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
+//
+//    //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
+//
+//    val interceptor = HttpLoggingInterceptor()
+//    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+//    val client: OkHttpClient = OkHttpClient.Builder()
+//        .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+//        .addNetworkInterceptor(object : Interceptor {
+//            @Throws(IOException::class)
+//            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+//                val request: Request =
+//                    chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+//                        .build()
+//                return chain.proceed(request)
+//            }
+//        }).build()
+//    val retrofit: Retrofit = Retrofit.Builder()
+//        .baseUrl(Constants.API_BASE_URL)
+//        .client(client) // This line is important
+//        .addConverterFactory(GsonConverterFactory.create())
+//        .build()
+//
+//    val params: HashMap<String, String> = HashMap()
+//    params["alert_name"] = alert_namess!!
+//    params["fullname"] = fullname!!
+//    params["alert_type"] = selectedItem!!
+//    params["rg"] = selectedItem2!!
+//    params["rl"] = setLevel!!
+//    params["mssdn"] = mssidn!!
+//    params["userid"] = user!!
+//    params["location"] = setLoc!!
+//    params["notes"] = addnotes!!
+//    params["attachment"] = filename.toString()
+//
+//
+//
+//    //Toast.makeText(this@CreateAlert, "" + fileToUpload , Toast.LENGTH_LONG).show();
+//
+//    val api: AddAlert = retrofit.create(AddAlert::class.java)
+//    val call: Call<ResponseBody> = api.addAlert(params)
+//
+//    call.enqueue(object : Callback<ResponseBody?> {
+//        override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+//            //Toast.makeText()
+//
+//            Log.d("Call request", call.request().toString());
+//            Log.d("Response raw header", response.headers().toString());
+//            Log.d("Response raw", response.toString());
+//            Log.d("Response code", response.code().toString());
+//
+//
+//            if (response.isSuccessful) {
+//                val remoteResponse = response.body()!!.string()
+//                Log.d("test", remoteResponse)
+//                parseLoginData(remoteResponse)
+//            } else {
+//                mProgress?.dismiss()
+//                dialogue_error();
+//                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+//                Log.d("BAYO", response.code().toString())
+//                btnLogin!!.text = "Submit"
+//                mProgress?.dismiss()
+//            }
+//        }
+//
+//        override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+//            btnLogin!!.text = "Submit"
+//
+//            dialogue_error()
+//            promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+//            Log.i("onEmptyResponse", "" + t) //
+//            mProgress?.dismiss()
+//        }
+//    })
+//}
 
 
 
