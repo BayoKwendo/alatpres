@@ -35,6 +35,7 @@ import com.alat.interfaces.*
 import com.alat.model.rgModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import io.karn.notify.Notify
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -195,12 +196,30 @@ class Invitations : AppCompatActivity(), InvitationAdapter.ContactsAdapterListen
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200") {
+                    val o = JSONObject(remoteResponse)
+
+                    if (o.getString("status") == "false")  {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
+                    } else {
+
+                        val array: JSONArray = o.getJSONArray("records")
+
+                        for (i in 0 until array.length()) {
+                            val dataobj: JSONObject = array.getJSONObject(i)
+                            Log.d("DATAFULL", remoteResponse);
+
+                            Log.d("STATUSRECORD", dataobj.getString("status"));
+
+                            if (dataobj.getString("status") == "true") {
+                                parseLoginData(remoteResponse)
+                            }
+
+
+                        }
                     }
-                    parseLoginData(remoteResponse)
-                } else {
+                }
+                else {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())
                 }
@@ -215,25 +234,31 @@ class Invitations : AppCompatActivity(), InvitationAdapter.ContactsAdapterListen
 
     private fun parseLoginData(remoteResponse: String) {
         try {
-            val o = JSONObject(remoteResponse)
-            val array: JSONArray = o.getJSONArray("records")
-            val names = arrayOfNulls<String>(array.length())
 
-            val items: List<rgModel> =
-                Gson().fromJson<List<rgModel>>(
-                    array.toString(),
-                    object : TypeToken<List<rgModel?>?>() {}.type
-                )
+            val jsonObject = JSONObject(remoteResponse)
 
-            Collections.reverse(items);
 
-            contactList!!.clear()
+                val array: JSONArray = jsonObject.getJSONArray("records")
+                val names = arrayOfNulls<String>(array.length())
 
-            contactList!!.addAll(items)
-            mAdapter!!.notifyDataSetChanged()
+                val items: List<rgModel> =
+                    Gson().fromJson<List<rgModel>>(
+                        array.toString(),
+                        object : TypeToken<List<rgModel?>?>() {}.type
+                    )
 
-            mProgressLayout!!.visibility = View.GONE
-            errorNull!!.visibility = View.GONE
+                Collections.reverse(items);
+
+                contactList!!.clear()
+
+                contactList!!.addAll(items)
+                mAdapter!!.notifyDataSetChanged()
+
+                mProgressLayout!!.visibility = View.GONE
+                errorNull!!.visibility = View.GONE
+
+
+                //Toast.makeText(this, "true", Toast.LENGTH_LONG).show()
 
 
             //    Log.d("onSuccess1", firstSport.toString())
@@ -251,7 +276,7 @@ class Invitations : AppCompatActivity(), InvitationAdapter.ContactsAdapterListen
         when (item.itemId) {
 
             android.R.id.home -> {
-                startActivity(Intent(this, HomePage::class.java))
+                finish()
                 true
             }
 
@@ -262,8 +287,9 @@ class Invitations : AppCompatActivity(), InvitationAdapter.ContactsAdapterListen
     }
 
     override fun onBackPressed() {
-        startActivity(Intent(this, HomePage::class.java))
+       // startActivity(Intent(this, HomePage::class.java))
 
+        finish()
         // close search view on back button pressed
 
     }

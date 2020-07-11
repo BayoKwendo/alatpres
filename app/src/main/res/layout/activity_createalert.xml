@@ -67,6 +67,30 @@
             app:ms_hint="Select Response Group"
             app:ms_multiline="false" />
 
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/spinner4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_arrowColor="@color/colorAccent"
+            app:ms_arrowSize="16dp"
+            android:padding="@dimen/_10sdp"
+            app:ms_floatingLabelColor="#00FF00"
+            app:ms_floatingLabelText="Response Group"
+            app:ms_hint="Select 2nd Response Group (optional)"
+            app:ms_multiline="false" />
+
+        <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/spinner5"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_arrowColor="@color/colorAccent"
+            app:ms_arrowSize="16dp"
+            android:padding="@dimen/_10sdp"
+            app:ms_floatingLabelColor="#00FF00"
+            app:ms_floatingLabelText="Response Group"
+            app:ms_hint="Select 3rd Response Group (optional)"
+            app:ms_multiline="false" />
+
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/level_layout"
             android:layout_width="match_parent"

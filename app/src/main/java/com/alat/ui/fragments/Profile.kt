@@ -55,6 +55,18 @@ class Profile : Fragment() {
     var phone: TextView? = null
     var idNo: TextView? = null
 
+
+
+
+    var clients: TextView? = null
+    var mclients: TextView? = null
+
+
+
+    var mdob: TextView? = null
+
+    var midNo: TextView? = null
+
     var pref: SharedPreferences? = null
 
 
@@ -72,7 +84,7 @@ class Profile : Fragment() {
 
     var updatePhone: String? = null
 
-    var updateID: String? = null
+    var mclientss: String? = null
 
     var updateAlatpressID: String? = null
 
@@ -89,11 +101,13 @@ class Profile : Fragment() {
     var updateIDD: MaterialEditText? = null
 
     var updateAlatpressIDD: MaterialEditText? = null
+    private var account: String? = null
 
     var updateEmaill: MaterialEditText? = null
     private var mProgress: ProgressDialog? = null
     private var promptPopUpView: PromptPopUpView? = null
 
+    private var roleID: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -109,6 +123,13 @@ class Profile : Fragment() {
         dob = view.findViewById(R.id.textView15)
         county = view.findViewById(R.id.textView11)
 
+
+        clients = view.findViewById(R.id.textView27)
+        mclients = view.findViewById(R.id.textView24)
+
+        mdob = view.findViewById(R.id.textView13)
+        midNo = view.findViewById(R.id.textView20)
+
         pref =
             activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
         fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
@@ -116,9 +137,27 @@ class Profile : Fragment() {
         user = pref!!.getString("userid", null)
         id = pref!!.getString("idNo", null)
 
-        emailuser = pref!!.getString("email", null) + "\t" + pref!!.getString("lname", null)
+        emailuser = pref!!.getString("email", null)
         county_name = pref!!.getString("county", null)
         dob_user = pref!!.getString("dob", null)
+        roleID = pref!!.getString("role", null)
+        mclientss = pref!!.getString("clients", null)
+
+        //Toast.makeText(activity, "g" + roleID, Toast.LENGTH_LONG).show() ;
+
+        if(roleID == "2"){
+            dob!!.visibility = View.GONE
+            idNo!!.visibility = View.GONE
+            mdob!!.visibility = View.GONE
+            midNo!!.visibility = View.GONE
+        }
+
+
+        if(roleID == "1"){
+            clients!!.visibility = View.GONE
+            mclients!!.visibility = View.GONE
+        }
+
 
         setHasOptionsMenu(true);
 
@@ -132,7 +171,7 @@ class Profile : Fragment() {
         email!!.text = emailuser
 
         dob!!.text = dob_user
-
+        clients!!.text =mclientss
         county!!.text = county_name
 
         userid!!.text = "AlatPres ID\t$user"
@@ -147,6 +186,10 @@ class Profile : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+
+
+
         //you can set the title for your toolbar here for different fragments different title
     }
 
@@ -188,7 +231,23 @@ class Profile : Fragment() {
                         "Connection Error\n\n Check your internet connectivity"
                     )
                 } else {
-                    update()
+
+                    pref =
+                        activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+
+                    account = pref!!.getString("account_status", null)
+
+                    if (account == "0") {
+                        dialogue_errors()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "You not allow to edit your details! \n kindly upgrade to Pro Account"
+                        )
+                    } else{
+
+                        update()
+                  }
                    // mProgress?.show()
                 }
                 true
@@ -217,6 +276,7 @@ class Profile : Fragment() {
         updateEmaill = layout_pwd.findViewById<View>(R.id.email) as MaterialEditText
         updatePhonee = layout_pwd.findViewById<View>(R.id.etPhone) as MaterialEditText
 
+        updateIDD!!.visibility = View.GONE
         val updateButton: Button =
             layout_pwd.findViewById<View>(R.id.update) as Button
         updateButton.setOnClickListener(View.OnClickListener {
@@ -225,7 +285,7 @@ class Profile : Fragment() {
 
             updateFName = updateFNamee!!.getText().toString()
             updateLName = updateLNamee!!.getText().toString()
-            updateID = updateIDD!!.getText()!!.toString()
+//            updateID = updateIDD!!.getText()!!.toString()
             // updateAlatpressID = updateAlatpressIDD!!.getText().toString()
             updateEmail = updateEmaill!!.getText().toString()
             updatePhone = updatePhonee!!.getText().toString()
@@ -240,10 +300,6 @@ class Profile : Fragment() {
                 updateLNamee!!.error = "Lastname Is Mandatory"
                 updateLNamee!!.requestFocus()
             }
-            if (Utils.checkIfEmptyString(updateID)) {
-                updateIDD!!.error = "ID No Is Mandatory"
-                updateIDD!!.requestFocus()
-            }
             if (Utils.checkIfEmptyString(updatePhone)) {
                 updatePhonee!!.error = "Phone Is Mandatory"
                 updatePhonee!!.requestFocus()
@@ -253,80 +309,81 @@ class Profile : Fragment() {
                 updateEmaill!!.requestFocus()
             }else {
                 waitingDialog.show()
+
+                val interceptor = HttpLoggingInterceptor()
+                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+                val client: OkHttpClient = OkHttpClient.Builder()
+                    .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                    .connectTimeout(2, TimeUnit.MINUTES)
+                    .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                    .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                    .addNetworkInterceptor(object : Interceptor {
+                        @Throws(IOException::class)
+                        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                            val request: Request =
+                                chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                                    .build()
+                            return chain.proceed(request)
+                        }
+                    }).build()
+                val retrofit: Retrofit = Retrofit.Builder()
+                    .baseUrl(Constants.API_BASE_URL)
+                    .client(client) // This line is important
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build()
+
+                val params: HashMap<String, String> = HashMap()
+                params["firstname"] = updateFName!!
+                params["lastname"] = updateLName!!
+                params["email"] = updateEmail!!
+                params["mssdn"] = updatePhone!!
+                params["userid"] = user!!
+
+                val api: UpdateUserRecord = retrofit.create(UpdateUserRecord::class.java)
+                val call: Call<ResponseBody> = api.updateUser(params)
+
+                call.enqueue(object : Callback<ResponseBody?> {
+                    override fun onResponse(
+                        call: Call<ResponseBody?>,
+                        response: Response<ResponseBody?>
+                    ) {
+                        //Toast.makeText()
+
+                        Log.d("Call request", call.request().toString());
+                        Log.d("Response raw header", response.headers().toString());
+                        Log.d("Response raw", response.toString());
+                        Log.d("Response code", response.code().toString());
+
+
+                        if (response.isSuccessful) {
+                            val remoteResponse = response.body()!!.string()
+                            Log.d("test", remoteResponse)
+                            parseLoginData(remoteResponse)
+                            waitingDialog.dismiss()
+                        } else {
+                            mProgress?.dismiss()
+                            dialogue_error();
+                            promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                            Log.d("BAYO", response.code().toString())
+                            //btnLogin!!.text = "Submit"
+                            mProgress?.dismiss()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                        //btnLogin!!.text = "Submit"
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                        Log.i("onEmptyResponse", "" + t) //
+                        mProgress?.dismiss()
+                    }
+                })
             }
 
             //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
 
-            val interceptor = HttpLoggingInterceptor()
-            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-            val client: OkHttpClient = OkHttpClient.Builder()
-                .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-                .connectTimeout(2, TimeUnit.MINUTES)
-                .writeTimeout(2, TimeUnit.MINUTES) // write timeout
-                .readTimeout(2, TimeUnit.MINUTES) // read timeout
-                .addNetworkInterceptor(object : Interceptor {
-                    @Throws(IOException::class)
-                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                        val request: Request =
-                            chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
-                                .build()
-                        return chain.proceed(request)
-                    }
-                }).build()
-            val retrofit: Retrofit = Retrofit.Builder()
-                .baseUrl(Constants.API_BASE_URL)
-                .client(client) // This line is important
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
 
-            val params: HashMap<String, String> = HashMap()
-            params["firstname"] = updateFName!!
-            params["lastname"] = updateLName!!
-            params["email"] = updateEmail!!
-            params["idNo"] = updateID!!
-            params["mssdn"] = updatePhone!!
-            params["userid"] = user!!
-
-            val api: UpdateUserRecord = retrofit.create(UpdateUserRecord::class.java)
-            val call: Call<ResponseBody> = api.updateUser(params)
-
-            call.enqueue(object : Callback<ResponseBody?> {
-                override fun onResponse(
-                    call: Call<ResponseBody?>,
-                    response: Response<ResponseBody?>
-                ) {
-                    //Toast.makeText()
-
-                    Log.d("Call request", call.request().toString());
-                    Log.d("Response raw header", response.headers().toString());
-                    Log.d("Response raw", response.toString());
-                    Log.d("Response code", response.code().toString());
-
-
-                    if (response.isSuccessful) {
-                        val remoteResponse = response.body()!!.string()
-                        Log.d("test", remoteResponse)
-                        parseLoginData(remoteResponse)
-                        waitingDialog.dismiss()
-                    } else {
-                        mProgress?.dismiss()
-                        dialogue_error();
-                        promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                        Log.d("BAYO", response.code().toString())
-                        //btnLogin!!.text = "Submit"
-                        mProgress?.dismiss()
-                    }
-                }
-
-                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                    //btnLogin!!.text = "Submit"
-
-                    dialogue_error()
-                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                    Log.i("onEmptyResponse", "" + t) //
-                    mProgress?.dismiss()
-                }
-            })
         })
         val dismissButton: Button =
             layout_pwd.findViewById<View>(R.id.cancel) as Button
@@ -400,7 +457,7 @@ class Profile : Fragment() {
         promptPopUpView = PromptPopUpView(activity)
 
         androidx.appcompat.app.AlertDialog.Builder(activity!!)
-            .setPositiveButton("Exist.") { _: DialogInterface?, _: Int ->
+            .setPositiveButton("Exit.") { _: DialogInterface?, _: Int ->
                 //      finish()
 
 
@@ -467,5 +524,17 @@ class Profile : Fragment() {
             .show()
     }
 
+    private fun dialogue_errors() {
+
+        promptPopUpView = PromptPopUpView(activity!!)
+
+        androidx.appcompat.app.AlertDialog.Builder(activity!!)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
 
 }

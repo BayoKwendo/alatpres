@@ -485,6 +485,7 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/_12ssp"
+                    android:visibility="gone"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -708,6 +709,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/website"/>
 
+                <fr.ganfra.materialspinner.MaterialSpinner
+                    android:id="@+id/package_sub"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:ms_arrowColor="@color/colorAccent"
+                    app:ms_arrowSize="16dp"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    app:ms_floatingLabelColor="#00FF00"
+                    android:visibility="gone"
+                    app:ms_floatingLabelText="Choose Your Package"
+                    app:ms_hint="Choose Your Package"
+                    app:ms_multiline="false"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/next"/>
+
 
                 <fr.ganfra.materialspinner.MaterialSpinner
                     android:id="@+id/rsp"
@@ -725,7 +744,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/next"/>
+                    app:layout_constraintTop_toBottomOf="@+id/package_sub"/>
 
 
                 <fr.ganfra.materialspinner.MaterialSpinner
@@ -844,16 +863,47 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/_13ssp" />
                 </com.google.android.material.textfield.TextInputLayout>
-
+                <CheckBox
+                    android:id="@+id/accept_adds"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_weight="0.1"
+                    android:checked="false"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    android:text="Accept Ads"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_13ssp"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/confirm_password" />
+                <TextView
+                    android:id="@+id/privacy_text"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/_5sdp"
+                    android:layout_marginRight="@dimen/_5sdp"
+                    android:gravity="center_horizontal"
+                    android:singleLine="false"
+                    android:textColor="#b1b1b1"
+                    android:layout_marginTop="@dimen/_10sdp"
+                    android:layout_marginBottom="@dimen/_7sdp"
+                    android:textSize="@dimen/_11ssp"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/accept_adds" />
 
                 <Button
                     android:id="@+id/submit"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
-                    android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginTop="@dimen/_35sdp"
                     android:layout_marginBottom="@dimen/_10sdp"
-                    app:layout_constraintTop_toBottomOf="@+id/confirm_password"
+                    app:layout_constraintTop_toBottomOf="@+id/privacy_text"
                     android:background="@drawable/button_shape"
                     android:gravity="center"
                     android:text="Submit"

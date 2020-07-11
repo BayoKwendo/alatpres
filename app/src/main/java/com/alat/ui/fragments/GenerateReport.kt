@@ -3,6 +3,7 @@ package com.alat.ui.fragments
 import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -11,6 +12,7 @@ import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
@@ -19,6 +21,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.AlertAdapter
 import com.alat.adapters.RGAdapter
@@ -61,7 +64,6 @@ class GenerateReport : Fragment() ,
     private var searchView: SearchView? = null
     private var mProgressLayout: LinearLayout? = null
 
-    private var promptPopUpView: PromptPopUpView? = null
 
 
     private var btnResetPassword: Button? = null
@@ -69,10 +71,14 @@ class GenerateReport : Fragment() ,
     var errorNull: TextView? = null
 
     private var mProgress: ProgressDialog? = null
+    var pref: SharedPreferences? = null
 
+    private var account: String? = null
+
+    private var userid: String? = null
+    private var promptPopUpView: PromptPopUpView? = null
     var MYCODE = 1000
 
-    var pref: SharedPreferences? = null
 
     private var toolbar : Toolbar? = null
 
@@ -114,7 +120,24 @@ class GenerateReport : Fragment() ,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        getStudent()
+        pref =
+            activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+
+        account = pref!!.getString("account_status", null)
+        userid = pref!!.getString("userid", null)
+
+
+        if (account == "0"){
+            dialogue_error()
+            promptPopUpView?.changeStatus(1, "You not allow to generate reports! \n kindly upgrade to Pro Account")
+
+
+        }else if (account =="1") {
+            getStudent()
+        }
+
+
 
         //you can set the title for your toolbar here for different fragments different title
     }
@@ -158,7 +181,6 @@ class GenerateReport : Fragment() ,
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -214,6 +236,19 @@ class GenerateReport : Fragment() ,
         }
     }
 
+    private fun dialogue_error() {
+
+        promptPopUpView = PromptPopUpView(activity)
+
+        AlertDialog.Builder(activity!!)
+            .setPositiveButton("Back to Home") { _: DialogInterface?, _: Int ->
+                startActivity(Intent(activity, HomePage::class.java))
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

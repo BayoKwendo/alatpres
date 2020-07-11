@@ -11,10 +11,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.Gravity
-import android.view.Menu
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -22,8 +19,11 @@ import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.ShareActionProvider
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import androidx.core.view.MenuItemCompat
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -61,7 +61,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.set
 
 @Suppress("UNREACHABLE_CODE")
-class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterListener  {
+class ResponseProviders : Fragment(), RespProvAdapter.ContactsAdapterListener  {
 
     var response_group_id: String? = null
 
@@ -84,56 +84,58 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
     var errorNull: TextView? = null
-    private var mProgress: ProgressDialog? = null
     var MYCODE = 1000
     private val RESULT_PICK_CONTACT = 1001
 
 
     var mToolbar: Toolbar? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_alert)
-        mToolbar =  findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar!!);
-        mToolbar!!.title = "Response Provider Teams"
-
-        response_group_id = intent.getStringExtra("groupSelect")
-        //response_group_name = intent.getStringExtra("groupNam")
 
 
-        supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.setTitle("Response Provider Teams")
 
-
-        recyclerView = findViewById(R.id.recycler_view)
-        errorNull = findViewById(R.id.texterror)
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        val view = inflater.inflate(R.layout.activity_alert, container, false)
+        setHasOptionsMenu(true)
+        recyclerView = view.findViewById(R.id.recycler_view)
+        errorNull = view.findViewById(R.id.texterror)
+        mToolbar =  view.findViewById(R.id.toolbar);
+        //setSupportActionBar(mToolbar!!);
+        mToolbar!!.title = "Response Providers Database"
         contactList = ArrayList()
-        mAdapter = RespProvAdapter(this, contactList!!, this)
-
-        mProgressLayout = findViewById(R.id.layout_discussions_progress);
+        mAdapter = RespProvAdapter(activity!!, contactList!!, this)
+        recyclerView!!.setNestedScrollingEnabled(false);
+        mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
         val mLayoutManager: RecyclerView.LayoutManager =
-            LinearLayoutManager(this)
+            LinearLayoutManager(activity)
         recyclerView!!.layoutManager = mLayoutManager
         recyclerView!!.itemAnimator = DefaultItemAnimator()
         recyclerView!!.addItemDecoration(
             MyDividerItemDecoration(
-                this,
+                activity!!,
                 DividerItemDecoration.VERTICAL,
                 36
             )
         )
+
         recyclerView!!.adapter = mAdapter
 
-        mProgressLayout!!.visibility = View.VISIBLE
-        errorNull!!.visibility = View.GONE
-        mProgress = ProgressDialog(this)
-        mProgress!!.setMessage("Sending...")
-        mProgress!!.setCancelable(true)
+
+        view.context
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         getStudent()
 
+        //you can set the title for your toolbar here for different fragments different title
     }
+
+
 
 
     private fun getStudent() {
@@ -163,7 +165,6 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
             .build()
 
         val params: HashMap<String, String> = HashMap()
-        params["name"] = response_group_id!!
 
         val api: GetResponseProviders = retrofit.create(GetResponseProviders::class.java)
         val call: Call<ResponseBody> = api.GetAlert(params)
@@ -187,21 +188,17 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
                     } else {
                         mProgressLayout!!.visibility = View.GONE
                         dialogue_error();
-                        promptPopUpView?.changeStatus(1, "No data in response provider database matches your search")
-                        mProgress!!.dismiss()
+                        promptPopUpView?.changeStatus(1, "No data in response provider database")
                     }
                 } else {
-                    mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())
-                    mProgress?.dismiss()
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 Log.i("onEmptyResponse", "" + t) //
-                mProgress?.dismiss()
             }
         })
     }
@@ -232,11 +229,9 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
     }
 
 
-    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-        mToolbar!!.inflateMenu(R.menu.menu_items);
 
-
-
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_items, menu)
 
         var item = menu?.findItem(R.id.action_share)
         val item2 = menu?.findItem(R.id.join)
@@ -255,14 +250,13 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
 
 
 
-        // Associate searchable configuration with the SearchView
         val searchManager =
-            getSystemService(Context.SEARCH_SERVICE) as SearchManager
-        searchView = menu!!.findItem(R.id.action_search)
+            activity!!.getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = menu.findItem(R.id.action_search)
             .actionView as SearchView
         searchView!!.setSearchableInfo(
             searchManager
-                .getSearchableInfo(componentName)
+                .getSearchableInfo(activity!!.componentName)
         )
         searchView!!.maxWidth = Int.MAX_VALUE
 
@@ -282,7 +276,6 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
                 return false
             }
         })
-        return super.onCreateOptionsMenu(menu);
     }
 
 
@@ -339,9 +332,9 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
 
     private fun dialogue() {
 
-        promptPopUpView = PromptPopUpView(this)
+        promptPopUpView = PromptPopUpView(activity)
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(activity!!)
             .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
 
             }
@@ -351,11 +344,13 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
     }
 
     private fun dialogue_error() {
-        promptPopUpView = PromptPopUpView(this)
+        promptPopUpView = PromptPopUpView(activity)
 
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(activity!!)
             .setPositiveButton("Back Home") { _: DialogInterface?, _: Int ->
-                startActivity(Intent(this@ResponseProviders, HomePage::class.java))
+
+
+                startActivity(Intent(activity, HomePage::class.java))
             }
             .setCancelable(false)
             .setView(promptPopUpView)
@@ -363,7 +358,7 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
     }
 
 
-    override fun onBackPressed() {
+     fun onBackPressed() {
         // close search view on back button pressed
         if (!searchView!!.isIconified) {
             searchView!!.isIconified = true
@@ -384,7 +379,7 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
 
 
         val i =
-            Intent(this, ResponseDetails::class.java)
+            Intent(activity, ResponseDetails::class.java)
              i.putExtra("responseSelect", contact!!.id.toString())
         startActivity(i)
     }
@@ -392,11 +387,11 @@ class ResponseProviders : AppCompatActivity(), RespProvAdapter.ContactsAdapterLi
 
 
     fun BackAlert() {
-        AlertDialog.Builder(this)
+        AlertDialog.Builder(activity!!)
             .setMessage("Leaving this page??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                    startActivity(Intent(this@ResponseProviders, HomePage::class.java))
+                    startActivity(Intent(activity, HomePage::class.java))
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()

@@ -9,15 +9,21 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
+import android.webkit.WebView
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.Toolbar
+import com.afollestad.materialdialogs.MaterialDialog
 import com.alat.HomePage
 import com.alat.MainActivity
 import com.alat.R
@@ -73,7 +79,7 @@ class Enterprise : AppCompatActivity() {
     private var other_name: String? = null
     private var nature: String? = null
     private var tax: String? = null
-    private var client: String? = null
+    private var clients: String? = null
     private var employee: String? = null
     private var description: String? = null
     private var dob: String? = null
@@ -96,6 +102,7 @@ class Enterprise : AppCompatActivity() {
 
     private var textInputpassword: TextInputLayout? = null
     private var textInputconfirmpassword: TextInputLayout? = null
+    private var termsMaterialDialog: MaterialDialog? = null
 
     private var physical: String? = null
     private var postal: String? = null
@@ -111,12 +118,25 @@ class Enterprise : AppCompatActivity() {
     private var user_id: String? = null
     private var confirm_user_id: String? = null
 
+    private val ITEMS3= arrayOf("Monthly ksh. 300", "Quarterly Ksh. 3400", "Yearly Ksh. 44,100")
+
     private val ITEMS1 = arrayOf("YES", "NO")
+
     private val ITEMS2 = arrayOf("security", "medical", "fire", "car", "towing")
     var spinner: MaterialSpinner? = null
     var spinner_2: MaterialSpinner? = null
+
+
+    var spinner_3: MaterialSpinner? = null
+
+
     var selectedItem: String? = null
     var selectedItem2: String? = null
+
+    var selectedItem3: String? = null
+
+
+    var account_status: String? = null
 
 
     private var backText: TextView? = null
@@ -150,6 +170,44 @@ class Enterprise : AppCompatActivity() {
                 frameLayout!!.visibility = View.VISIBLE
             }
         }
+
+
+        val privacy_policy: TextView =
+            findViewById(R.id.privacy_text)
+
+        //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(getPhoneInput(), InputMethodManager.SHOW_IMPLICIT);
+        val terms = " Terms and Conditions "
+        val policy = " Privacy Policy "
+        val spanText = SpannableStringBuilder()
+        spanText.append("By clicking SUBMIT, you agree to all our")
+        spanText.append(terms)
+        spanText.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                loadTerms()
+            }
+
+            override fun updateDrawState(textPaint: TextPaint) {
+                textPaint.color = textPaint.linkColor // you can use custom color
+                textPaint.isUnderlineText = false // this remove the underline
+            }
+        }, spanText.length - terms.length, spanText.length, 0)
+        spanText.append("and that you have read & understood our")
+        spanText.append(policy)
+        spanText.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                loadTerms()
+            }
+
+            override fun updateDrawState(textPaint: TextPaint) {
+                textPaint.color = textPaint.linkColor // you can use custom color
+                textPaint.isUnderlineText = false // this remove the underline
+            }
+        }, spanText.length - policy.length, spanText.length, 0)
+
+        privacy_policy.movementMethod = LinkMovementMethod.getInstance()
+        privacy_policy.setText(spanText, TextView.BufferType.SPANNABLE)
+
 
         mProgress = ProgressDialog(this)
         mProgress!!.setMessage("Creating enterprise....")
@@ -188,6 +246,39 @@ class Enterprise : AppCompatActivity() {
                 // TODO Auto-generated method stub
             }
         }
+
+
+        //Adapters
+        val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
+        adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        spinner_3 = findViewById<View>(R.id.package_sub) as MaterialSpinner
+        spinner_3?.adapter = adapter2
+        spinner_3!!.isSelected = false;  // otherwise listener will be called on initialization
+        spinner_3!!.setSelection(0, true)
+        spinner_3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                arg0: AdapterView<*>?, arg1: View?,
+                arg2: Int, arg3: Long  ) {
+                if (spinner_3!!.selectedItem == null) {
+                   // Toast.makeText(this@Enterprise, "Please select an Alert Type", Toast.LENGTH_LONG).show();
+                    return
+                }else{
+                    selectedItem3 = spinner_3!!.selectedItem.toString()
+
+                   if(selectedItem3 == "ALATPRES BASIC"){
+                       account_status = "0"
+                   }else if(selectedItem3 == "ALATPRES ENTERPRISE"){
+                       account_status = "1"
+                   }
+                }
+             }
+                // TODO Auto-generated method stub
+
+            override fun onNothingSelected(arg0: AdapterView<*>?) {
+                // TODO Auto-generated method stub
+            }
+        }
+
 
         val adapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS2)
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -235,7 +326,35 @@ class Enterprise : AppCompatActivity() {
 //
 //        }
     }
+    private fun loadTerms() {
 
+
+        val builder: MaterialDialog.Builder = MaterialDialog.Builder(this)
+
+            .customView(R.layout.dialog_webview, false)
+            .cancelable(false)
+            .positiveText(R.string.dismiss)
+            .onPositive({ _, which -> termsMaterialDialog!!.dismiss() })
+        termsMaterialDialog = builder.build()
+        termsMaterialDialog!!.show()
+        val webView: WebView =
+            termsMaterialDialog!!.customView!!.findViewById(R.id.webview)
+        try {
+
+            // Load from changelog.html in the assets folder
+            val json: String = resources.openRawResource(R.raw.terms).bufferedReader().use { it.readText() }
+
+            Log.d("bayo", json)
+
+            webView.loadUrl("file:///android_res/raw/terms.html")
+
+        } catch (e: Throwable) {
+            webView.loadData(
+                "<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html",
+                "UTF-8"
+            )
+        }
+    }
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -341,7 +460,7 @@ class Enterprise : AppCompatActivity() {
 
     private fun registerVar() {
         name = textInputname!!.editText?.text.toString().trim { it <= ' ' }
-        client = textInputnclientEdit!!.text.toString().trim { it <= ' ' }
+        clients = textInputnclientEdit!!.text.toString().trim { it <= ' ' }
         other_name = textInputothername?.editText?.text.toString().trim({ it <= ' ' })
         tax = textInputtax!!.editText!!.text.toString().trim { it <= ' ' }
         description = textInputdescription!!.editText!!.text.toString().trim { it <= ' ' }
@@ -412,7 +531,7 @@ class Enterprise : AppCompatActivity() {
             return false
         } else textInputnature!!.error = null
 
-        if (Utils.checkIfEmptyString(client)) {
+        if (Utils.checkIfEmptyString(clients)) {
             textInputnclient!!.error = "Client level is mandatory"
             textInputnclient!!.requestFocus()
             showKeyBoard()
@@ -573,11 +692,13 @@ class Enterprise : AppCompatActivity() {
         params["physical_address"] = physical!!
         params["postal_address"] = postal!!
         params["town"] = town!!
+        params["clients"] = clients!!
         params["code"] = code!!
         params["website"] = website!!
         params["date_of_incooperation"] = dob!!
         params["mssdn2"] = mssidn2!!
         params["mssdn"] = mssidn!!
+        params["account_status"] = "0"
         params["response_provider"] = selectedItem!!
         params["nature_response"] = selectedItem2!!
         params["county"] = county!!
@@ -593,7 +714,6 @@ class Enterprise : AppCompatActivity() {
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

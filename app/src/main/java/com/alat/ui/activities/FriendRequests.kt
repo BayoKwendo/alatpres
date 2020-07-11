@@ -168,7 +168,6 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -177,12 +176,25 @@ class FriendRequests : AppCompatActivity(), FriendAdapter.ContactsAdapterListene
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
+                    val o = JSONObject(remoteResponse)
 
-                    if (response.code().toString() == "200") {
+                    if (o.getString("status") == "false")  {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
+                    } else {
+
+                        val array: JSONArray = o.getJSONArray("records")
+
+                        for (i in 0 until array.length()) {
+                            val dataobj: JSONObject = array.getJSONObject(i)
+
+                            if (dataobj.getString("status") == "true") {
+                                parseLoginData(remoteResponse)
+                            }
+
+
+                        }
                     }
-                    parseLoginData(remoteResponse)
                 } else {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())

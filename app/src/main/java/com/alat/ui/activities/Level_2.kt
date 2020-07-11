@@ -852,11 +852,9 @@ class Level_2 : AppCompatActivity(), CustomeAdapter.ContactsAdapterListener  {
                         promptPopUpView?.changeStatus(1, "Unable to Submitr! please try again")
                     } else if (response.code() == 200) {
 
-                        mProgressS?.dismiss()
 
+                        parseLoginDataasassss(remoteResponse)
 
-                        dialoguess()
-                        promptPopUpView?.changeStatus(2, "Response Group was configured successfully")
 
 
 
@@ -886,7 +884,34 @@ class Level_2 : AppCompatActivity(), CustomeAdapter.ContactsAdapterListener  {
     }
 
 
+    private fun parseLoginDataasassss(remoteResponse: String) {
+        try {
 
+
+            val jsonObject = JSONObject(remoteResponse)
+            // val jsonObject = JSONObject(jsonresponse)
+
+
+            if (jsonObject.getString("status") == "true") {
+
+                mProgressS?.dismiss()
+
+
+                dialoguess()
+                promptPopUpView?.changeStatus(2, "Response Group was configured successfully")
+
+            } else {
+                dialogue_error();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                mProgressS!!.dismiss()
+
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+    }
 
 
 
