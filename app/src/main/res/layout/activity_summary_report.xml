@@ -354,7 +354,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:layout_weight=".2"
+                            android:layout_weight=".5"
                             android:gravity="center"
                             android:text="SAFE(0)"
                             android:textColor="@color/safe"
@@ -365,35 +365,51 @@
                             android:id="@+id/shouts"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_weight=".2"
+                            android:layout_weight=".5"
                             android:gravity="center"
                             android:text="SHOUT(0)"
                             android:textColor="@color/error"
                             android:textSize="18sp"
                             android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/elevate"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".2"
-                            android:gravity="center"
-                            android:text="ELEVATE(0)"
-                            android:textColor="@color/elevate"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
 
-                        <TextView
-                            android:id="@+id/ignore"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_weight=".2"
-                            android:gravity="center"
-                            android:text="IGNORE(0)"
-                            android:textColor="@android:color/black"
-                            android:textSize="18sp"
-                            android:textStyle="bold" />
                     </LinearLayout>
+                    <LinearLayout
+                        android:id="@+id/actionsss"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/_20sdp"
+
+                        android:orientation="horizontal"
+                        android:weightSum="1"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/guideline"
+                        app:layout_constraintTop_toBottomOf="@+id/actions">
+                    <TextView
+                        android:id="@+id/elevate"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:gravity="center"
+                        android:text="ELEVATE(0)"
+                        android:textColor="@color/elevate"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+
+                    <TextView
+                        android:id="@+id/ignore"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight=".5"
+                        android:gravity="center"
+                        android:text="IGNORE(0)"
+                        android:textColor="@android:color/black"
+                        android:textSize="18sp"
+                        android:textStyle="bold" />
+                    </LinearLayout>
+
+
+
 
                     <LinearLayout
                         android:id="@+id/layar2"
@@ -406,7 +422,7 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/actions">
+                        app:layout_constraintTop_toBottomOf="@+id/actionsss">
 
                         <TextView
                             android:id="@+id/share"

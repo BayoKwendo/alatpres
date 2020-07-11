@@ -258,6 +258,33 @@
             app:layout_constraintStart_toEndOf="@+id/textView13"
             android:layout_marginLeft="8dp" />
 
+
+        <TextView
+            android:id="@+id/textView24"
+            android:layout_width="53dp"
+            android:layout_height="27dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="16dp"
+            android:text="Clients:"
+            android:textColor="@android:color/white"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintStart_toStartOf="@+id/guideline"
+            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+
+        <TextView
+            android:id="@+id/textView27"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:text="+111-111-1111"
+            android:textColor="@android:color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintBaseline_toBaselineOf="@+id/textView24"
+            app:layout_constraintStart_toEndOf="@+id/textView24"
+            android:layout_marginLeft="8dp" />
+
         <TextView
             android:id="@+id/textView10"
             android:layout_width="53dp"
@@ -269,7 +296,7 @@
             android:textSize="18sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toBottomOf="@+id/textView13" />
+            app:layout_constraintTop_toBottomOf="@+id/textView24" />
 
         <TextView
             android:id="@+id/textView11"
@@ -294,6 +321,7 @@
             app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
             app:layout_constraintEnd_toStartOf="@+id/imageButton4"
             app:layout_constraintHorizontal_bias="0.5"
+            android:visibility="gone"
             app:layout_constraintHorizontal_chainStyle="spread"
             app:layout_constraintStart_toEndOf="@+id/guideline"
             app:layout_constraintTop_toTopOf="@+id/imageButton4"
@@ -306,6 +334,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="250dp"
             android:background="@android:color/transparent"
+            android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/imageButton5"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/imageButton3"
@@ -318,6 +347,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:visibility="gone"
             android:background="@android:color/transparent"
             app:layout_constraintBottom_toBottomOf="@+id/imageButton4"
             app:layout_constraintEnd_toStartOf="@+id/guideline2"

@@ -2,47 +2,53 @@ package com.alat
 
 import adil.dev.lib.materialnumberpicker.dialog.CountyDialog
 import adil.dev.lib.materialnumberpicker.dialog.GenderDialogue
+import android.accessibilityservice.GestureDescription
 import android.app.ProgressDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.webkit.WebView
+import android.widget.Button
+import android.widget.EditText
+import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import com.afollestad.materialdialogs.MaterialDialog
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.CreateUser
-import com.alat.interfaces.GetAlerts
 import com.alat.model.PreferenceModel
 import com.alat.model.TextViewDatePicker
-import com.alat.model.rgModel
 import com.alat.ui.activities.auth.Enterprise
 import com.alat.ui.activities.auth.LoginActivity
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
-import org.json.JSONArray
-import org.json.JSONException
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.nio.charset.StandardCharsets
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATION")
@@ -82,12 +88,48 @@ class MainActivity : AppCompatActivity() {
     private var preferenceHelper: PreferenceModel? = null
 
     private var enterprs: TextView? = null
+    private var termsMaterialDialog: MaterialDialog? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_user)
         preferenceHelper = PreferenceModel(this)
+        val privacy_policy: TextView =
+            findViewById(R.id.privacy_text)
+
+        //        InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+//        imm.showSoftInput(getPhoneInput(), InputMethodManager.SHOW_IMPLICIT);
+        val terms = " Terms and Conditions "
+        val policy = " Privacy Policy "
+        val spanText = SpannableStringBuilder()
+        spanText.append("By clicking SUBMIT, you agree to all our")
+        spanText.append(terms)
+        spanText.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                loadTerms()
+            }
+
+            override fun updateDrawState(textPaint: TextPaint) {
+                textPaint.color = textPaint.linkColor // you can use custom color
+                textPaint.isUnderlineText = false // this remove the underline
+            }
+        }, spanText.length - terms.length, spanText.length, 0)
+        spanText.append("and that you have read & understood our")
+        spanText.append(policy)
+        spanText.setSpan(object : ClickableSpan() {
+            override fun onClick(widget: View) {
+                loadTerms()
+            }
+
+            override fun updateDrawState(textPaint: TextPaint) {
+                textPaint.color = textPaint.linkColor // you can use custom color
+                textPaint.isUnderlineText = false // this remove the underline
+            }
+        }, spanText.length - policy.length, spanText.length, 0)
+
+        privacy_policy.movementMethod = LinkMovementMethod.getInstance()
+        privacy_policy.setText(spanText, TextView.BufferType.SPANNABLE)
 
         mProgress = ProgressDialog(this)
         mProgress!!.setMessage("Creating user...")
@@ -152,6 +194,36 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    private fun loadTerms() {
+
+
+        val builder: MaterialDialog.Builder = MaterialDialog.Builder(this@MainActivity)
+
+            .customView(R.layout.dialog_webview, false)
+            .cancelable(false)
+            .positiveText(R.string.dismiss)
+            .onPositive({ _, which -> termsMaterialDialog!!.dismiss() })
+        termsMaterialDialog = builder.build()
+        termsMaterialDialog!!.show()
+        val webView: WebView =
+            termsMaterialDialog!!.customView!!.findViewById(R.id.webview)
+        try {
+
+            // Load from changelog.html in the assets folder
+            val json: String = resources.openRawResource(R.raw.terms).bufferedReader().use { it.readText() }
+
+            Log.d("bayo", json)
+
+             webView.loadUrl("file:///android_res/raw/terms.html")
+
+        } catch (e: Throwable) {
+            webView.loadData(
+                "<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html",
+                "UTF-8"
+            )
+        }
+    }
+
 
     private fun registerVar() {
         firstName = textInputfirstName!!.editText!!.text.toString().trim { it <= ' ' }
@@ -199,12 +271,6 @@ class MainActivity : AppCompatActivity() {
             showKeyBoard()
             return false
         } else textInputgender!!.error = null
-        if (Utils.checkIfEmptyString(id)) {
-            textInputidno!!.error = "ID is mandatory"
-            textInputidno!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputidno!!.error = null
         if (Utils.checkIfEmptyString(dob)) {
             textInputdob!!.error = "Date of Birth is mandatory"
             textInputdob!!.requestFocus()
@@ -333,7 +399,6 @@ class MainActivity : AppCompatActivity() {
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

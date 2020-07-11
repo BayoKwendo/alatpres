@@ -229,8 +229,6 @@ class GlobalRG : Fragment() {
             if (jsonObject.getString("status") == "true") {
                 waitingDialog!!.dismiss()
 
-                Toast.makeText(activity, "Enter your PIN!", Toast.LENGTH_SHORT).show()
-//
                 val i = Intent(activity, GroupID::class.java)
                 i.putExtra("groupSelect", updateFName)
                 i.putExtra("grouptype", "bayo")
@@ -240,7 +238,6 @@ class GlobalRG : Fragment() {
             } else if (jsonObject.getString("status") == "false") {
 
                 waitingDialog!!.dismiss()
-                Toast.makeText(activity, "PIN LAUCH!", Toast.LENGTH_SHORT).show()
 
                 val i = Intent(activity, GroupID::class.java)
                 i.putExtra("groupSelect", updateFName)

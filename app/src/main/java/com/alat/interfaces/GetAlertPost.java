@@ -14,14 +14,16 @@ public interface GetAlertPost {
     Call<String> getAlert(
 
             @Query("id") String ids,
+            @Query("alert_name") String alert_name,
+            @Query("rl") String rl,
+            @Query("mssdn") String mssdn,
+            @Query("userid") String userid,
             @Query("alert_type") String alert_type,
             @Query("fullname") String name,
             @Query("rg") String rg,
             @Query("location") String location,
             @Query("attachment") String attachment,
-
             @Query("notes") String notes,
-
             @Query("created") String created1,
             @Query("modified") String modified);
 

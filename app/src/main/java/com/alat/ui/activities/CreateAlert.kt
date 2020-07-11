@@ -16,6 +16,7 @@ import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.inputmethod.InputMethodManager
@@ -41,7 +42,9 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.rengwuxian.materialedittext.MaterialEditText
 import com.squareup.picasso.Picasso
+import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -89,6 +92,9 @@ class CreateAlert : AppCompatActivity() {
         "Gambling [GAME]")
 
     var spinner: MaterialSpinner? = null
+
+    var spinner3: MaterialSpinner? = null
+
     var spinner_2: MaterialSpinner? = null
     var selectedItem: String? = null
 
@@ -139,6 +145,9 @@ class CreateAlert : AppCompatActivity() {
     var btnLogin: Button? = null
     private var setLevel: String? = null
 
+
+    private var selecteditem3: String? = null
+
     private var alert_namess: String? = null
 
     private var setLoc: String? = null
@@ -146,14 +155,20 @@ class CreateAlert : AppCompatActivity() {
     private var fullname: String? = null
     private var mssidn: String? = null
     private var userid: String? = null
+    var updateFNamee: MaterialEditText? = null
+
+    var waitingDialog: android.app.AlertDialog? = null
 
     private var addnotes: String? = null
+
+
+    var alertsss: android.app.AlertDialog? = null
 
 
     var pref: SharedPreferences? = null
     private val GALLERY = 1
 
-
+    val catList: ArrayList<String> = ArrayList()
     var fname: String? = null
     var user: String? = null
     var check: Boolean? = null
@@ -367,7 +382,7 @@ class CreateAlert : AppCompatActivity() {
             val array: JSONArray = o.getJSONArray("records")
            //  val array: JSONArray = JSONArray(jsonresponse)
 
-            val catList: ArrayList<String> = ArrayList()
+
 
             val jsonarray = JSONArray(array.toString())
 
@@ -404,11 +419,149 @@ class CreateAlert : AppCompatActivity() {
             }
 
 
+            val adapter_3 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
+            adapter_3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            spinner3 = findViewById<View>(R.id.spinner4) as MaterialSpinner
+            spinner3?.adapter = adapter_3
+            spinner3!!.isSelected = false;  // otherwise listener will be called on initialization
+            spinner3!!.setSelection(0, true)
+            spinner3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    arg0: AdapterView<*>?, arg1: View?,
+                    arg2: Int, arg3: Long
+                ) {
+
+
+                    if (spinner3!!.selectedItem != null) {
+                        // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
+                        selecteditem3 = spinner3!!.selectedItem.toString()
+                    }   // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
+
+                    // TODO Auto-generated method stub
+                }
+
+                override fun onNothingSelected(arg0: AdapterView<*>?) {
+                    // TODO Auto-generated method stub
+                }
+            }
+
+
+            val adapter_4 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
+            adapter_4 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+            spinner3 = findViewById<View>(R.id.spinner5) as MaterialSpinner
+            spinner3?.adapter = adapter_4
+            spinner3!!.isSelected = false;  // otherwise listener will be called on initialization
+            spinner3!!.setSelection(0, true)
+            spinner3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(
+                    arg0: AdapterView<*>?, arg1: View?,
+                    arg2: Int, arg3: Long
+                ) {
+
+                    if (spinner3!!.selectedItem != null) {
+                        // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
+                        selecteditem3 = spinner3!!.selectedItem.toString()
+                    }
+                    // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
+
+                    // TODO Auto-generated method stub
+                }
+
+                override fun onNothingSelected(arg0: AdapterView<*>?) {
+                    // TODO Auto-generated method stub
+                }
+            }
+
+
+
 
         } catch (e: JSONException) {
             e.printStackTrace()
         }
 
+
+    }
+
+
+    fun updates() {
+
+
+        val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        alertDialog.setTitle("Attach Alert other Response Group")
+
+        val inflater: LayoutInflater =
+            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+
+        val layout_pwd: View =
+            inflater.inflate(R.layout.layout_submit_rl, null)
+        alertDialog.setView(layout_pwd)
+
+        alertsss = alertDialog.create()
+
+
+        val adapter_3 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
+        adapter_3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+
+        spinner3 = layout_pwd.findViewById<View>(R.id.spinner2) as MaterialSpinner
+        spinner3?.adapter = adapter_3
+        spinner3!!.isSelected = false;  // otherwise listener will be called on initialization
+        spinner3!!.setSelection(0, true)
+        spinner3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(
+                arg0: AdapterView<*>?, arg1: View?,
+                arg2: Int, arg3: Long
+            ) {
+                if (spinner3!!.selectedItem == null) {
+                    // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
+                    return
+                } else {
+                    selectedItem2 = spinner3!!.selectedItem.toString()
+                    // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
+                }
+                // TODO Auto-generated method stub
+            }
+
+            override fun onNothingSelected(arg0: AdapterView<*>?) {
+                // TODO Auto-generated method stub
+            }
+        }
+
+
+        val updateButton: Button =
+            layout_pwd.findViewById<View>(R.id.update) as Button
+        updateButton.setOnClickListener(View.OnClickListener {
+            waitingDialog =
+                SpotsDialog.Builder().setContext(this).build()
+            if (spinner3!!.selectedItem == null) {
+                Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
+
+            }
+             else {
+                alertsss!!.dismiss()
+
+                mProgress!!.show()
+
+                subm()
+
+
+
+            }
+
+
+        })
+        val dismissButton: Button =
+            layout_pwd.findViewById<View>(R.id.cancel) as Button
+        dismissButton.setOnClickListener(View.OnClickListener {
+            alertsss!!.dismiss()
+
+            startActivity(Intent(this, HomePage::class.java))
+
+        })
+        alertDialog.setView(layout_pwd)
+        alertsss!!.setCancelable(false)
+        alertsss!!.show()
 
     }
 
@@ -479,18 +632,28 @@ class CreateAlert : AppCompatActivity() {
             val jsonObject = JSONObject(jsonresponse)
 
             if (jsonObject.getString("status") == "true") {
-               // ImageUploadToServerFunction()
-                mProgress?.dismiss()
-                level!!.setText("")
-                loc!!.setText("")
-                notes!!.setText("")
-               // ImageUploadToServerFunction()
-                alert!!.setText("")
-                btnLogin!!.text = "Submit"
 
-                imageView!!.visibility = View.GONE
-                        dialogue();
-                   promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+                if (selecteditem3 == null) {
+                    // ImageUploadToServerFunction()
+                    mProgress?.dismiss()
+                    //waitingDialog!!.dismiss()
+                    btnLogin!!.text = "Submit"
+
+                    imageView!!.visibility = View.GONE
+                    dialogue();
+                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                }
+                else{
+
+                        if(path == null){
+                            uploadImages2()
+                        }else {
+                            uploadImage2(path!!)
+                        }
+                    }
+
+
 
 
             } else {
@@ -542,15 +705,14 @@ class CreateAlert : AppCompatActivity() {
         promptPopUpView = PromptPopUpView(this)
 
             AlertDialog.Builder(this)
-            .setPositiveButton("Add Alert") { _: DialogInterface?, _: Int ->
+            .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
                 //      finish()
-
-            }
-            .setNegativeButton("Exit") { _: DialogInterface?, _: Int ->
-                //      finish()
+               // updates()
 
                 startActivity(Intent(this@CreateAlert, HomePage::class.java))
+
             }
+
             .setCancelable(false)
             .setView(promptPopUpView)
                 .show().withCenteredButtons()
@@ -666,6 +828,23 @@ class CreateAlert : AppCompatActivity() {
         }
     }
 
+    fun subm2(){
+
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+
+
+        if (setLevel == "Level 1"){
+            mProgress?.show()
+            if(path == null){
+                uploadImages2()
+            }else {
+                uploadImage2(path!!)
+            }
+        }else {
+            done()
+        }
+    }
+
     fun done() {
         AlertDialog.Builder(this)
             .setTitle("Confirmation")
@@ -684,6 +863,32 @@ class CreateAlert : AppCompatActivity() {
             }
             .show().withCenteredButtons()
     }
+
+
+
+
+
+    fun done2() {
+        AlertDialog.Builder(this)
+            .setTitle("Confirmation")
+            .setMessage("Are you sure you want to initiate a dispatch from your response teams?\n It is punishable in law to raise false alarm\n\nProceed??")
+            .setCancelable(false)
+            .setPositiveButton("Yes") { _, id ->
+                btnLogin!!.text = "Submitting.."
+                if(path == null){
+                    uploadImages2()
+                }else {
+                    uploadImage2(path!!)
+                }
+                mProgress?.show()
+            }
+            .setNegativeButton("No") { _, id ->
+            }
+            .show().withCenteredButtons()
+    }
+
+
+
 
 
     private fun uploadImage(path: String) {
@@ -858,6 +1063,266 @@ class CreateAlert : AppCompatActivity() {
             }
         })
     }
+
+
+
+    private fun parseLoginData2(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+
+            if (jsonObject.getString("status") == "true") {
+
+
+                    // ImageUploadToServerFunction()
+                    mProgress?.dismiss()
+                    //waitingDialog!!.dismiss()
+                    btnLogin!!.text = "Submit"
+
+                    imageView!!.visibility = View.GONE
+                    dialogue();
+                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+
+
+
+
+            } else {
+
+                dialogue_error();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                //Log.d("BAYO", response.code().toString())
+                btnLogin!!.text = "Submit"
+                level  !!.setText("")
+                loc!!.setText("")
+
+                mProgress?.dismiss()
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private fun uploadImage2(path: String) {
+
+
+
+
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+
+        mssidn = pref!!.getString("mssdn", null)
+
+        user = pref!!.getString("userid", null)
+
+        addnotes = notes!!.text.toString().trim { it <= ' ' }
+
+        alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+        setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
+
+        //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
+
+        val imgname = Calendar.getInstance().timeInMillis.toString()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(MultiInterface.IMAGEURL)
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+        //Create a file object using file path
+        val file = File(path)
+        // Parsing any Media type file
+        val requestBody =
+            RequestBody.create("*/*".toMediaTypeOrNull(), file)
+        val fileToUpload =
+            MultipartBody.Part.createFormData("filename", file.name, requestBody)
+        val filename =
+            RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
+        val getResponse: MultiInterface = retrofit.create(MultiInterface::class.java)
+        val call: Call<String> = getResponse.uploadImage(fileToUpload, alert_namess,fullname,selectedItem,selecteditem3,setLevel,mssidn,user,setLoc,addnotes, filename)
+        Log.d("assss", imgname)
+        call.enqueue(object : Callback<String?> {
+            override fun onResponse(
+                @NonNull call: Call<String?>,
+                @NonNull response: Response<String?>) {
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!
+                    Log.d("test", remoteResponse)
+
+
+//
+//                                 Toast.makeText(
+//                applicationContext,
+//                jsonObject.getString("message"),
+//                Toast.LENGTH_SHORT
+//            ).show()
+
+                    mProgress?.dismiss()
+                    //waitingDialog!!.dismiss()
+                    btnLogin!!.text = "Submit"
+
+                    imageView!!.visibility = View.GONE
+                    dialogue();
+                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    btnLogin!!.text = "Submit"
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.d("TAG", "File Saved::--->" + t.toString())
+
+            }
+
+
+        })
+    }
+
+
+
+
+    private fun uploadImages2() {
+
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+
+        mssidn = pref!!.getString("mssdn", null)
+
+        user = pref!!.getString("userid", null)
+
+        addnotes = notes!!.text.toString().trim { it <= ' ' }
+
+
+
+
+        alert_namess = textInputAlert!!.editText!!.text.toString().trim { it <= ' ' }
+
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+        setLoc = textInputLocation!!.editText!!.text.toString().trim { it <= ' ' }
+
+        //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+        params["alert_name"] = alert_namess!!
+        params["fullname"] = fullname!!
+        params["alert_type"] = selectedItem!!
+        params["rg"] = selecteditem3!!
+        params["rl"] = setLevel!!
+        params["mssdn"] = mssidn!!
+        params["userid"] = user!!
+        params["location"] = setLoc!!
+        params["notes"] = addnotes!!
+
+        //  Toast.makeText(this@CreateAlert, "" + alert_namess , Toast.LENGTH_LONG).show();
+
+        val api: AddAlert = retrofit.create(AddAlert::class.java)
+        val call: Call<ResponseBody> = api.addAlert(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+                    parseLoginData2(remoteResponse)
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    btnLogin!!.text = "Submit"
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                btnLogin!!.text = "Submit"
+
+                dialogue_error()
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
+
+
+
 
     private fun requestMultiplePermissions() {
         Dexter.withActivity(this)

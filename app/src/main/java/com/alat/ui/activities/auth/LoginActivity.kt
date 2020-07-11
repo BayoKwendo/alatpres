@@ -88,7 +88,7 @@ class LoginActivity : AppCompatActivity() {
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
         if (pref!!.getBoolean("isLogin", false) === true){
-            val intent = Intent(this@LoginActivity, HomePage::class.java)
+            val intent = Intent(this@LoginActivity, Permission::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
@@ -265,6 +265,8 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("idNo", jsonObject.getString("idNo"))
             editor.putString("county", jsonObject.getString("county"))
             editor.putString("userid", jsonObject.getString("userid"))
+            editor.putString("account_status", jsonObject.getString("account_status"))
+            editor.putString("clients", jsonObject.getString("clients"))
 
 
 //            editor.putString("tax", jsonObject.getString("taxid"))

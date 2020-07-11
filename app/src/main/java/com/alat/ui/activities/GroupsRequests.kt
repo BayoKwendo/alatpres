@@ -158,54 +158,37 @@ class GroupsRequests() : AppCompatActivity(),
 
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                Log.d("Responsestring", response.body().toString())
+              //  Log.d("Responsestring",response.body()!!.string())
                 //Toast.makeText()
                 if (response.isSuccessful) {
-                    if (response.body() != null) {
+                           val remoteResponse = response.body()!!.string()
+                            Log.d("Responsestring",response.body()!!.string())
+                            val o = JSONObject(remoteResponse)
 
-                       // val jsonresponse = response.body().toString()
+                            if (o.getString("status") == "false")  {
+                                errorNull!!.visibility = View.VISIBLE
+                                mProgressLayout!!.visibility = View.GONE
+                            }else {
 
-                       // Log.d("onSuccessS", response.errorBody()!!.toString())
+                                Log.d("SUCCESS", response.body().toString())
+                                val array: JSONArray = o.getJSONArray("records")
+                                val names = arrayOfNulls<String>(array.length())
 
+                                val items: List<rgModel> =
+                                    Gson().fromJson<List<rgModel>>(
+                                        array.toString(),
+                                        object : TypeToken<List<rgModel?>?>() {}.type
+                                    )
 
-                        if (response.code().toString() == "200"){
-                            errorNull!!.visibility = View.VISIBLE
-                            mProgressLayout!!.visibility = View.GONE
-                        }
+                                Collections.reverse(items);
+                                contactList!!.clear()
+                                contactList!!.addAll(items)
+                                mAdapter!!.notifyDataSetChanged()
+                                mProgressLayout!!.visibility = View.GONE
+                                errorNull!!.visibility = View.GONE
 
-
-                        try {
-
-                            Log.d("SUCCESS", response.body().toString())
-                            val o = JSONObject(response.body()!!.string())
-                            val array: JSONArray = o.getJSONArray("records")
-                            val names = arrayOfNulls<String>(array.length())
-
-                            val items: List<rgModel> =
-                                Gson().fromJson<List<rgModel>>(
-                                    array.toString(),
-                                    object : TypeToken<List<rgModel?>?>() {}.type
-                                )
-
-                            Collections.reverse(items);
-                            contactList!!.clear()
-                            contactList!!.addAll(items)
-                            mAdapter!!.notifyDataSetChanged()
-                            mProgressLayout!!.visibility = View.GONE
-                            errorNull!!.visibility = View.GONE
-
-
+                            }
                             //    Log.d("onSuccess1", firstSport.toString())
-
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
-                        }
-                    } else {
-                        errorNull!!.visibility = View.VISIBLE
-                        mProgressLayout!!.visibility = View.GONE
-
-                        Log.i("onEmptyResponse", "Returned empty response") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
-                    }
                 }else{
                     Log.d("bayo", response.errorBody()!!.string())
                     errorNull!!.visibility = View.VISIBLE
@@ -305,7 +288,7 @@ class GroupsRequests() : AppCompatActivity(),
             .setMessage("Are you sure want to go back?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@GroupsRequests, HomePage::class.java))
+                startActivity(Intent(this, HomePage::class.java))
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()

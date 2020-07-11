@@ -12,6 +12,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alat.R
 import com.alat.model.rgModel
+import com.google.android.gms.ads.AdView
 import java.util.*
 
 class RGAdapter(

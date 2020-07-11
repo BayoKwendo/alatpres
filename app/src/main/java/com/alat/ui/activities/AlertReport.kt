@@ -12,15 +12,13 @@ import android.os.Environment
 import android.util.Log
 import android.view.MenuItem
 import android.view.View
-import android.widget.Button
-import android.widget.RelativeLayout
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
+import com.alat.interfaces.AlertCounts
 import com.alat.interfaces.GetAlertPost
 import com.itextpdf.text.BadElementException
 import com.itextpdf.text.Document
@@ -30,13 +28,16 @@ import com.itextpdf.text.pdf.PdfWriter
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -75,6 +76,31 @@ class AlertReport : AppCompatActivity() {
     var postedBy: TextView? = null
 
 
+
+    var nutralize: TextView? = null
+    var safe: TextView? = null
+    var ignore: TextView? = null
+    var shout: TextView? = null
+    var elevates: TextView? = null
+    var mshare: TextView? = null
+
+    var imageView: ImageView? = null
+
+    var url: String? = null
+
+
+    var alert_name: String? = null
+    var rls: String? = null
+    var mssdn: String? = null
+    var userid: String? = null
+
+
+    var ignore_count: String? = null
+    var shout_count: String? = null
+    var elevate_count: String? = null
+    var share_count: String? = null
+    var neutral_count: String? = null
+    var safe_count: String? = null
     private var IS_MANY_PDF_FILE = false
 
     /**
@@ -124,11 +150,18 @@ class AlertReport : AppCompatActivity() {
 
         scrollView = findViewById(R.id.relation)
 
+        counts()
         response_group = findViewById(R.id.textView7)
         fullnaem =findViewById(R.id.textView21)
         levelresp = findViewById(R.id.textView15)
         generate = findViewById(R.id.generate)
         createdOn = findViewById(R.id.textView11)
+        nutralize = findViewById(R.id.neutralized)
+        safe = findViewById(R.id.safe)
+        ignore = findViewById(R.id.ignore)
+        shout = findViewById(R.id.shouts)
+        elevates = findViewById(R.id.elevate)
+        mshare = findViewById(R.id.share)
 
 
         neutralized = findViewById(R.id.textView23)
@@ -260,10 +293,15 @@ class AlertReport : AppCompatActivity() {
         val name: String? = null
         val locations: String? = null
         val notes: String? = null
-        val attachment: String? = null
 
-        val created: String? = null
+
+        val alert_name: String? = null
+        val rl: String? = null
+        val mssdn: String? = null
+        val userid: String? = null
+
         val modified: String? = null
+        val attachment: String? = null
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -289,7 +327,7 @@ class AlertReport : AppCompatActivity() {
             .build()
         val api: GetAlertPost = retrofit.create(
             GetAlertPost::class.java)
-        val call: Call<String>? = api.getAlert(mid,alert_type,name,rg,locations,attachment,notes,created,modified)
+        val call: Call<String>? = api.getAlert(mid,alert_name,alert_type,rl,mssdn,userid,name,rg,locations,attachment,notes,created, modified)
         call?.enqueue(object : Callback<String?> {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 Log.d("Responsestring", response.toString())
@@ -353,6 +391,121 @@ class AlertReport : AppCompatActivity() {
 
 
 
+
+    private fun counts() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["alert_id"] = mid!!
+
+
+        val api: AlertCounts = retrofit.create(AlertCounts::class.java)
+        val call: Call<ResponseBody> = api.Mark(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+
+                    if (response.body() != null) {
+                        val remoteResponse = response.body()!!.string()
+
+                        Log.d("test", remoteResponse)
+                        parseDetails(remoteResponse)
+
+                        //Toast.makeText(this@ActiveAlerts,"Nothing "  + remoteResponse,Toast.LENGTH_LONG).show();
+
+                    } else {
+
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        )
+                    }
+
+                } else {
+
+                    Log.d("BAYO", response.code().toString())
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
+    }
+
+    private fun parseDetails(remoteResponse: String) {
+        try {
+            val o = JSONObject(remoteResponse)
+
+            val array: JSONArray = o.getJSONArray("records")
+
+            for (i in 0 until array.length()) {
+                val jsonObject: JSONObject = array.getJSONObject(i)
+
+
+                ignore_count = jsonObject.getString("ignore_counts")
+                ignore!!.setText("IGNORE (" + ignore_count +" )")
+
+
+                shout_count = jsonObject.getString("shout_counts")
+                shout!!.setText("SHOUT (" + shout_count +" )")
+
+
+                safe_count = jsonObject.getString("safe_counts")
+                safe!!.setText("SAFE (" + safe_count +" )")
+
+
+                elevate_count = jsonObject.getString("elevate_counts")
+                elevates!!.setText("ELEVATE (" + elevate_count +" )")
+
+
+                share_count = jsonObject.getString("share_counts")
+                mshare!!.setText("SHARE (" + share_count +" )")
+
+
+                neutral_count = jsonObject.getString("neutralized_counts")
+                nutralize!!.setText("NEUTRALIZED (" + neutral_count +" )")
+
+            }
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+
+    }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will

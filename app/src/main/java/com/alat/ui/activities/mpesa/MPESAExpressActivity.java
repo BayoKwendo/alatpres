@@ -4,6 +4,8 @@ import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
@@ -25,7 +27,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.alat.R;
+import com.alat.helpers.Constants;
 import com.alat.helpers.PromptPopUpView;
+import com.alat.interfaces.UpdateSubscription;
+import com.alat.ui.activities.auth.LoginActivity;
 import com.androidstudy.daraja.Daraja;
 import com.androidstudy.daraja.DarajaListener;
 import com.androidstudy.daraja.model.AccessToken;
@@ -38,14 +43,25 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
+import retrofit2.converter.scalars.ScalarsConverterFactory;
 import timber.log.Timber;
 
 
@@ -78,6 +94,16 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
 
     String phoneNumber;
+
+    String price;
+
+
+    String time;
+
+    String userid;
+
+    SharedPreferences pref;
+
     private boolean Execute;
 
     @Override
@@ -85,6 +111,22 @@ public class MPESAExpressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mpesa);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
+
+
+        pref =
+                getSharedPreferences("MyPref", 0) ;// 0 - for private mode
+
+
+        userid = pref.getString("userid", null);
+
+
+
+
+        price = getIntent().getStringExtra("price");
+        time = getIntent().getStringExtra("time");
+
+
+       // Toast.makeText(this,  price, Toast.LENGTH_SHORT).show();
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -273,7 +315,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
                 try {
                     loadIntoListView(s);
                 } catch (JSONException e) {
@@ -335,7 +376,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                     }
 
                 }
-            } else {
+            }  else {
                 // Toast.makeText(this, "" + price, Toast.LENGTH_SHORT).show();
 
                 //TODO :: REPLACE WITH YOUR OWN CREDENTIALS  :: THIS IS SANDBOX DEMO
@@ -343,10 +384,10 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         "174379",
                         "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",  //https://developer.safaricom.co.ke/test_credentials
                         TransactionType.CustomerPayBillOnline,
-                        "1",
+                         "2",
                         "254717629732",
                         "174379",
-                        phoneNumber,
+                         phoneNumber,
                         "https://youthsofhope.co.ke/mpesa/mpesa.php",
                         "001ABC",
                         "Goods Payment"
@@ -399,28 +440,8 @@ public class MPESAExpressActivity extends AppCompatActivity {
                     String p = mpesa_code.getText().toString().trim();
 
                     if (p.equals(dataobj.getString("TransID"))) {
-                        mProgress.dismiss();
-                        PromptPopUpView promptPopUpView = new PromptPopUpView(MPESAExpressActivity.this);
-                        promptPopUpView.changeStatus(2, "Payment Successful");
-                        androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(MPESAExpressActivity.this)
-                                .setPositiveButton("Great!", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i) {
-                                        //MPESAExpressActivity.this.finish();
-                                    }
-                                })
-                                .setCancelable(false)
-                                .setView(promptPopUpView)
-                                .show();
-                        new Handler().postDelayed(new Runnable() {
-                            public void run() {
-                                finish();
-                                dialog.dismiss();
-                            }
-                        }, 3000);
-                        Button button = dialog.getButton(AlertDialog.BUTTON_POSITIVE);
-                        button.setEnabled(false);
-                        button.setTextColor(getResources().getColor(R.color.colorBlack));
+                        loginUser();
+
                     } else {
 
                         mProgress.dismiss();
@@ -507,9 +528,107 @@ public class MPESAExpressActivity extends AppCompatActivity {
     }
 
     @Override
+
     public boolean onCreateOptionsMenu(Menu menu) {
         return super.onCreateOptionsMenu(menu);
     }
+
+
+    private void loginUser() {
+
+        OkHttpClient httpClient = new OkHttpClient();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(Constants.API_BASE_URL)
+                .client(httpClient)
+                .addConverterFactory(ScalarsConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create())
+
+                .build();
+
+        UpdateSubscription api = retrofit.create(UpdateSubscription.class);
+
+        HashMap<String, String> meMap= new HashMap<>();
+        meMap.put("subscription_date",time);
+        meMap.put("userid",userid);
+
+        Call<String> call = api.AddM(meMap);
+
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+                Log.i("Responsestring", response.body().toString());
+                //Toast.makeText()
+                if (response.isSuccessful()) {
+                    if (response.body() != null) {
+                        Log.i("onSuccess", response.body().toString());
+
+                        String jsonresponse = response.body().toString();
+                        parseLoginData(jsonresponse);
+
+                    } else {
+                        Log.i("onEmptyResponse", "Returned empty response");//Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
+
+    }
+
+    private void parseLoginData(String response){
+        try {
+            JSONObject jsonObject = new JSONObject(response);
+            if (jsonObject.getString("status").equals("true")) {
+                mProgress.dismiss();
+                PromptPopUpView promptPopUpView = new PromptPopUpView(MPESAExpressActivity.this);
+                promptPopUpView.changeStatus(2, "Account Upgraded successfully");
+                androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(MPESAExpressActivity.this)
+
+                        .setCancelable(false)
+                        .setView(promptPopUpView)
+                        .show();
+                new Handler().postDelayed(new Runnable() {
+                    public void run() {
+                        Toast.makeText(MPESAExpressActivity.this,  "You have to Login again", Toast.LENGTH_SHORT).show();
+
+                        SharedPreferences preferences =getSharedPreferences("MyPref",0);
+                        SharedPreferences.Editor editor = preferences.edit();
+                        editor.putBoolean("isLogin", false);
+                        editor.clear();
+                        editor.apply();
+                        finish();
+
+
+                        Intent intent = new Intent(MPESAExpressActivity.this, LoginActivity.class);
+                        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+                        startActivity(intent);
+
+                        dialog.dismiss();
+                    }
+                }, 3000);
+
+            }
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
 }
+
 
 

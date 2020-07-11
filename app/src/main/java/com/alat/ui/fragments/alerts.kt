@@ -9,16 +9,15 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.*
-import android.widget.Button
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ShareActionProvider
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuItemCompat
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,6 +27,7 @@ import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
 import com.alat.helpers.Constants
+import com.alat.helpers.CustomAd
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.GetRGs
@@ -35,10 +35,10 @@ import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
-import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import kotlinx.android.synthetic.main.activity_acountenterprise.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -82,7 +82,10 @@ class alerts : Fragment(),
     var errorNull: TextView? = null
     private var mProgress: ProgressDialog? = null
     var pref: SharedPreferences? = null
+    private var accounts: String? = null
+    private var userid: String? = null
 
+    private var roleID: String? = null
     var MYCODE = 1000
 
     override fun onCreateView(
@@ -111,10 +114,17 @@ class alerts : Fragment(),
             )
         )
         recyclerView!!.adapter = mAdapter
-
-
         floatingActionButton =
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
+        pref =
+            context!!.getSharedPreferences("MyPref", 0)
+
+        userid = pref!!.getString("userid", null)
+
+        accounts = pref!!.getString("account_status", null)
+
+        roleID = pref!!.getString("role", null)
+
 
         global =
             view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
@@ -126,6 +136,10 @@ class alerts : Fragment(),
         floatingActionButton!!.setOnClickListener {
             startActivity(Intent(activity!!, CreateAlert::class.java))
         }
+
+        val runnable = Runnable { loadCustomAd() }
+        runnable.run()
+
         view.context
         return view
     }
@@ -133,13 +147,21 @@ class alerts : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         mProgressLayout!!.visibility = View.VISIBLE
         errorNull!!.visibility = View.GONE
-
         getStudent()
-
         //you can set the title for your toolbar here for different fragments different title
+    }
+
+
+    fun loadCustomAd() {
+        val fragmentManager: FragmentManager? = fragmentManager
+        val ad = CustomAd()
+        ad.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog)
+        ad.show(fragmentManager!!, "Input Dialog")
+        if (ad.dialog != null) {
+            ad.dialog!!.setCanceledOnTouchOutside(true)
+        }
     }
 
 
@@ -374,7 +396,6 @@ class alerts : Fragment(),
         shareIntent.putExtra(
             Intent.EXTRA_TEXT, """
           ALATPRES
-
      Get AlatPres.
      https://play.google.com/store/apps/details?id=com.alatpres
      """.trimIndent()
@@ -394,7 +415,7 @@ class alerts : Fragment(),
                 true
             }
             R.id.join -> {
-                startActivity(Intent(activity, GroupsRequests::class.java))
+                startActivity(Intent(activity, Notification::class.java))
 
             }
 
@@ -404,7 +425,11 @@ class alerts : Fragment(),
             }
 
             R.id.about-> {
-                startActivity(Intent(activity, account::class.java))
+                if(roleID == "1") {
+                     startActivity(Intent(activity, com.alat.ui.activities.account::class.java))
+                }else if(roleID == "2"){
+                    startActivity(Intent(activity, account_enterprise::class.java))
+                }
             }
 //            R.id.team-> {
 //                startActivity(Intent(activity, ResponseProviders::class.java))
@@ -482,7 +507,3 @@ class alerts : Fragment(),
 
     }
 }
-
-
-
-
