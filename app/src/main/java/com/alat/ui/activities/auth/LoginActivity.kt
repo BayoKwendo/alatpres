@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.media.CamcorderProfile.get
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
@@ -17,14 +16,13 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import com.alat.HomePage
-import com.alat.MainActivity
+import com.alat.BasicUserActivity
 import com.alat.Permission
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.LoginInterface
-import com.alat.model.PreferenceModel
+import com.alat.ui.activities.enterprise.AddClientActivitity
 import com.squareup.picasso.Picasso
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -40,7 +38,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
-import java.lang.reflect.Array.get
 import java.util.concurrent.TimeUnit
 
 @Suppress("DEPRECATED_IDENTITY_EQUALS")
@@ -73,7 +70,7 @@ class LoginActivity : AppCompatActivity() {
         image = findViewById(R.id.imageview)
 
         join?.setOnClickListener {
-            startActivity(Intent(this, MainActivity::class.java))
+            startActivity(Intent(this, BasicUserActivity::class.java))
         }
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Authenticating...");
@@ -331,7 +328,7 @@ class LoginActivity : AppCompatActivity() {
                     .setMessage("You want to join ALATPRES as a normal user")
                     .setPositiveButton(
                         "YES") { _: DialogInterface, _: Int ->
-                        startActivity(Intent(this, MainActivity::class.java))
+                        startActivity(Intent(this, BasicUserActivity::class.java))
                     }
                     .setNegativeButton(
                         "No"
@@ -359,7 +356,7 @@ class LoginActivity : AppCompatActivity() {
                     .setMessage("You want to join ALATPRES as an Enterprise")
                     .setPositiveButton(
                         "YES") { _: DialogInterface, _: Int ->
-                        startActivity(Intent(this, Enterprise::class.java))
+                        startActivity(Intent(this, AddClientActivitity::class.java))
 
                     }
                     .setNegativeButton(

@@ -5,27 +5,27 @@
   },
   {
     "hasFocus": false,
-    "employ": "10-50"
+    "employ": "11-50"
   },
   {
     "hasFocus": false,
-    "employ": "50-100"
+    "employ": "51-100"
   },
   {
   "hasFocus": false,
-  "employ": "100-500"
+  "employ": "101-500"
   },
   {
   "hasFocus": false,
-  "employ": "500-1000"
+  "employ": "501-1000"
   },
   {
     "hasFocus": false,
-    "employ": "1000-10000"
+    "employ": "1001-10000"
   },
   {
     "hasFocus": false,
-    "employ": "10000+"
+    "employ": "10001+"
   }
 ]
 

@@ -75,7 +75,6 @@ class CreateRG : Fragment() {
     )
 
     var updateFNamee: MaterialEditText? = null
-
     var spinner: MaterialSpinner? = null
     var AUTOCOMPLETE_REQUEST_CODE = 1
     private var textInputLocation: TextInputLayout? = null
@@ -87,23 +86,17 @@ class CreateRG : Fragment() {
     private var setNameRG: String? = null
     private var setLoc: String? = null
     private var mProgress: ProgressDialog? = null
-
     var rg: String? = null
-
+    var fullaname: String? = null
     var contactNumber: String? = null
     var contactName: String? = null
     private val RESULT_PICK_CONTACT = 1001
-
     private var mProgressS: ProgressDialog? = null
     private var mProgresss: ProgressDialog? = null
-
     private var mProgressSending: ProgressDialog? = null
-
     private var fullname: String? = null
     private var mssidn: String? = null
     private var userid: String? = null
-
-
     private var useid: String? = null
     private var mssidns: String? = null
     private var rg_id: String? = null
@@ -147,8 +140,14 @@ class CreateRG : Fragment() {
 
     var pref: SharedPreferences? = null
 
+
+    private var account: String? = null
+
+    private var roleID: String? = null
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
+    ): View? {
         val view: View = inflater.inflate(R.layout.activity_createrg, container, false)
 
         if (!Places.isInitialized()) {
@@ -168,8 +167,9 @@ class CreateRG : Fragment() {
         userid = pref!!.getString("userid", null)
 
 
+        account = pref!!.getString("account_status", null)
 
-
+        roleID = pref!!.getString("role", null)
 
 
 //
@@ -222,7 +222,6 @@ class CreateRG : Fragment() {
 
 
         submit!!.setOnClickListener {
-
             validation()
         }
 
@@ -244,6 +243,10 @@ class CreateRG : Fragment() {
         mProgresss!!.setMessage("Adding...");
         mProgresss!!.setCancelable(true)
 
+
+        mProgressSending = ProgressDialog(context!!)
+        mProgressSending!!.setMessage("Sending...");
+        mProgressSending!!.setCancelable(false)
 
         mProgress = ProgressDialog(context!!)
         mProgress!!.setMessage("Saving...");
@@ -270,7 +273,7 @@ class CreateRG : Fragment() {
                     internet()
                     promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
                 }else {
-                    bayo()
+                    checkRGg()
                     btnLogin!!.text = "Submitting.."
                     mProgress?.show()
                 }
@@ -287,8 +290,6 @@ class CreateRG : Fragment() {
 
     private fun validation() {
         rg_add = rg_input?.text.toString().trim();
-
-
         if (TextUtils.isEmpty(rg_add)) {
 
             rg_input?.error = "User ID Required";
@@ -298,15 +299,12 @@ class CreateRG : Fragment() {
             return;
         }
         if (!TextUtils.isEmpty(rg_add)) {
-
             if (!isNetworkAvailable()) {
                 internet()
                 promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
-
             } else {
                 mProgresss?.show()
                 getUserDetails()
-
             }
         }
 //            intent = Intent(this, NfcHome::class.java)
@@ -466,14 +464,6 @@ class CreateRG : Fragment() {
                 waitingDialog!!.dismiss()
                 hideKeyboardFrom()
                 alert!!.dismiss()
-//
-//                Toast.makeText(activity, "Selected: " +contactNumber ,
-//                       Toast.LENGTH_LONG
-//                         ).show()
-
-
-
-
             } else {
                 waitingDialog!!.dismiss()
 
@@ -536,6 +526,94 @@ class CreateRG : Fragment() {
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
     }
 
+
+    private fun checkRGg() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+
+        params["userid"] = userid!!
+
+        val api: countRG = retrofit.create(countRG::class.java)
+        val call: Call<ResponseBody> = api.countRG(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+                    parseCheckerData(remoteResponse)
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    btnLogin!!.text = "Submit"
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                dialogue_error()
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
+
+    private fun parseCheckerData(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+            if (jsonObject.getString("status") == "true") {
+
+                if (account == "0") {
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "You have reached maximum groups you can create for this account. Upgrade to Pro to create more")
+                    mProgress?.dismiss()
+                    hideKeyboardFrom()
+                    btnLogin!!.text = "Submit"
+
+
+                } else if (account == "1") {
+                    bayo()
+                }
+            } else if (jsonObject.getString("status") == "false")  {
+                bayo()
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
 
 
     private fun bayo() {
@@ -619,24 +697,6 @@ class CreateRG : Fragment() {
         try {
             val jsonObject = JSONObject(jsonresponse)
             if (jsonObject.getString("status") == "true") {
-//                     if (selectedItem == "Open group"){
-//                         hideKeyboardFrom()
-////                         //getMSSDN()
-////
-////                         mProgressSendin!!.show()
-//                         mProgress?.dismiss()
-//                         btnLogin!!.text = "Submit"
-//                         create_rg!!.visibility = View.GONE
-//                         add_member!!.visibility = View.VISIBLE
-//                         dialoguess()
-//                         promptPopUpView?.changeStatus(2, setNameRG  +"\tOpen Group was successfully created !!\n\n Redirecting...")
-//
-//                         Handler().postDelayed({
-//
-//                             getSkip()
-//                         }, 3000)
-//
-//                     }else{
 
                          create_rg!!.visibility = View.GONE
                          add_member!!.visibility = View.VISIBLE
@@ -768,7 +828,6 @@ class CreateRG : Fragment() {
 
         rg_add = rg_input?.text.toString().trim();
 
-
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -800,13 +859,10 @@ class CreateRG : Fragment() {
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
-
                 Log.d("Call request", call.request().toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
-
-
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
@@ -819,7 +875,6 @@ class CreateRG : Fragment() {
                     mProgress?.dismiss()
                 }
             }
-
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 Log.i("onEmptyResponse", "" + t) //
@@ -1504,6 +1559,8 @@ class CreateRG : Fragment() {
         params["mssdn"] = contactNumber!!
         params["rg_id"] = rg!!
         params["rg_name"] = setNameRG!!
+        params["name"] = fullname!!
+
 
         val api: sendSMS = retrofit.create(sendSMS::class.java)
         val call: Call<ResponseBody> = api.send(params)

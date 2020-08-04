@@ -76,6 +76,7 @@ class ElevateAlert : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
 
 
     var pref: SharedPreferences? = null
+    var alert_level: String? = null
 
 
     //  var fname: String? = null
@@ -100,17 +101,11 @@ class ElevateAlert : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
         setContentView(R.layout.activity_alert)
         mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar!!);
-
-        //  response_group = intent.getStringExtra("groupSelect")
-
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
         user = pref!!.getString("userid", null)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = response_group;
-
-
-
         recyclerView = findViewById(R.id.recycler_view)
         errorNull = findViewById(R.id.texterror)
         contactList = ArrayList()
@@ -354,15 +349,13 @@ class ElevateAlert : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
     }
 
     override fun onContactSelected(contact: rgModel?) {
-//        Toast.makeText(
-//            this,
-//             ,
-//            Toast.LENGTH_LONG
-//        ).show()
+
 
         alert_id = contact!!.id
 
         update()
+
+        alert_level = contact!!.rl
 //        val sharingIntent =
 //            Intent(Intent.ACTION_SEND)
 //        sharingIntent.type = "text/plain"
@@ -387,28 +380,24 @@ class ElevateAlert : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
 
 
     fun update() {
-
-
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         alertDialog.setTitle("Elevate Alert")
-
         val inflater: LayoutInflater =
             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
         val layout_pwd: View =
             inflater.inflate(R.layout.layout_update_alert, null)
         alertDialog.setView(layout_pwd)
         alert = alertDialog.create()
         updateFNamee = layout_pwd.findViewById<View>(R.id.etName) as MaterialEditText
+        updateFNamee!!.setText(alert_level)
 
+        updateFNamee!!.isEnabled = alert_level != "Level 3"
         updateFNamee!!.setOnClickListener {
-
             updateFNamee!!.clearFocus()
             updateFNamee!!.isFocusable = false
                 val dialog = LevelDialog(this)
                 dialog.setOnSelectingLevel { value -> updateFNamee?.setText(value) }
                 dialog.show()
-
         }
 
         val updateButton: Button =

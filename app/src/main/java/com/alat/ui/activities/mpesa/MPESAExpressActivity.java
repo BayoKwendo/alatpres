@@ -171,7 +171,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                 network();
             }
             p = phoneNumber.replaceFirst("^0+(?!$)", "");
-            getJSON("https://youthsofhope.co.ke/mpesa/read.php?phone=" + 254 + p);
+            getJSON("https://youthsofhope.co.ke/transactions/read.php?phone=" + 254 + p);
         });
 
         if (!isNetworkAvailable()) {
@@ -232,7 +232,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
             p = phoneNumber.replaceFirst("^0+(?!$)", "");
 
-            getJSON("https://youthsofhope.co.ke/mpesa/read.php?phone=" + 254 + p);
+            getJSON("https://youthsofhope.co.ke/transactions/read.php?phone=" + 254 + p);
 
             //Toast.makeText(this,  254+p, Toast.LENGTH_SHORT).show();
 
@@ -246,7 +246,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
         mProgress.show();
 
         String p = mpesa_code.getText().toString().trim();
-        getJSO("https://youthsofhope.co.ke/mpesa/update.php?phone=" + p);
+        getJSO("https://youthsofhope.co.ke/transactions/update.php?phone=" + p);
     }
 
 
@@ -388,7 +388,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         "254717629732",
                         "174379",
                          phoneNumber,
-                        "https://youthsofhope.co.ke/mpesa/mpesa.php",
+                        "x",
                         "001ABC",
                         "Goods Payment"
                 );

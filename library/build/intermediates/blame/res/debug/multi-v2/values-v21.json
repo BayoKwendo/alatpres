@@ -4,7 +4,7 @@
             "outputFile": "/home/bayo/Downloads/Alat/library/build/intermediates/incremental/mergeDebugResources/merged.dir/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/values-v21/values-v21.xml",
+                    "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/values-v21/values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",
@@ -20,7 +20,7 @@
             "outputFile": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/values-v21/values-v21.xml",
             "map": [
                 {
-                    "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/values-v21/values-v21.xml",
+                    "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/values-v21/values-v21.xml",
                     "from": {
                         "startLines": "2,3,4,5,6,7,8,9,10,13",
                         "startColumns": "4,4,4,4,4,4,4,4,4,4",

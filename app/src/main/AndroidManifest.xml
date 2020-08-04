@@ -10,9 +10,11 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.VIBRATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
-
     <uses-permission android:name="android.permission.READ_CONTACTS"/>
     <uses-permission android:name="android.permission.WRITE_CONTACTS"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <uses-permission android:name="android.permission.STORAGE" />
+
 
     <application
         android:allowBackup="true"
@@ -27,7 +29,7 @@
             android:name="com.google.android.gms.ads.APPLICATION_ID"
             android:value="ca-app-pub-3940256099942544~3347511713"/>
 
-        <activity android:name=".MainActivity"
+        <activity android:name=".BasicUserActivity"
             android:screenOrientation="locked"
 
             android:theme="@style/AppTheme.NoActionBar">
@@ -51,7 +53,14 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-        <activity android:name="com.alat.ui.activities.auth.Enterprise"
+
+        <activity android:name=".ui.activities.auth.AudioRecordActivity"
+            android:screenOrientation="locked"
+
+            android:theme="@style/AppTheme.NoActionBar">
+
+        </activity>
+     <activity android:name="com.alat.ui.activities.auth.Enterprise"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
 
@@ -61,6 +70,14 @@
         <activity android:name=".ui.activities.CreateAlert"
             android:screenOrientation="locked"
             android:label="Create Alert"/>
+
+        <activity android:name=".ui.activities.CreateGlobalAlert"
+            android:screenOrientation="locked"
+            android:label="Create Global Alert"/>
+        <activity android:name=".ui.AboutUs"
+            android:screenOrientation="locked"
+            android:label="About Us"/>
+
         <activity android:name=".Permission" >
         </activity>
         <activity android:name=".ui.activities.SplashActivity"
@@ -95,8 +112,11 @@
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
 
-        <activity android:name=".ui.activities.AlertDetails"
+        <activity android:name=".ui.activities.AlertsGlobal"
             android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activities.AlertDetails"
             android:label="Alert Detail"/>
 
         <activity android:name=".ui.activities.ResponseDetails"
@@ -115,6 +135,9 @@
             android:screenOrientation="locked"
             android:label="Add Comment/Post"/>
         <activity android:name=".ui.activities.AlertsToResponse"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.GroupMembers"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AlertDiscussion"

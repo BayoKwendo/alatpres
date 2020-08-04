@@ -17,12 +17,12 @@
         app:showAsAction = "always"/>
 
     <item
-        android:id="@+id/action_notif"
+        android:id="@+id/join"
         android:icon="@drawable/noti"
-        android:visible="false"
-
+        app:showAsAction = "always"
+        android:actionLayout="@layout/action_bar_notifitcation_icon"
         android:title="sh"
-        app:showAsAction = "always"/>
+        />
 
     <item
         android:id="@+id/action_search"
@@ -34,8 +34,8 @@
 <!--    <item android:id="@+id/notification"-->
 <!--        android:title="Notifications" />-->
 
-    <item android:id="@+id/join"
-        android:visible="true"
+    <item android:id="@+id/action_notif"
+        android:visible="false"
         android:title="Notifications" />
 
     <item android:id="@+id/invites"
@@ -43,10 +43,18 @@
         android:title="Invitations" />
 
 
+    <item android:id="@+id/viewmber"
+        android:visible="false"
+        android:icon="@drawable/rg"
+        app:showAsAction = "always"
+        android:title="View Members" />
+
+
     <item android:id="@+id/about"
         android:title="My Account" />
 
-
+    <item android:id="@+id/aboutus"
+        android:title="About Us" />
 
     <item android:id="@+id/logout"
         android:title="Logout" />

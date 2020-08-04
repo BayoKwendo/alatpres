@@ -55,6 +55,7 @@ import kotlin.collections.set
 class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  {
 
    var response_group: String? = null
+    var group_id: String? = null
 
     private val TAG = AlertsPerResponse::class.java.simpleName
     private var recyclerView: RecyclerView? = null
@@ -83,10 +84,10 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
         setSupportActionBar(mToolbar!!);
 
         response_group = intent.getStringExtra("groupSelect")
-
+        group_id = intent.getStringExtra("groupID")
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = response_group;
+        supportActionBar!!.title = response_group +"\t["+group_id+"]"
 
 
 
@@ -121,7 +122,7 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
     private fun getStudent() {
 
 
-        mToolbar!!.title = response_group + "\tRG"
+        mToolbar!!.title = response_group +"\t["+group_id+"]"
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)

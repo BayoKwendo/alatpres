@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Rect
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -27,21 +28,21 @@ import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
 import com.alat.helpers.Constants
-import com.alat.helpers.CustomAd
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
-import com.alat.interfaces.GetRGs
+import com.alat.interfaces.ViewGroups
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
+import com.alat.ui.AboutUs
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.activity_acountenterprise.*
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import org.json.JSONException
@@ -50,7 +51,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
-import retrofit2.converter.scalars.ScalarsConverterFactory
+import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -76,7 +77,8 @@ class alerts : Fragment(),
     var floatingActionButton: FloatingActionButton? = null
 
     var global: FloatingActionButton? = null
-
+    private var hot_number = 0
+    private var ui_hot: TextView? = null
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
     var errorNull: TextView? = null
@@ -137,8 +139,8 @@ class alerts : Fragment(),
             startActivity(Intent(activity!!, CreateAlert::class.java))
         }
 
-        val runnable = Runnable { loadCustomAd() }
-        runnable.run()
+//      `  val runnable = Runnable { loadCustomAd() }
+//        runnable.run()`
 
         view.context
         return view
@@ -154,15 +156,15 @@ class alerts : Fragment(),
     }
 
 
-    fun loadCustomAd() {
-        val fragmentManager: FragmentManager? = fragmentManager
-        val ad = CustomAd()
-        ad.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog)
-        ad.show(fragmentManager!!, "Input Dialog")
-        if (ad.dialog != null) {
-            ad.dialog!!.setCanceledOnTouchOutside(true)
-        }
-    }
+//    fun loadCustomAd() {
+//        val fragmentManager: FragmentManager? = fragmentManager
+//        val ad = CustomAd()
+//        ad.setStyle(DialogFragment.STYLE_NORMAL, R.style.CustomDialog)
+//        ad.show(fragmentManager!!, "Input Dialog")
+//        if (ad.dialog != null) {
+//            ad.dialog!!.setCanceledOnTouchOutside(true)
+//        }
+//    }
 
 
     private fun getStudent() {
@@ -189,35 +191,52 @@ class alerts : Fragment(),
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
-            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create())
 
             .build()
-        val api: GetRGs = retrofit.create(GetRGs::class.java)
-        val call: Call<String>? = api.getRG(group_name, alerts)
+        val params: HashMap<String, String> = HashMap()
 
-        call?.enqueue(object : Callback<String?> {
-            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                Log.d("Responsestring", response.body().toString())
+        params["userid"] = userid!!
+        val api: ViewGroups = retrofit.create(ViewGroups::class.java)
+        val call: Call<ResponseBody>? = api.viewRG(params)
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
                 if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        Log.d("onSuccess", response.body().toString())
-                        val jsonresponse = response.body().toString()
+                    val remoteResponse = response.body()!!.string()
+                    try {
+                        val o = JSONObject(remoteResponse)
 
+                        if (o.getString("status") == "true") {
 
-                        if (response.code().toString() == "200") {
+                            val array: JSONArray = o.getJSONArray("records")
+
+                            for (i in 0 until array.length()) {
+                                val dataobj: JSONObject = array.getJSONObject(i)
+
+                                val items: List<rgModel> =
+                                    Gson().fromJson<List<rgModel>>(
+                                        array.toString(),
+                                        object : TypeToken<List<rgModel?>?>() {}.type
+                                    )
+                                Collections.reverse(items);
+                                contactList!!.clear()
+                                contactList!!.addAll(items)
+                                mAdapter!!.notifyDataSetChanged()
+                                mProgressLayout!!.visibility = View.GONE
+                                errorNull!!.visibility = View.GONE
+
+                            }
+                        } else {
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }
 
-                        parseLoginData(jsonresponse)
-                    } else {
-                        errorNull!!.visibility = View.VISIBLE
-                        mProgressLayout!!.visibility = View.GONE
-
-                        Log.i("onEmptyResponse", "Returned empty response")
-                        //   Toast.makeText(context,"Nothing returned",Toast.LENGTH_LONG).show();
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
                     }
+
                 } else {
                     Log.d("bayo", response.errorBody()!!.string())
                     errorNull!!.visibility = View.VISIBLE
@@ -233,7 +252,7 @@ class alerts : Fragment(),
                 }
             }
 
-            override fun onFailure(call: Call<String?>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 //   btn.text = "Proceed"
                 Log.i("onEmptyResponse", "" + t) //
                 // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
@@ -243,33 +262,6 @@ class alerts : Fragment(),
                 //mProgress?.dismiss()
             }
         })
-    }
-
-    private fun parseLoginData(jsonresponse: String) {
-        try {
-            val o = JSONObject(jsonresponse)
-            val array: JSONArray = o.getJSONArray("records")
-            val names = arrayOfNulls<String>(array.length())
-
-            val items: List<rgModel> =
-                Gson().fromJson<List<rgModel>>(
-                    array.toString(),
-                    object : TypeToken<List<rgModel?>?>() {}.type
-                )
-            Collections.reverse(items);
-            contactList!!.clear()
-            contactList!!.addAll(items)
-            mAdapter!!.notifyDataSetChanged()
-
-            mProgressLayout!!.visibility = View.GONE
-            errorNull!!.visibility = View.GONE
-
-
-            //    Log.d("onSuccess1", firstSport.toString())
-
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
     }
 
 
@@ -343,11 +335,22 @@ class alerts : Fragment(),
         negative.layoutParams = layoutParams
     }
 
-
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.menu_items, menu)
+        val item9 = menu.findItem(R.id.join)
 
-
+        MenuItemCompat.setActionView(
+            item9,
+            R.layout.action_bar_notifitcation_icon
+        )
+        val menu_hotlist = MenuItemCompat.getActionView(item9)
+        ui_hot = menu_hotlist.findViewById(R.id.hotlist_hot) as TextView
+        updateHotCount(hot_number)
+        object : MyMenuItemStuffListener(menu_hotlist, "Show hot message") {
+           override fun onClick(v: View?) {
+             //  activity.onHotlistSelected()
+            }
+        }
         val item = menu.findItem(R.id.action_share)
         // Fetch and store ShareActionProvider
 
@@ -388,6 +391,55 @@ class alerts : Fragment(),
     }
 
 
+    // call the updating code on the main thread,
+    // so we can call this asynchronously
+    fun updateHotCount(new_hot_number: Int) {
+        hot_number = new_hot_number
+        if (ui_hot == null) return
+        activity!!.runOnUiThread(Runnable {
+            if (new_hot_number == 0) ui_hot!!.visibility = View.INVISIBLE else {
+                ui_hot!!.visibility = View.VISIBLE
+                ui_hot!!.text = Integer.toString(new_hot_number)
+            }
+        })
+    }
+
+    internal abstract class MyMenuItemStuffListener(
+        private val view: View,
+        private val hint: String
+    ) :
+        View.OnClickListener, View.OnLongClickListener {
+        abstract override fun onClick(v: View?)
+        override fun onLongClick(v: View?): Boolean {
+            val screenPos = IntArray(2)
+            val displayFrame = Rect()
+            view.getLocationOnScreen(screenPos)
+            view.getWindowVisibleDisplayFrame(displayFrame)
+            val context = view.context
+            val width = view.width
+            val height = view.height
+            val midy = screenPos[1] + height / 2
+            val screenWidth = context.resources.displayMetrics.widthPixels
+            val cheatSheet: Toast = Toast.makeText(context, hint, Toast.LENGTH_SHORT)
+            if (midy < displayFrame.height()) {
+                cheatSheet.setGravity(
+                    Gravity.TOP or Gravity.RIGHT,
+                    screenWidth - screenPos[0] - width / 2, height
+                )
+            } else {
+                cheatSheet.setGravity(Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL, 0, height)
+            }
+            cheatSheet.show()
+            return true
+        }
+
+        init {
+            view.setOnClickListener(this)
+            view.setOnLongClickListener(this)
+        }
+    }
+
+
     // Create and return the Share Intent
     private fun createShareIntent(): Intent? {
         val shareIntent =
@@ -420,14 +472,18 @@ class alerts : Fragment(),
             }
 
 
-            R.id.invites-> {
+            R.id.invites -> {
                 startActivity(Intent(activity, Invitations::class.java))
             }
 
-            R.id.about-> {
-                if(roleID == "1") {
-                     startActivity(Intent(activity, com.alat.ui.activities.account::class.java))
-                }else if(roleID == "2"){
+            R.id.aboutus -> {
+                startActivity(Intent(activity, AboutUs::class.java))
+            }
+
+            R.id.about -> {
+                if (roleID == "1") {
+                    startActivity(Intent(activity, com.alat.ui.activities.account::class.java))
+                } else if (roleID == "2") {
                     startActivity(Intent(activity, account_enterprise::class.java))
                 }
             }
@@ -502,6 +558,8 @@ class alerts : Fragment(),
         val i =
             Intent(activity, AlertsPerResponse::class.java)
         i.putExtra("groupSelect", contact!!.group_name.toString())
+        i.putExtra("groupID", contact!!.id.toString())
+
         startActivity(i)
 
 

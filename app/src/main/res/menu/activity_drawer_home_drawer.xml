@@ -1,32 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:showIn="navigation_view">
+    tools:showIn="1navigation_view">
 
     <group android:checkableBehavior="single">
+<!--        //enterpirse-->
+
+
+
+        <item
+            android:id="@+id/alert_entr"
+            android:icon="@drawable/alert"
+            android:visible="false"
+            android:title="Alerts" />
+
+        <item
+            android:id="@+id/create_client"
+            android:icon="@drawable/alert"
+            android:visible="false"
+            android:title="Add Client" />
+        <item
+            android:id="@+id/create_station"
+            android:icon="@drawable/alert"
+            android:visible="false"
+            android:title="Add Station" />
+        <item
+            android:id="@+id/local_grp"
+            android:icon ="@drawable/alert"
+            android:visible="false"
+            android:title="Local Response Group" />
+
+        <item
+            android:id="@+id/client_grp"
+            android:icon="@drawable/alert"
+            android:visible="false"
+            android:title="Client Response Group" />
+
+
+        <item
+            android:id="@+id/resp_manage"
+            android:icon="@drawable/alert"
+            android:visible="false"
+            android:title="Response Group Manage" />
+
         <item
             android:id="@+id/alert"
             android:icon="@drawable/alert"
+            android:visible="false"
             android:title="Alerts" />
 
         <item
             android:id="@+id/create_resp"
             android:icon="@drawable/addrg"
+            android:visible="false"
             android:title="Create Response Group" />
         <item
             android:id="@+id/join_resp"
             android:icon="@drawable/rg"
+            android:visible="false"
             android:title="Join Response Group" />
 
 
         <item
             android:id="@+id/exit_resp"
             android:icon="@drawable/exit"
+            android:visible="false"
             android:title="Exit Response Group" />
 
         <item
             android:id="@+id/generate_rep"
             android:icon="@drawable/generate"
+            android:visible="false"
             android:title="Generate Report" />
         <item
             android:id="@+id/resp_team"
@@ -36,9 +80,8 @@
         <item
             android:id="@+id/manage_alert"
             android:icon="@drawable/manage"
+            android:visible ="false"
             android:title="Manage Alert" />
-
-
         <item
             android:id="@+id/sign_out"
             android:icon="@drawable/signout_"
@@ -47,28 +90,32 @@
         <item
             android:id="@+id/profile"
             android:icon="@drawable/profile"
+            android:visible ="false"
             android:title="Profile" />
+
         <item
             android:title="Resources"
+            android:visible ="false"
             android:icon="@drawable/resources"
             android:id="@+id/SetupGr"
             />
 
+
     </group>
-
-
-    <group
-        android:checkableBehavior="single"
+    <group android:checkableBehavior="single"
         android:id="@+id/SetupGroup">
 
         <item
             android:id="@+id/resp_db"
+            android:visible="false"
             android:title="Response Providers Database" />
         <item
             android:id="@+id/support"
+            android:visible="false"
             android:title="Support"/>
         <item
             android:id="@+id/feedback"
+            android:visible="false"
             android:title="Feedback" />
         <item
             android:id="@+id/invite_friend"
@@ -78,11 +125,11 @@
             android:id="@+id/faqs"
             android:visible="false"
             android:title="FAQs" />
-
-
+        <item
+            android:id="@+id/join"
+            android:visible="false"
+            android:title="Join Our Community" />
     </group>
-
-
 
 
 

@@ -15,11 +15,13 @@ class rgModel {
 
 
     var userid: String? = null
+    var status: String? = null
 
     var attachment: String? = null
 
 
     var id: String? = null
+    var mssidn: String? = null
 
     var checked: Boolean? = false
 

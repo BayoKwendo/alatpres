@@ -5,11 +5,11 @@
     },
     {
         "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/drawable/notification_bg_low.xml",
-        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/drawable/notification_bg_low.xml"
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/drawable/notification_bg_low.xml"
     },
     {
         "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/drawable/notification_icon_background.xml",
-        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/drawable/notification_icon_background.xml"
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/drawable/notification_icon_background.xml"
     },
     {
         "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/drawable/ic_android_black.xml",
@@ -17,10 +17,10 @@
     },
     {
         "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/drawable/notification_bg.xml",
-        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/drawable/notification_bg.xml"
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/drawable/notification_bg.xml"
     },
     {
         "merged": "/home/bayo/Downloads/Alat/library/build/intermediates/res/merged/debug/drawable/notification_tile_bg.xml",
-        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/d5a9c59c8cd2061331d10b972b810bae/core-1.2.0-alpha04/res/drawable/notification_tile_bg.xml"
+        "source": "/home/bayo/.gradle/caches/transforms-2/files-2.1/28635728a16413063ce090775637413e/core-1.2.0-alpha04/res/drawable/notification_tile_bg.xml"
     }
 ]

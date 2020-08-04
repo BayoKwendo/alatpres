@@ -58,17 +58,13 @@ class AlertAdapter(
         val contact = contactListFiltered[position]
 
         if(contact.rl == "Level 3") {
-            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.error))
-            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.error))
         }else if (contact.rl == "Level 2"){
-            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.colorAccent))
-            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
         }else if (contact.rl == "Level 1"){
-            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.yellow))
-            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.yellow))
         }else if (contact.rl == "Neutralized"){
-            itemView!!.setBackgroundColor(ContextCompat.getColor(context, R.color.accentGreen))
-            holder.name.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+            holder.name.setTextColor(ContextCompat.getColor(context, R.color.accentGreen))
         }
         holder.name.text = contact.alert_name
         holder.id.text = contact.id.toString() }
@@ -92,7 +88,10 @@ class AlertAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.alert_type!!.toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.alert_type!!.toLowerCase().contains(charString.toLowerCase()) ||
+                            row.alert_name!!.toLowerCase().contains(charString.toLowerCase()) ||
+                            row.id!!.toLowerCase().contains(charString.toLowerCase())
+                        ) {
                             filteredList.add(row)
                         }
                     }

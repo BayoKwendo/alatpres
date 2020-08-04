@@ -6,10 +6,14 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
+import android.text.TextUtils
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
@@ -20,8 +24,6 @@ import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.AddSupportFeed
-import com.alat.interfaces.AlertShare
-import com.alat.ui.activities.level_1
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -49,8 +51,9 @@ class Support : Fragment() {
 
     private var mfeedback: EditText? = null
     private var feedback: String? = null
-
     private var mbutton: Button? = null
+
+    private var mEmail: TextView? = null
 
     var pref: SharedPreferences? = null
     private var mProgressS: ProgressDialog? = null
@@ -65,8 +68,18 @@ class Support : Fragment() {
 
         mbutton = view.findViewById<View>(R.id.buttonLogin) as Button
 
+         mEmail = view.findViewById<View>(R.id.email) as TextView
+
+        mEmail!!.setOnClickListener {
+            val intent = Intent(
+                Intent.ACTION_SENDTO,
+                Uri.fromParts("mailto", "support@alatpres.com", null)
+            )
+            startActivity(Intent.createChooser(intent, " Email Via :"))
+        }
 
 
+//        Experience any challange while using our app? Don't worry, just tell us what you're facing and we will get back to you within 24hrs \n or you can email us via
         pref =
             activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
@@ -85,10 +98,10 @@ class Support : Fragment() {
                 internet()
                 promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
             }else {
-                feedback = mfeedback!!.text.toString()
+                feedback = mfeedback?.text.toString().trim();
 
-                if(feedback == null){
-                    Toast.makeText(activity,"Support field can not be null", Toast.LENGTH_LONG).show();
+                if (TextUtils.isEmpty(feedback)) {
+                    Toast.makeText(activity, "Enter something in the support field", Toast.LENGTH_LONG).show();
                 }else {
                     mProgressS!!.show()
                     submit()
