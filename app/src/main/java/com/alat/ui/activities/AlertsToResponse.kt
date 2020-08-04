@@ -6,6 +6,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -89,21 +90,20 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
 
 
     var mToolbar: Toolbar? = null
-
+    var pref: SharedPreferences? = null
+    var fname: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_alert)
         mToolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar!!);
-
         response_group_id = intent.getStringExtra("groupID")
         response_group_name = intent.getStringExtra("groupNam")
-
-
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = response_group_name;
-
-
+        pref =
+            getSharedPreferences("MyPref", 0) // 0 - for private mode
+        fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
         recyclerView = findViewById(R.id.recycler_view)
         errorNull = findViewById(R.id.texterror)
@@ -173,7 +173,6 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -234,19 +233,25 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
         mToolbar!!.inflateMenu(R.menu.menu_items);
 
 
-
-
         var item = menu?.findItem(R.id.action_share)
         val item2 = menu?.findItem(R.id.join)
         val item3 = menu?.findItem(R.id.invites)
         val item4 = menu?.findItem(R.id.about)
         val item5 = menu?.findItem(R.id.logout)
+        val item6 = menu?.findItem(R.id.aboutus)
+        val item8 = menu?.findItem(R.id.action_invite)
+
+        val item7 = menu?.findItem(R.id.viewmber)
+
 
         item?.isVisible = false
         item2?.isVisible = false
         item3?.isVisible = false
         item4?.isVisible = false
         item5?.isVisible = false
+        item6?.isVisible = false
+        item7?.isVisible = true
+        item8?.isVisible = false
 
 
         // Associate searchable configuration with the SearchView
@@ -292,6 +297,14 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
             R.id.action_invite -> {
                 pickContact()
                 true
+            }
+            R.id.viewmber -> {
+                val i =
+                    Intent(this@AlertsToResponse, GroupMembers::class.java)
+                i.putExtra("groupID", response_group_id)
+                i.putExtra("groupNAME", response_group_name)
+
+                startActivity(i)
             }
             android.R.id.home -> {
                 BackAlert()
@@ -423,6 +436,7 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
         params["mssdn"] = contactNumber!!
         params["rg_id"] = response_group_id!!
         params["rg_name"] = response_group_name!!
+        params["name"] = fname!!
 
         val api: sendSMS = retrofit.create(sendSMS::class.java)
         val call: Call<ResponseBody> = api.send(params)
@@ -432,7 +446,6 @@ class AlertsToResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

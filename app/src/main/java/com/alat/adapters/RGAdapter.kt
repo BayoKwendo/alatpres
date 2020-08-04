@@ -12,8 +12,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.alat.R
 import com.alat.model.rgModel
+import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import java.util.*
+
 
 class RGAdapter(
     private val context: Context,
@@ -39,10 +41,41 @@ class RGAdapter(
         }
     }
 
+    class ViewHolderAdMob(view: View) :
+        RecyclerView.ViewHolder(view) {
+
+
+        var mAdView: AdView
+
+        init {
+            mAdView = view.findViewById<View>(R.id.adView) as AdView
+            val adRequest: AdRequest = AdRequest.Builder()
+                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
+                .build()
+            mAdView.loadAd(adRequest)
+        }
+    }
+
     override fun onCreateViewHolder(
         parent: ViewGroup,
         viewType: Int
     ): MyViewHolder {
+
+//        var viewHolder: RGAdapter.MyViewHolder? = null
+//        val inflater =
+//            LayoutInflater.from(parent.context)
+//        when (viewType) {
+//            1 -> {
+//                val v: View = inflater.inflate(R.layout.user_row_item, parent, false)
+//                viewHolder = MyViewHolder(v)
+//            }
+//            2 -> {
+////                val v: View = inflater.inflate(R.layout.list_item_admob, parent, false)
+////                viewHolder = ViewHolderAdMob(v)
+//            }
+//        }
+//        return viewHolder!!
+
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_row_item, parent, false)
         return MyViewHolder(itemView)
@@ -53,16 +86,28 @@ class RGAdapter(
         holder: MyViewHolder,
         position: Int
     ) {
-        val contact = contactListFiltered[position]
-        holder.name.text = contact.group_name +"\tRG"
-        holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
+//
+//        when (holder.itemViewType) {
+//            1 -> {
+                val contact = contactListFiltered[position]
+                holder.name.text = contact.group_name +"\tRG"
+                holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
+            //}  2 -> {
+//            }
 
+//                  }
     }
 
     override fun getItemCount(): Int {
         return contactListFiltered.size
     }
-
+//    override fun getItemViewType(position: Int): Int {
+//        return if (position % 5 == 0) {
+//            AD_TYPE
+//        } else {
+//            CONTENT_TYPE
+//        }
+//    }
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(charSequence: CharSequence): FilterResults {
@@ -78,7 +123,7 @@ class RGAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase()) ) {
                             filteredList.add(row)
                         }
                     }

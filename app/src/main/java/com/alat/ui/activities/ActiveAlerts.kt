@@ -74,6 +74,8 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
     var alert_id: String? = null
     var rg: String? = null
 
+    var alert_rlss: String? = null
+
     var pref: SharedPreferences? = null
 
 
@@ -339,8 +341,11 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 //            Toast.LENGTH_LONG
 //        ).show()
 
-
+        alert_rlss = contact!!.rl.toString()
         alert_id = contact!!.id.toString()
+
+
+
         AlertStatus()
     }
 
@@ -351,9 +356,16 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
             .setCancelable(true)
             .setPositiveButton("Neutralized") { _, id ->
                 //  accept()
-                neutralized()
+                getRGNAMES()
                 mProgress!!.show()
                 // startActivity(Intent(this@FriendRequests, HomePage::class.java))
+            }
+            .setNeutralButton("View Details") { _, id ->
+                val i =
+                    Intent(this, AlertReport::class.java)
+                i.putExtra("alertSelect",alert_id)
+                i.putExtra("level", alert_rlss)
+                startActivity(i)
             }
             .setNegativeButton("Withdraw") { _, id ->
                 // reject()
@@ -365,36 +377,24 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 
 
     private fun AlertDialog.withCenteredButtonss() {
+
         val positive = getButton(AlertDialog.BUTTON_POSITIVE)
+        val neutral = getButton(AlertDialog.BUTTON_NEUTRAL)
+
         val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
 
-        negative.setBackgroundColor(ContextCompat.getColor(context, R.color.error))
 
-        negative.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
-
-
-        positive.setBackgroundColor(ContextCompat.getColor(context, R.color.success))
-
-        positive.setTextColor(ContextCompat.getColor(context, R.color.colorWhite))
+        negative.setTextColor(ContextCompat.getColor(context, R.color.error))
 
 
-        //Disable the material spacer view in case there is one
-        val parent = positive.parent as? LinearLayout
-        parent?.gravity = Gravity.CENTER_HORIZONTAL
-        val leftSpacer = parent?.getChildAt(1)
-        leftSpacer?.visibility = View.GONE
+        positive.setTextColor(ContextCompat.getColor(context, R.color.colorBlack))
 
-        //Force the default buttons to center
-        val layoutParams = LinearLayout.LayoutParams(
-            LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT
-        )
+        neutral.setTextColor(ContextCompat.getColor(context, R.color.success))
 
-        layoutParams.weight = 1f
-        layoutParams.gravity = Gravity.CENTER
 
-        positive.layoutParams = layoutParams
-        negative.layoutParams = layoutParams
+
+
+
     }
 
     private fun AlertDialog.withCenteredButtons() {
@@ -429,79 +429,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
     }
 
 
-    private fun neutralized() {
-
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
-            .readTimeout(2, TimeUnit.MINUTES) // read timeout
-            .addNetworkInterceptor(object : Interceptor {
-                @Throws(IOException::class)
-                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                    val request: Request =
-                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
-                            .build()
-                    return chain.proceed(request)
-                }
-            }).build()
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL)
-            .client(client) // This line is important
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val params: java.util.HashMap<String, String> = java.util.HashMap()
-
-        params["id"] = alert_id!!
-
-        val api: UpdateAlertStatus = retrofit.create(UpdateAlertStatus::class.java)
-        val call: Call<ResponseBody> = api.Update(params)
-
-        call.enqueue(object : Callback<ResponseBody?> {
-            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                //Toast.makeText()
-
-                Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", response.toString());
-                Log.d("Response code", response.code().toString());
-
-
-                if (response.isSuccessful) {
-
-                    if (response.body() != null) {
-                       val remoteResponse = response.body()!!.string()
-
-                        Log.d("test", remoteResponse)
-                        parseLoginDatas(remoteResponse)
-
-                        //Toast.makeText(this@ActiveAlerts,"Nothing "  + remoteResponse,Toast.LENGTH_LONG).show();
-
-                    } else {
-
-                        Log.i(
-                            "onEmptyResponse",
-                            "Returned empty response"
-                        )
-                    }
-
-                } else {
-                    dialogue_error();
-                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                    Log.d("BAYO", response.code().toString())
-                }
-            }
-
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                Log.i("onEmptyResponse", "" + t) //
-            }
-        })
-    }
 
     private fun parseLoginDatas(remoteResponse: String) {
         try {
@@ -606,13 +533,158 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                 rg =json_obj.getString("rg")
                 delete()
              }
-
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }
     }
 
+    private fun getRGNAMES() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["id"] = alert_id!!
+
+        val api: ALertRG = retrofit.create(ALertRG::class.java)
+        val call: Call<ResponseBody> = api.getrg(params)
+
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                Log.d("Responsestring", response.body().toString())
+                //Toast.makeText()
+                if (response.isSuccessful) {
+                    val jsonresponse = response.body()!!.string()
+                    parseLoginDatasssSS(jsonresponse)
+
+                } else {
+                    Log.d("bayo", response.errorBody()!!.string())
+                    errorNull!!.visibility = View.VISIBLE
+                    mProgressLayout!!.visibility = View.GONE
+
+                    // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                //   btn.text = "Proceed"
+                Log.i("onEmptyResponse", "" + t) //
+                // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                //mProgress?.dismiss()
+            }
+        })
+    }
+
+    private fun parseLoginDatasssSS(jsonresponse: String) {
+
+        try {
+            val jArray = JSONArray(jsonresponse)
+            for (i in 0 until jArray.length()) {
+                val json_obj: JSONObject = jArray.getJSONObject(i)
+
+                rg =json_obj.getString("rg")
+                neutralized()
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+    private fun neutralized() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["id"] = alert_id!!
+        params["rg"] = rg!!
+
+
+        val api: UpdateAlertStatus = retrofit.create(UpdateAlertStatus::class.java)
+        val call: Call<ResponseBody> = api.Update(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+
+                    if (response.body() != null) {
+                        val remoteResponse = response.body()!!.string()
+
+                        Log.d("test", remoteResponse)
+                        parseLoginDatas(remoteResponse)
+                    } else {
+
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        )
+                    }
+
+                } else {
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
+    }
 
 
 

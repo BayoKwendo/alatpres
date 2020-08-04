@@ -62,7 +62,7 @@ class JoinGlobal : AppCompatActivity() {
         Handler().postDelayed({
             //  Toast.makeText(this@JoinGlobal, "YEEES", Toast.LENGTH_LONG).show()
             val i =
-                Intent(this@JoinGlobal, AlertGlobal::class.java)
+                Intent(this@JoinGlobal, AlertsGlobal::class.java)
             i.putExtra("alatpres_id", user)
 
             startActivity(i)

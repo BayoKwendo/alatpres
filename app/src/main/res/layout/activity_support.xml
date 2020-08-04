@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".BasicUserActivity">
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -24,8 +24,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_13sdp"
-            android:text= "Experience any challange while using our app? Don't worry, just tell us what you're facing and we will get back to you within 24hrs"
+            android:text= "Experience any challange while using our app? Don't worry, just tell us what you're facing and we will get back to you within 24hrs or you can email us via"
             android:textColor="@color/colorBlack"
+            android:textStyle="bold" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/email"
+            android:textSize="@dimen/_13sdp"
+            android:text= "support@alatpres.com"
+            android:textColor="@color/MPD_primaryColor"
             android:textStyle="bold" />
         <EditText
             android:background="@drawable/textbox"

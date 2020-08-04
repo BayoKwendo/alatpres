@@ -1,0 +1,329 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+        <androidx.appcompat.widget.LinearLayoutCompat
+            android:id="@+id/main_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:visibility="visible">
+
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="80dp"
+                android:layout_marginBottom="20dp"
+                app:cardElevation="0dp">
+                <androidx.core.widget.NestedScrollView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:scrollbarSize="@dimen/_2sdp"
+                    android:scrollbars="vertical">
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+                        <RadioGroup
+                            android:id="@+id/choose_type"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent"
+                            android:layout_marginTop="8dp"
+                            android:orientation="horizontal"
+                            android:weightSum="1"
+                            app:layout_constraintEnd_toEndOf="@+id/counties_layout"
+                            app:layout_constraintStart_toStartOf="@+id/counties_layout"
+                            app:layout_constraintTop_toBottomOf="@+id/counties_layout">
+                        </RadioGroup>
+                        <androidx.constraintlayout.widget.Group
+                            android:id="@+id/first_page"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="visible"
+                            app:layout_constraintBottom_toTopOf="parent"
+                            app:layout_constraintEnd_toStartOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:visibility="visible" />
+                        <androidx.constraintlayout.widget.Group
+                            android:id="@+id/second_page"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:visibility="gone"
+                            app:layout_constraintEnd_toStartOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:visibility="gone" />
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Name of the Client"
+                                android:inputType="text"
+                                android:maxLength="15"
+                                android:padding="@dimen/_10sdp"
+                                android:textSize="@dimen/_13ssp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/mlocation"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="@+id/name"
+                            app:layout_constraintStart_toStartOf="@+id/name"
+                            app:layout_constraintTop_toBottomOf="@+id/name">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Location  of the client"
+                                android:inputType="text"
+                                android:maxLength="15"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/postal_address"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="@+id/mlocation"
+                            app:layout_constraintStart_toStartOf="@+id/mlocation"
+                            app:layout_constraintTop_toBottomOf="@+id/mlocation">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Postal Address"
+                                android:inputType="text"
+                                android:maxLength="30"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/mobile"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/postal_address">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/mobile_phone"
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginBottom="@dimen/_2sdp"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Contact Phone"
+                                android:inputType="phone"
+                                android:maxLength="13"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp"
+                                app:errorEnabled="true" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/email"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/mobile">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Email Address"
+                                android:inputType="textEmailAddress"
+                                android:maxLength="35"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/website"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/email">
+
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Website"
+                                android:inputType="text"
+                                android:maxLength="100"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp" />
+
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/nature"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/website">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:id="@+id/nature_org"
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:backgroundTint="@color/colorAccent"
+                                android:focusable="false"
+                                android:hint="Nature of Client."
+                                android:inputType="text"
+                                android:padding="@dimen/_10sdp"
+                                android:maxLength="35"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp"
+                                app:errorEnabled="true" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/description"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/nature">
+                            <com.google.android.material.textfield.TextInputEditText
+                                android:layout_width="match_parent"
+                                android:layout_height="100dp"
+                                android:gravity="top|left"
+                                android:ems="10"
+                                android:id="@+id/notes"
+                                android:backgroundTint="@color/colorAccent"
+                                android:hint="Brief description of the client."
+                                android:inputType="text|textMultiLine"
+                                android:padding="@dimen/_10sdp"
+                                android:textColor="@color/colorBlack"
+                                android:textSize="@dimen/_13ssp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+                        <com.google.android.material.textfield.TextInputLayout
+                            android:id="@+id/rg_name"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:errorEnabled="true"
+                            app:layout_constraintEnd_toEndOf="@+id/description"
+                            app:layout_constraintStart_toStartOf="@+id/description"
+                            app:layout_constraintTop_toBottomOf="@+id/description">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/colorAccent"
+                            android:hint="Preferred RG Name"
+                            android:inputType="text"
+                            android:maxLength="15"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_13ssp" />
+                        </com.google.android.material.textfield.TextInputLayout>
+
+                        <fr.ganfra.materialspinner.MaterialSpinner
+                            android:id="@+id/nature_rg"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:ms_arrowColor="@color/colorAccent"
+                            app:ms_arrowSize="16dp"
+                            android:layout_marginLeft="@dimen/_15sdp"
+                            android:layout_marginRight="@dimen/_15sdp"
+                            app:ms_floatingLabelColor="#00FF00"
+                            app:ms_floatingLabelText="Nature of RG"
+                            app:ms_hint="Select Nature of RG"
+                            app:ms_multiline="false"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/rg_name"/>
+
+
+                        <Button
+                            android:id="@+id/msubmit"
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:background="@drawable/button_shape"
+                            android:gravity="center"
+                            android:text="Submit"
+                            android:textColor="#ffffff"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/nature_rg"
+                            app:layout_constraintVertical_bias="1.0" />
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.core.widget.NestedScrollView>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!--Next View-->
+
+</RelativeLayout>
+

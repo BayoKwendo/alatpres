@@ -80,7 +80,8 @@ class InvitationAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.alert_type!!.toLowerCase().contains(charString.toLowerCase())) {
+                        if (row.alert_type!!.toLowerCase().contains(charString.toLowerCase()) ||
+                          row.alert_name!!.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row)
                         }
                     }

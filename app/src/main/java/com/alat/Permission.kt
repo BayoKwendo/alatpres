@@ -1,6 +1,7 @@
 package com.alat
 
 import android.Manifest
+import android.Manifest.permission_group.STORAGE
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -53,7 +54,8 @@ class Permission : Activity() {
                         Manifest.permission.WRITE_EXTERNAL_STORAGE,
                         Manifest.permission.READ_EXTERNAL_STORAGE,
                         Manifest.permission.READ_CONTACTS,
-                        Manifest.permission.WRITE_CONTACTS
+                        Manifest.permission.WRITE_CONTACTS,
+                        Manifest.permission.RECORD_AUDIO
 
 
 
@@ -66,15 +68,15 @@ class Permission : Activity() {
                          if (roleID == "1") {
                              startActivity(Intent(this@Permission, HomePage::class.java))
                          } else if (roleID == "2") {
-                             if (account == "0") {
-                                 startActivity(Intent(this@Permission, account_enterprise::class.java))
-                             }else if (account == "1") {
+//                             if (account == "0") {
+////                                 startActivity(Intent(this@Permission, account_enterprise::class.java))
+////                             }else if (account == "1") {
                                  startActivity(Intent(this@Permission, HomePage::class.java))
                              }
                          }
-                                                }
+                        }
                         // check for permanent denial of any permission
-                    }
+
 
                     override fun onPermissionRationaleShouldBeShown(permissions: MutableList<com.karumi.dexter.listener.PermissionRequest>?, token: PermissionToken?) {
                         TODO("Not yet implemented")

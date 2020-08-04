@@ -6,6 +6,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.database.Cursor
 import android.net.Uri
 import android.os.Bundle
@@ -85,7 +86,8 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
     var contactNumber: String? = null
     var contactName: String? = null
     private val RESULT_PICK_CONTACT = 1001
-
+    var pref: SharedPreferences? = null
+    var fname: String? = null
 
 
     var mToolbar: Toolbar? = null
@@ -105,7 +107,9 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
         supportActionBar!!.title = response_group_name;
 
         addMessage = findViewById(R.id.fab_add_topic)
-
+        pref =
+            getSharedPreferences("MyPref", 0) // 0 - for private mode
+        fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
         mProgress = ProgressDialog(this)
         mProgress!!.setMessage("Sending...")
@@ -510,6 +514,8 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
         params["mssdn"] = contactNumber!!
         params["rg_id"] = group_id!!
         params["rg_name"] = response_group_name!!
+        params["name"] = fname!!
+
 
         val api: sendSMS = retrofit.create(sendSMS::class.java)
         val call: Call<ResponseBody> = api.send(params)

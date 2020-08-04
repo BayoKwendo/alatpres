@@ -15,6 +15,7 @@ import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
 import android.view.MenuItem
+import android.view.MotionEvent
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.webkit.WebView
@@ -23,25 +24,30 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.isVisible
 import com.afollestad.materialdialogs.MaterialDialog
-import com.alat.HomePage
-import com.alat.MainActivity
+import com.alat.BasicUserActivity
 import com.alat.R
+import com.alat.adapters.CountriesArrayListAdapter
+import com.alat.adapters.CountriesListAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.CreateEnterprise
 import com.alat.interfaces.CreateProvider
-import com.alat.interfaces.CreateUser
 import com.alat.model.TextViewDatePicke
-import com.alat.model.TextViewDatePicker
 import com.google.android.material.textfield.TextInputLayout
 import fr.ganfra.materialspinner.MaterialSpinner
+import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
+import org.json.JSONArray
+import org.json.JSONException
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -49,6 +55,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
+import java.io.InputStream
 import java.util.concurrent.TimeUnit
 
 class Enterprise : AppCompatActivity() {
@@ -122,7 +129,11 @@ class Enterprise : AppCompatActivity() {
 
     private val ITEMS1 = arrayOf("YES", "NO")
 
-    private val ITEMS2 = arrayOf("security", "medical", "fire", "car", "towing")
+    private val ITEMS2 = arrayOf("security", "medical",
+        "Law  enforcement  &Security","Ambulance & Other  Transport",
+        "Search,Rescue & Evacuation","Telehealth", "Disease Control&Prevention",
+        "Fire","Food & Water Safety","Emergency Veterinary Services","Communication Network Backup","Highway Emergencies",
+        "Power & Electrical Emergency","Cyber Crime","Proffesional Voluteering","Unmaned Aerial Vehicle  Services")
     var spinner: MaterialSpinner? = null
     var spinner_2: MaterialSpinner? = null
 
@@ -140,6 +151,14 @@ class Enterprise : AppCompatActivity() {
 
 
     private var backText: TextView? = null
+    private var mSearchableSpinner1: SearchableSpinner? = null
+    private var mSimpleListAdapter1: CountriesListAdapter? = null
+    private var mSimpleArrayListAdapter1: CountriesArrayListAdapter? = null
+
+    private var countries: String? = null
+
+    private val mCountries: ArrayList<String> = ArrayList()
+
 
 
     var prefs: SharedPreferences? = null
@@ -160,7 +179,11 @@ class Enterprise : AppCompatActivity() {
         init()
         linearLayout = findViewById(R.id.main_view)
         frameLayout = findViewById(R.id.next_view)
+        mSimpleListAdapter1 = CountriesListAdapter(this, mCountries)
 
+        mSimpleArrayListAdapter1 = CountriesArrayListAdapter(this, mCountries)
+
+        mSearchableSpinner1 = findViewById<View>(R.id.SearchableSpinner1) as SearchableSpinner
 
         btn_next = findViewById(R.id.buttonNext)
         btn_next!!.setOnClickListener {
@@ -321,11 +344,45 @@ class Enterprise : AppCompatActivity() {
         }
 
 
+        mSearchableSpinner1!!.setAdapter(mSimpleListAdapter1)
+        mSearchableSpinner1!!.setOnItemSelectedListener(mOnItemSelectedListener1)
+        mSearchableSpinner1!!.setStatusListener(object : IStatusListener {
+            override fun spinnerIsOpening() {
+            }
+            override fun spinnerIsClosing() {}
+        })
+
+
 //        btn_next?.findViewById<Button>(R.id.buttonNext)?.setOnClickListener {
 //          //  btn_next.toggleVisibility()
 //
 //        }
+        parseEntityDatas()
+
     }
+
+
+    override fun onTouchEvent(event: MotionEvent?): Boolean {
+        if (!mSearchableSpinner1!!.isInsideSearchEditText(event)) {
+            mSearchableSpinner1!!.hideEdit()
+        }
+        return super.onTouchEvent(event)
+    }
+
+    private val mOnItemSelectedListener1: OnItemSelectedListener = object : OnItemSelectedListener {
+        override fun onItemSelected(view: View?, position: Int, id: Long) {
+            mSearchableSpinner1!!.visibility = View.VISIBLE
+            if(position > 0){
+                textInputcounties = findViewById(R.id.counties_layout)
+                countries = mSimpleListAdapter1!!.getItem(position).toString()
+
+                textInputcounties!!.isVisible = countries == "Kenya"
+            } }
+        override fun onNothingSelected() {
+            Toast.makeText(this@Enterprise, "Nothing Selected", Toast.LENGTH_SHORT).show() }
+    }
+
+
     private fun loadTerms() {
 
 
@@ -405,7 +462,7 @@ class Enterprise : AppCompatActivity() {
 
 
         backText!!.setOnClickListener {
-            val intent = Intent(this@Enterprise, MainActivity::class.java)
+            val intent = Intent(this@Enterprise, BasicUserActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()
@@ -483,7 +540,9 @@ class Enterprise : AppCompatActivity() {
         confirmpassword = textInputconfirmpassword?.editText?.text.toString().trim({ it <= ' ' })
         user_id = textInputuserid?.editText?.text.toString().trim({ it <= ' ' })
         confirm_user_id = textInputconfirmuserid?.editText?.text.toString().trim({ it <= ' ' })
-
+        if(county == ""){
+            county = "NONE"
+        }
     }
 
 
@@ -509,14 +568,6 @@ class Enterprise : AppCompatActivity() {
             showKeyBoard()
             return false
         } else textInputtax!!.error = null
-        if (Utils.checkIfEmptyString(county)) {
-            Toast.makeText(this, "County of operation is Mandatory", Toast.LENGTH_SHORT).show()
-            textInputcounties!!.error = "County of operation is mandatory"
-            textInputcounties!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputcounties!!.error = null
-
         if (Utils.checkIfEmptyString(dob)) {
             textInputdob!!.error = "Date of Incorporation is mandatory"
             textInputdob!!.requestFocus()
@@ -652,6 +703,44 @@ class Enterprise : AppCompatActivity() {
         return true
     }
 
+    fun inputStreamToString(inputStream: InputStream): String? {
+        return try {
+            val bytes = ByteArray(inputStream.available())
+            inputStream.read(bytes, 0, bytes.size)
+            String(bytes)
+        } catch (e: IOException) {
+            null
+        }
+    }
+
+    private fun parseEntityDatas() {
+
+        try {
+            val myJson =
+
+                inputStreamToString(this.resources.openRawResource(R.raw.africancountries))
+
+//            val br = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.africancountries)))
+//            var temp: String?
+//            while (br.readLine().also { temp = it } != null) sb.append(temp)
+            Log.i("jsonbayo", myJson )
+
+            mCountries.clear()
+
+            val jArray = JSONArray(myJson.toString())
+
+            for (i in 0 until jArray.length()) {
+
+                val json_obj = jArray.getJSONObject(i)
+
+                mCountries.add(json_obj!!.getString("Country Name"))
+
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
 
     private fun createUser() {
         registerVar()
@@ -695,6 +784,7 @@ class Enterprise : AppCompatActivity() {
         params["clients"] = clients!!
         params["code"] = code!!
         params["website"] = website!!
+        params["country"] = countries!!
         params["date_of_incooperation"] = dob!!
         params["mssdn2"] = mssidn2!!
         params["mssdn"] = mssidn!!
@@ -928,7 +1018,7 @@ class Enterprise : AppCompatActivity() {
     }
 
     override fun onBackPressed() {
-        val intent = Intent(this@Enterprise, MainActivity::class.java)
+        val intent = Intent(this@Enterprise, BasicUserActivity::class.java)
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
         startActivity(intent)
         finish()

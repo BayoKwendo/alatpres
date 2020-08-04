@@ -4,7 +4,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-
         <androidx.appcompat.widget.LinearLayoutCompat
             android:id="@+id/main_view"
             android:layout_width="match_parent"
@@ -12,7 +11,6 @@
             android:orientation="vertical"
             android:visibility="visible"
             android:weightSum="1">
-
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -20,13 +18,11 @@
                 android:gravity="center_vertical"
                 android:background="@color/colorPrimary"
                 android:padding="10dp">
-
                 <LinearLayout
                     android:id="@+id/constraintLayout1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
-
                     <TextView
                         android:id="@+id/textView2"
                         android:layout_width="wrap_content"
@@ -36,13 +32,12 @@
                         android:fontFamily="@font/gothamroundbold"
                         android:gravity="center"
                         android:paddingBottom="@dimen/_5sdp"
-                        android:text="Enterprise Regestration"
+                        android:text="Enterprise Registration"
                         android:textSize="@dimen/_18ssp"
                         android:textColor="@color/colorWhite"
                         android:typeface="monospace"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
-
                     <TextView
                         android:id="@+id/back"
                         android:layout_width="match_parent"
@@ -51,14 +46,13 @@
                         android:layout_marginLeft="28dp"
                         android:fontFamily="@font/gothamroundbold"
                         android:gravity="start"
-                        android:text="Join as an Normal User?"
+                        android:text="Join as a Basic User?"
                         android:textColor="@color/colorAccent"
                         android:textSize="@dimen/_12ssp"
                         app:layout_constraintBottom_toBottomOf="@+id/header_image"
                         app:layout_constraintStart_toStartOf="@+id/textView2" />
                 </LinearLayout>
             </RelativeLayout>
-
             <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
@@ -69,14 +63,12 @@
                 android:layout_weight="0.75"
                 android:padding="20dp"
                 app:cardElevation="0dp">
-
                 <androidx.core.widget.NestedScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
                     android:scrollbarSize="@dimen/_2sdp"
                     android:scrollbars="vertical">
-
                     <androidx.constraintlayout.widget.ConstraintLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -86,9 +78,6 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent">
-
-
-
                         <RadioGroup
                             android:id="@+id/choose_type"
                             android:layout_width="wrap_content"
@@ -99,12 +88,7 @@
                             app:layout_constraintEnd_toEndOf="@+id/counties_layout"
                             app:layout_constraintStart_toStartOf="@+id/counties_layout"
                             app:layout_constraintTop_toBottomOf="@+id/counties_layout">
-
-
-
                         </RadioGroup>
-
-
                         <androidx.constraintlayout.widget.Group
                             android:id="@+id/first_page"
                             android:layout_width="wrap_content"
@@ -115,7 +99,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="visible" />
-
                         <androidx.constraintlayout.widget.Group
                             android:id="@+id/second_page"
                             android:layout_width="wrap_content"
@@ -125,7 +108,6 @@
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent"
                             tools:visibility="gone" />
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/name"
                             android:layout_width="match_parent"
@@ -138,18 +120,16 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toTopOf="parent">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="wrap_content"
                                 android:backgroundTint="@color/colorAccent"
-                                android:hint="Name"
+                                android:hint="Name of the Company"
                                 android:inputType="text"
                                 android:maxLength="15"
                                 android:padding="@dimen/_10sdp"
                                 android:textSize="@dimen/_13ssp" />
                         </com.google.android.material.textfield.TextInputLayout>
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/other_name"
                             android:layout_width="match_parent"
@@ -160,7 +140,6 @@
                             app:layout_constraintEnd_toEndOf="@+id/name"
                             app:layout_constraintStart_toStartOf="@+id/name"
                             app:layout_constraintTop_toBottomOf="@+id/name">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
@@ -194,9 +173,41 @@
                                 android:textColor="@color/colorBlack"
                                 android:textSize="@dimen/_13ssp" />
                         </com.google.android.material.textfield.TextInputLayout>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:id="@+id/linear"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/_30sdp"
+                            android:layout_marginRight="@dimen/_30sdp"
+                            android:orientation="vertical"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/tax">
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_centerInParent="true"
+                                android:text="Select Country"
+                                android:textSize="@dimen/_13ssp" />
 
-
-
+                            <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+                                android:id="@+id/SearchableSpinner1"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:gravity="center_horizontal"
+                                android:visibility="visible"
+                                app:BoarderColor="@color/primaryColor"
+                                app:BordersSize="1dp"
+                                app:DoneSearchTintColor="@color/colorWhite"
+                                app:ItemsDivider="@color/gray_btn_bg_color"
+                                app:RevealEmptyText="Select Country"
+                                app:RevealViewBackgroundColor="@color/colorWhite"
+                                app:SearchViewBackgroundColor="@color/colorWhite"
+                                app:ShowBorders="true"
+                                app:SpinnerExpandHeight="0dp"
+                                app:StartSearchTintColor="@color/colorBlack" />
+                        </LinearLayout>
 
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/counties_layout"
@@ -208,8 +219,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/tax">
-
+                            app:layout_constraintTop_toBottomOf="@+id/linear">
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/counties"
                                 android:layout_width="match_parent"
@@ -224,9 +234,6 @@
                                 android:textSize="@dimen/_13ssp"
                                 app:errorEnabled="true" />
                         </com.google.android.material.textfield.TextInputLayout>
-
-
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/nature"
                             android:layout_width="match_parent"
@@ -238,7 +245,6 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/counties_layout">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/nature_org"
                                 android:layout_width="match_parent"
@@ -253,7 +259,6 @@
                                 android:textSize="@dimen/_13ssp"
                                 app:errorEnabled="true" />
                         </com.google.android.material.textfield.TextInputLayout>
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/date_layout"
                             android:layout_width="match_parent"
@@ -265,7 +270,6 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/nature">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/date"
                                 android:layout_width="match_parent"
@@ -280,8 +284,6 @@
                                 android:textSize="@dimen/_13ssp"
                                 app:errorEnabled="true" />
                         </com.google.android.material.textfield.TextInputLayout>
-
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/client"
                             android:layout_width="match_parent"
@@ -293,14 +295,13 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/date_layout">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/client_level"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/colorAccent"
                                 android:focusable="false"
-                                android:hint="Client Level"
+                                android:hint="Customer/Client Base Level"
                                 android:inputType="text"
                                 android:padding="@dimen/_10sdp"
                                 android:maxLength="35"
@@ -308,8 +309,6 @@
                                 android:textSize="@dimen/_13ssp"
                                 app:errorEnabled="true" />
                         </com.google.android.material.textfield.TextInputLayout>
-
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/employee"
                             android:layout_width="match_parent"
@@ -321,14 +320,13 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/client">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/number_employ"
                                 android:layout_width="match_parent"
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/colorAccent"
                                 android:focusable="false"
-                                android:hint="No. of Employees"
+                                android:hint="Employees Base Level"
                                 android:inputType="text"
                                 android:padding="@dimen/_10sdp"
                                 android:maxLength="35"
@@ -336,10 +334,6 @@
                                 android:textSize="@dimen/_13ssp"
                                 app:errorEnabled="true" />
                         </com.google.android.material.textfield.TextInputLayout>
-
-
-
-
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/description"
                             android:layout_width="match_parent"
@@ -351,7 +345,6 @@
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/employee">
-
                             <com.google.android.material.textfield.TextInputEditText
                                 android:layout_width="match_parent"
                                 android:layout_height="100dp"
@@ -364,7 +357,6 @@
                                 android:padding="@dimen/_10sdp"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="@dimen/_13ssp" />
-
                         </com.google.android.material.textfield.TextInputLayout>
                         <Button
                             android:id="@+id/buttonNext"
@@ -757,7 +749,7 @@
                     android:layout_marginRight="@dimen/_30sdp"
                     app:ms_arrowColor="@color/colorAccent"
                     app:ms_arrowSize="16dp"
-                    android:paddingBottom="@dimen/_10sdp "
+                    android:paddingBottom="@dimen/_10sdp"
                     app:ms_floatingLabelColor="#00FF00"
                     app:ms_floatingLabelText="nature of Your Response Servic"
                     app:ms_hint="Select nature of Your Response Service"
@@ -784,7 +776,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="@color/colorAccent"
-                        android:hint="Set your user ID"
+                        android:hint="Set your Alatpres ID"
                         android:inputType="text"
                         android:maxLength="15"
                         android:padding="@dimen/_10sdp"
@@ -808,7 +800,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:backgroundTint="@color/colorAccent"
-                        android:hint="Confirm your user ID"
+                        android:hint="Confirm your Alatpres ID"
                         android:inputType="text"
                         android:maxLength="15"
                         android:padding="@dimen/_10sdp"

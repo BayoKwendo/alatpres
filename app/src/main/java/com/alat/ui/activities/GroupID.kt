@@ -121,10 +121,6 @@ class GroupID : AppCompatActivity() {
 
         mssidn = pref!!.getString("mssdn", null)
 
-
-        checkMmeber()
-        response_id = intent.getStringExtra("groupSelect")
-
         checkd = intent.getStringExtra("grouptype")
 
 
@@ -134,7 +130,12 @@ class GroupID : AppCompatActivity() {
             const2!!.visibility = View.VISIBLE
             mProgressLayout!!.visibility = View.GONE
 
+        }else {
+            checkMmeber()
         }
+        response_id = intent.getStringExtra("groupSelect")
+
+
        // response_name = intent.getStringExtra("groupName")
 
         btnRequerst!!.setOnClickListener {

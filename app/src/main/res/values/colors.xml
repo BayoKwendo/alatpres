@@ -14,8 +14,14 @@
 
     <color name="background">#222231</color>
    <color name="elevate">#EB302F32</color>
+
+
     <color name="safe">#71599C</color>
 
+    <color name="twit">#00ACEE</color>
+    <color name="fb">#3B5998</color>
+    <color name="link">#006192</color>
+    <color name="recorder_bg">#F4511E</color>
 
 
 </resources>

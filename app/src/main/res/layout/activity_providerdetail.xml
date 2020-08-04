@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".BasicUserActivity">
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -16,7 +16,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layout_constraintHorizontal_bias="0.0"
-                tools:context=".MainActivity">
+                tools:context=".BasicUserActivity">
 
 
                 <androidx.constraintlayout.widget.ConstraintLayout

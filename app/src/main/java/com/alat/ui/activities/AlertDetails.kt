@@ -5,6 +5,7 @@ import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
@@ -110,7 +111,16 @@ class AlertDetails : AppCompatActivity() {
     var neutral_count: String? = null
     var safe_count: String? = null
 
+    var pref: SharedPreferences? = null
 
+    var mfullname: TextView? = null
+    var mname: TextView? = null
+
+    var Vmfullname: String? = null
+    var Vmname: String? = null
+
+    var fname: String? = null
+    var user: String? = null
     var downloadManager: DownloadManager? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -118,6 +128,11 @@ class AlertDetails : AppCompatActivity() {
         setContentView(R.layout.activity_detail)
         mid = intent.getStringExtra("alertSelect")
         rl = intent.getStringExtra("level")
+
+        pref =
+            getSharedPreferences("MyPref", 0) // 0 - for private mode
+        fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+        user = pref!!.getString("userid", null)
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         getGroupNames()
@@ -133,6 +148,9 @@ class AlertDetails : AppCompatActivity() {
         shout = findViewById(R.id.shouts)
         elevates = findViewById(R.id.elevate)
         mshare = findViewById(R.id.share)
+
+        mfullname = findViewById(R.id.name)
+        mname = findViewById(R.id.fname)
 
         saveImage = findViewById(R.id.save)
 
@@ -196,7 +214,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertElevate() {
 
         AlertDialog.Builder(this)
-            .setMessage("The situation is out of control and furthur rescue is needed!!\n\n")
+            .setMessage("The situation is out of control and furthur rescue is needed\n\n")
             .setCancelable(true)
             .setPositiveButton("Elevate") { _, id ->
                 //  accept()
@@ -214,7 +232,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertShout() {
 
         AlertDialog.Builder(this)
-            .setMessage("Member is on danger and action needed to be taken immediately\n\n")
+            .setMessage("I am in danger and i need immediate action\n\n")
             .setCancelable(true)
             .setPositiveButton("Shout!!") { _, id ->
                 //  accept()
@@ -233,7 +251,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertIgnore() {
 
         AlertDialog.Builder(this)
-            .setMessage("Member is not affected anyway by the Alert??\n\n")
+            .setMessage(" I am not affected in anyway by the Alert \n\n")
             .setCancelable(true)
             .setPositiveButton("Ignore") { _, id ->
                 //  accept()
@@ -250,7 +268,7 @@ class AlertDetails : AppCompatActivity() {
 
     fun download() {
         AlertDialog.Builder(this)
-            .setMessage("Download the image?")
+            .setMessage("Download the file?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
                 saveImag()
@@ -537,6 +555,12 @@ class AlertDetails : AppCompatActivity() {
                 share_count = jsonObject.getString("share_counts")
                 mshare!!.setText("SHARE (" + share_count +" )")
 
+                Vmfullname = jsonObject.getString("fullname")
+                mfullname!!.setText(Vmfullname)
+
+                Vmname = jsonObject.getString("fullname")
+                mname!!.setText(Vmname)
+
 
                 neutral_count = jsonObject.getString("neutralized_counts")
                 nutralize!!.setText("NEUTRALIZED (" + neutral_count +" )")
@@ -590,7 +614,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertStatus() {
 
         AlertDialog.Builder(this)
-            .setMessage("Alert has been acted upon and address successfully??\n\n")
+            .setMessage("Alert has been acted upon and address successfully\n\n")
             .setCancelable(true)
             .setPositiveButton("Neutralized") { _, id ->
                 //  accept()
@@ -609,7 +633,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertSafe() {
 
         AlertDialog.Builder(this)
-            .setMessage("Free from danger or the situation is fine??\n\n")
+            .setMessage("I am free from danger\n\n")
             .setCancelable(true)
             .setPositiveButton("Safe") { _, id ->
                 //  accept()
@@ -710,9 +734,10 @@ class AlertDetails : AppCompatActivity() {
 
 
             if (jsonObject.getString("status") == "true") {
+
                 dialogue();
                 promptPopUpView?.changeStatus(2, "Feedback Successfully received!")
-
+                mfullname!!.visibility=View.VISIBLE
                 mProgress!!.dismiss()
 
             } else {
@@ -757,6 +782,8 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
 
         val api: AlertIgnore = retrofit.create(AlertIgnore::class.java)
         val call: Call<ResponseBody> = api.Mark(params)
@@ -861,6 +888,8 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
 
         val api: AlertShout = retrofit.create(AlertShout::class.java)
         val call: Call<ResponseBody> = api.Mark(params)
@@ -923,6 +952,9 @@ class AlertDetails : AppCompatActivity() {
 
                 mProgress!!.dismiss()
 
+                mname!!.visibility=View.VISIBLE
+
+
             } else {
                 dialogue_error();
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
@@ -964,6 +996,8 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
 
         val api: AlertNeutral = retrofit.create(AlertNeutral::class.java)
         val call: Call<ResponseBody> = api.Mark(params)
@@ -1068,6 +1102,9 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
+
 
         val api: AlertElevate = retrofit.create(AlertElevate::class.java)
         val call: Call<ResponseBody> = api.Mark(params)
@@ -1337,6 +1374,8 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
 
         val api: AlertShare = retrofit.create(AlertShare::class.java)
         val call: Call<ResponseBody> = api.Mark(params)

@@ -15,4 +15,7 @@
     <string name="msg_progress_merger_pdf">All pdf file merge into one file. Please wait few moment. After done of mergig pdf file, go to pdf file path.</string>
     <string name="error_file">Can\'t read pdf file</string>
     <string name="send_to">Send mail...</string>
+    <string name="copy_right" translatable="false">Copyrights © %1$d</string>
+    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
+
 </resources>

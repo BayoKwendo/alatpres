@@ -217,6 +217,7 @@
                             android:layout_marginRight="@dimen/_30sdp"
                             android:orientation="vertical"
                             app:errorEnabled="true"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/genderlayout">
@@ -313,6 +314,42 @@
 
                         </com.google.android.material.textfield.TextInputLayout>
 
+                       <LinearLayout
+                           android:layout_width="match_parent"
+                           android:id="@+id/linear"
+                           android:layout_height="wrap_content"
+                           android:layout_marginLeft="@dimen/_30sdp"
+                           android:layout_marginRight="@dimen/_30sdp"
+                           android:orientation="vertical"
+                           app:layout_constraintEnd_toEndOf="parent"
+                           app:layout_constraintHorizontal_bias="0.5"
+                           app:layout_constraintStart_toStartOf="parent"
+                           app:layout_constraintTop_toBottomOf="@+id/phone">
+                        <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_centerInParent="true"
+                            android:text="Select Country"
+                            android:textSize="@dimen/_13ssp" />
+
+                        <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+                            android:id="@+id/SearchableSpinner1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_horizontal"
+                            android:visibility="visible"
+                            app:BoarderColor="@color/primaryColor"
+                            app:BordersSize="1dp"
+                            app:DoneSearchTintColor="@color/colorWhite"
+                            app:ItemsDivider="@color/gray_btn_bg_color"
+                            app:RevealEmptyText="Select Country"
+                            app:RevealViewBackgroundColor="@color/colorWhite"
+                            app:SearchViewBackgroundColor="@color/colorWhite"
+                            app:ShowBorders="true"
+                            app:SpinnerExpandHeight="0dp"
+                            app:StartSearchTintColor="@color/colorBlack" />
+                       </LinearLayout>
+
                         <com.google.android.material.textfield.TextInputLayout
                             android:id="@+id/counties_layout"
                             android:layout_width="match_parent"
@@ -323,7 +360,7 @@
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/phone">
+                            app:layout_constraintTop_toBottomOf="@+id/linear">
 
                             <com.google.android.material.textfield.TextInputEditText
                                 android:id="@+id/counties"

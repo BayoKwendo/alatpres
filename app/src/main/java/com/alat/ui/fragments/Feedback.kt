@@ -8,6 +8,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.os.Bundle
 import android.os.Handler
+import android.text.TextUtils
 import android.util.Log
 import android.view.*
 import android.widget.*
@@ -85,15 +86,14 @@ class Feedback : Fragment() {
                 internet()
                 promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
             }else {
-                feedback = mfeedback!!.text.toString()
+                feedback = mfeedback?.text.toString().trim();
 
-                if(feedback == null){
-                    Toast.makeText(activity,"Feedback field can not be null",Toast.LENGTH_LONG).show();
+                if (TextUtils.isEmpty(feedback)) {
+                    Toast.makeText(activity, "Enter something in the feedback field", Toast.LENGTH_LONG).show();
                 }else {
                     mProgressS!!.show()
                     submit()
-                }
-            }
+                }}
         }
         return view
 
@@ -241,8 +241,6 @@ class Feedback : Fragment() {
                 dialogue_error();
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 mProgressS!!.dismiss()
-
-
             }
         } catch (e: JSONException) {
             e.printStackTrace()
