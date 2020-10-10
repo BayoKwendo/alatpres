@@ -1,11 +1,14 @@
 package com.alat.ui.activities
 
 import android.app.ProgressDialog
+import android.app.SearchManager
+import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.Log
 import android.view.Gravity
+import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
@@ -80,15 +83,11 @@ class GroupsRequests() : AppCompatActivity(),
         setSupportActionBar(mToolbar!!);
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = "Your RGs ";
-
         preferenceHelper = PreferenceModel(this)
         recyclerView = findViewById(R.id.recycler_view)
         errorNull =  findViewById(R.id.texterror)
         contactList = ArrayList()
         mAdapter = FRGAdapter(this, contactList!!, this)
-
-
-
 
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -107,12 +106,9 @@ class GroupsRequests() : AppCompatActivity(),
             )
         )
         recyclerView!!.adapter = mAdapter
-
         mProgressLayout!!.visibility = View.VISIBLE
         errorNull!!.visibility = View.GONE
-
         getStudent()
-
 
     }
 
@@ -260,6 +256,62 @@ class GroupsRequests() : AppCompatActivity(),
     }
 
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        mToolbar!!.inflateMenu(R.menu.menu_items);
+
+
+        var item = menu?.findItem(R.id.action_share)
+        val item2 = menu?.findItem(R.id.join)
+        val item3 = menu?.findItem(R.id.invites)
+        val item4 = menu?.findItem(R.id.about)
+        val item5 = menu?.findItem(R.id.logout)
+        val item6 = menu?.findItem(R.id.aboutus)
+        val item8 = menu?.findItem(R.id.action_invite)
+
+        val item7 = menu?.findItem(R.id.viewmber)
+
+
+        item?.isVisible = false
+        item2?.isVisible = false
+        item3?.isVisible = false
+        item4?.isVisible = false
+        item5?.isVisible = false
+        item6?.isVisible = false
+        item7?.isVisible = false
+        item8?.isVisible = false
+
+
+        // Associate searchable configuration with the SearchView
+        val searchManager =
+            getSystemService(Context.SEARCH_SERVICE) as SearchManager
+        searchView = menu!!.findItem(R.id.action_search)
+            .actionView as SearchView
+        searchView!!.setSearchableInfo(
+            searchManager
+                .getSearchableInfo(componentName)
+        )
+        searchView!!.maxWidth = Int.MAX_VALUE
+
+        // listening to search query text change
+        searchView!!.setOnQueryTextListener(object :
+            SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String): Boolean {
+                // filter recycler view when query submitted
+                mAdapter!!.filter.filter(query)
+
+                return false
+            }
+
+            override fun onQueryTextChange(query: String): Boolean {
+                // filter recycler view when text is changed
+                mAdapter!!.filter.filter(query)
+                return false
+            }
+        })
+        return super.onCreateOptionsMenu(menu);
+    }
+
+
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
@@ -269,6 +321,9 @@ class GroupsRequests() : AppCompatActivity(),
         when (id) {
            android.R.id.home -> {
                BackAlert()
+                true
+            }
+            R.id.action_search -> {
                 true
             }
             else -> super.onOptionsItemSelected(item)

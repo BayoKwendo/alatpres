@@ -33,6 +33,7 @@ import com.alat.helpers.Utils
 import com.alat.interfaces.CreateUser
 import com.alat.model.PreferenceModel
 import com.alat.model.TextViewDatePicker
+import com.alat.ui.activities.auth.Enterprise
 import com.alat.ui.activities.enterprise.AddClientActivitity
 import com.alat.ui.activities.auth.LoginActivity
 import com.google.android.material.textfield.TextInputLayout
@@ -135,7 +136,7 @@ class BasicUserActivity : AppCompatActivity() {
         spanText.append(policy)
         spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                loadTerms()
+                loadPolicy()
             }
             override fun updateDrawState(textPaint: TextPaint) {
                 textPaint.color = textPaint.linkColor // you can use custom color
@@ -206,7 +207,7 @@ class BasicUserActivity : AppCompatActivity() {
              }
         }
         enterprs!!.setOnClickListener {
-            val intent = Intent(this@BasicUserActivity, AddClientActivitity::class.java)
+            val intent = Intent(this@BasicUserActivity, Enterprise::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
             startActivity(intent)
             finish()  }
@@ -252,6 +253,36 @@ class BasicUserActivity : AppCompatActivity() {
             Log.d("bayo", json)
 
              webView.loadUrl("file:///android_res/raw/terms.html")
+
+        } catch (e: Throwable) {
+            webView.loadData(
+                "<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html",
+                "UTF-8"
+            )
+        }
+    }
+
+    private fun loadPolicy() {
+
+
+        val builder: MaterialDialog.Builder = MaterialDialog.Builder(this@BasicUserActivity)
+
+            .customView(R.layout.dialog_webview, false)
+            .cancelable(false)
+            .positiveText(R.string.dismiss)
+            .onPositive({ _, which -> termsMaterialDialog!!.dismiss() })
+        termsMaterialDialog = builder.build()
+        termsMaterialDialog!!.show()
+        val webView: WebView =
+            termsMaterialDialog!!.customView!!.findViewById(R.id.webview)
+        try {
+
+            // Load from changelog.html in the assets folder
+            val json: String = resources.openRawResource(R.raw.terms).bufferedReader().use { it.readText() }
+
+            Log.d("bayo", json)
+
+            webView.loadUrl("file:///android_res/raw/policy.html")
 
         } catch (e: Throwable) {
             webView.loadData(

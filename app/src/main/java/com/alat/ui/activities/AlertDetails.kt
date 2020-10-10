@@ -9,10 +9,7 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.view.Gravity
-import android.view.LayoutInflater
-import android.view.MenuItem
-import android.view.View
+import android.view.*
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
@@ -23,6 +20,9 @@ import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.*
+import com.alat.model.rgModel
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.squareup.picasso.Picasso
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
@@ -42,7 +42,10 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class AlertDetails : AppCompatActivity() {
 
@@ -214,7 +217,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertElevate() {
 
         AlertDialog.Builder(this)
-            .setMessage("The situation is out of control and furthur rescue is needed\n\n")
+            .setMessage("The situation is out of control and further rescue is needed\n\n\n")
             .setCancelable(true)
             .setPositiveButton("Elevate") { _, id ->
                 //  accept()
@@ -232,7 +235,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertShout() {
 
         AlertDialog.Builder(this)
-            .setMessage("I am in danger and i need immediate action\n\n")
+            .setMessage("I am in danger and i need immediate response action\n\n")
             .setCancelable(true)
             .setPositiveButton("Shout!!") { _, id ->
                 //  accept()
@@ -612,9 +615,8 @@ class AlertDetails : AppCompatActivity() {
 
 
     fun AlertStatus() {
-
         AlertDialog.Builder(this)
-            .setMessage("Alert has been acted upon and address successfully\n\n")
+            .setMessage("Alert has been acted upon and addressed successfully\n\n")
             .setCancelable(true)
             .setPositiveButton("Neutralized") { _, id ->
                 //  accept()
@@ -1180,11 +1182,11 @@ class AlertDetails : AppCompatActivity() {
 
     }
 
-
     private fun getGroupNames() {
 
         val group_name: String? = null
         val alerts = 0
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -1204,68 +1206,65 @@ class AlertDetails : AppCompatActivity() {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-        val api: GetRGs = retrofit.create(GetRGs::class.java)
-        val call: Call<String>? = api.getRG(group_name, alerts)
+            .addConverterFactory(GsonConverterFactory.create())
 
-        call?.enqueue(object : Callback<String?> {
-            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                Log.d("Responsestring", response.body().toString())
+            .build()
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["userid"] = user!!
+        val api: ViewGroups = retrofit.create(ViewGroups::class.java)
+        val call: Call<ResponseBody>? = api.viewRG(params)
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
                 if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        Log.d("onSuccess", response.body().toString())
-                        val jsonresponse = response.body().toString()
-                        parseLogiData(jsonresponse)
-                    } else {
+                    val remoteResponse = response.body()!!.string()
+                    try {
+                        val o = JSONObject(remoteResponse)
 
-                        Log.i(
-                            "onEmptyResponse",
-                            "Returned empty response"
-                        ) //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                        if (o.getString("status") == "true") {
+
+                            val array: JSONArray = o.getJSONArray("records")
+
+                            for (i in 0 until array.length()) {
+
+
+                                    val jsonobject: JSONObject = array.getJSONObject(i)
+                                    catList.add(jsonobject.getString("group_name"))
+
+
+                            }
+                        }
+
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
                     }
+
                 } else {
                     Log.d("bayo", response.errorBody()!!.string())
-//
-//                    internet()
-//                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+                    // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
+
+
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
 
 
                 }
             }
 
-            override fun onFailure(call: Call<String?>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 //   btn.text = "Proceed"
                 Log.i("onEmptyResponse", "" + t) //
+                // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
 
-//                internet()
-//                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 //mProgress?.dismiss()
             }
         })
     }
 
-    private fun parseLogiData(jsonresponse: String) {
-        try {
-            val o = JSONObject(jsonresponse)
-            val array: JSONArray = o.getJSONArray("records")
-            //  val array: JSONArray = JSONArray(jsonresponse)
-
-
-            val jsonarray = JSONArray(array.toString())
-
-            for (i in 0 until jsonarray.length()) {
-                val jsonobject: JSONObject = jsonarray.getJSONObject(i)
-                catList.add(jsonobject.getString("group_name"))
-            }
-
-        } catch (e: JSONException) {
-            e.printStackTrace()
-        }
-
-
-    }
 
     fun updates() {
 

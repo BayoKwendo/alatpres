@@ -68,7 +68,6 @@ class JoinRGs : Fragment() {
 
     //  var fname: String? = null
     var user: String? = null
-    var updateFName: String? = null
 
 
     private var btnResetPassword: Button? = null
@@ -77,6 +76,7 @@ class JoinRGs : Fragment() {
     private var mProgress: ProgressDialog? = null
     var MYCODE = 1000
     var alert: android.app.AlertDialog? = null
+    var updateFName: String? = null
 
     var alert_id: String? = null
 

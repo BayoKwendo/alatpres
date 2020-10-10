@@ -19,9 +19,8 @@
     <item
         android:id="@+id/join"
         android:icon="@drawable/noti"
-        app:showAsAction = "always"
         android:actionLayout="@layout/action_bar_notifitcation_icon"
-        android:title="sh"
+        android:title="Notifications"
         />
 
     <item

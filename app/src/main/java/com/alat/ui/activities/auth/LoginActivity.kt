@@ -55,9 +55,7 @@ class LoginActivity : AppCompatActivity() {
     var email: String? = null
     var password: String? = null
     var forgot: TextView? = null
-
     var image: ImageView? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -66,11 +64,9 @@ class LoginActivity : AppCompatActivity() {
         pin_edittext = findViewById(R.id.input_login_pin)
         signin = findViewById(R.id.btn_login)
         join = findViewById(R.id.joinalat)
-
         image = findViewById(R.id.imageview)
-
         join?.setOnClickListener {
-            startActivity(Intent(this, BasicUserActivity::class.java))
+            startActivity(Intent(this, LauncherActivity::class.java))
         }
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Authenticating...");
@@ -80,7 +76,6 @@ class LoginActivity : AppCompatActivity() {
         }
        // Picasso.with(this).load().fit().into(image);
         Picasso.get().load("https://youthsofhope.co.ke/api/logo.png").into(image)
-
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
@@ -90,11 +85,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-//        Toast.makeText(
-//            this,
-//            "Selected: " +pref!!.getBoolean("isLogin", false) ,
-//            Toast.LENGTH_LONG
-//        ).show()
 
 
 
@@ -224,12 +214,12 @@ class LoginActivity : AppCompatActivity() {
                 promptPopUpView?.changeStatus(2, "SUCCESSFUL")
                 mProgress?.dismiss()
                 Handler().postDelayed({
+                 //   Toast.makeText(this, "" + jsonObject.getString("response_provider"),    Toast.LENGTH_LONG).show()
                     val intent = Intent(this@LoginActivity, Permission::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)
                     finish()
                 }, 3000)
-
             }else{
                 mProgress?.dismiss()
                 dialogue_error();
@@ -244,7 +234,6 @@ class LoginActivity : AppCompatActivity() {
         try {
 
             val jsonObject = JSONObject(response)
-
             pref =
                 applicationContext.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
@@ -264,7 +253,8 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("userid", jsonObject.getString("userid"))
             editor.putString("account_status", jsonObject.getString("account_status"))
             editor.putString("clients", jsonObject.getString("clients"))
-
+            editor.putString("response_provider", jsonObject.getString("response_provider"))
+          //  editor.putString("nature_response", jsonObject.getString("nature_response"))
 
 //            editor.putString("tax", jsonObject.getString("taxid"))
 //            editor.putString("nature_org", jsonObject.getString("nature_org"))

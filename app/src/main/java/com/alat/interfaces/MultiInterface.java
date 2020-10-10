@@ -12,7 +12,7 @@ public interface MultiInterface {
     String IMAGEURL = "https://youthsofhope.co.ke/api/";
     @Multipart
 
-    @POST("alert/upLoad.php")
+    @POST("api/alert/upLoad.php")
     Call<String> uploadImage(
             @Part MultipartBody.Part file,
             @Part("alert_name") String alert_name,

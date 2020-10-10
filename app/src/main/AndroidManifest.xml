@@ -54,6 +54,10 @@
 
         </activity>
 
+        <activity android:name=".ui.activities.FAQ"
+            android:screenOrientation="locked">
+        </activity>
+
         <activity android:name=".ui.activities.auth.AudioRecordActivity"
             android:screenOrientation="locked"
 
@@ -62,18 +66,27 @@
         </activity>
      <activity android:name="com.alat.ui.activities.auth.Enterprise"
             android:screenOrientation="locked"
-            android:theme="@style/AppTheme.NoActionBar"/>
+            android:theme="@style/AppTheme.NoActionBar">
+
+
+     </activity>
 
         <activity android:name=".HomePage"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".ui.activities.CreateAlert"
             android:screenOrientation="locked"
-            android:label="Create Alert"/>
+            android:label="Create Alat"/>
+        <activity android:name=".ui.activities.auth.LauncherActivity"
+            android:screenOrientation="locked">
+        </activity>
+        <activity android:name=".ui.activities.enterprise.CreateAlerteNT"
+            android:screenOrientation="locked"
+            android:label="Create Update Alert"/>
 
         <activity android:name=".ui.activities.CreateGlobalAlert"
             android:screenOrientation="locked"
-            android:label="Create Global Alert"/>
+            android:label="Create Global Alat"/>
         <activity android:name=".ui.AboutUs"
             android:screenOrientation="locked"
             android:label="About Us"/>
@@ -97,7 +110,6 @@
         <activity android:name=".presentation.MainActivity"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
-
         </activity>
 
         <activity android:name=".presentation.BubbleActivity"
@@ -106,8 +118,6 @@
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>
-
-
         <activity android:name=".ui.activities.AlertsPerResponse"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -127,9 +137,16 @@
             android:screenOrientation="locked"
             android:label="Notifications"/>
 
+        <activity android:name=".ui.activities.mpesa.Ban_Transfer"
+            android:screenOrientation="locked"
+            android:label="Account Details"/>
+
         <activity android:name=".ui.activities.AlertReport"
             android:screenOrientation="locked" />
         <activity android:name=".ui.activities.GroupID"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activities.GroupIDEnter"
             android:theme="@style/AppTheme.NoActionBar"/>
         <activity android:name=".ui.activities.AddTopicActivity"
             android:screenOrientation="locked"
@@ -168,30 +185,21 @@
         <activity android:name=".ui.activities.ActiveAlerts"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-
         <activity android:name=".ui.activities.ElevateAlert"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-
         <activity android:name=".ui.activities.account"
             android:label="My Account"
             android:screenOrientation="locked"/>
-
         <activity android:name=".ui.activities.account_enterprise"
             android:label="My Account"
             android:screenOrientation="locked"/>
-
         <activity android:name=".ui.activities.ExistGroup"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
-
-
         <activity android:name=".ui.activities.AddMembers"
             android:label="Configuration"
             android:screenOrientation="locked"/>
-
         <activity android:name=".ui.activities.NeutralizeAlerts"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
@@ -207,7 +215,6 @@
         <activity android:name=".ui.activities.mpesa.MPESAExpressActivity"
             android:label="Payments"
             android:screenOrientation="locked">
-
         </activity>
     </application>
 

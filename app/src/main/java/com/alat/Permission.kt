@@ -66,7 +66,7 @@ class Permission : Activity() {
                         if (report.areAllPermissionsGranted()) {
 
                          if (roleID == "1") {
-                             startActivity(Intent(this@Permission, HomePage::class.java))
+                            startActivity(Intent(this@Permission, HomePage::class.java))
                          } else if (roleID == "2") {
 //                             if (account == "0") {
 ////                                 startActivity(Intent(this@Permission, account_enterprise::class.java))

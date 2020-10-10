@@ -207,14 +207,10 @@ class alerts : Fragment(),
                     val remoteResponse = response.body()!!.string()
                     try {
                         val o = JSONObject(remoteResponse)
-
                         if (o.getString("status") == "true") {
-
                             val array: JSONArray = o.getJSONArray("records")
-
                             for (i in 0 until array.length()) {
                                 val dataobj: JSONObject = array.getJSONObject(i)
-
                                 val items: List<rgModel> =
                                     Gson().fromJson<List<rgModel>>(
                                         array.toString(),
@@ -226,17 +222,14 @@ class alerts : Fragment(),
                                 mAdapter!!.notifyDataSetChanged()
                                 mProgressLayout!!.visibility = View.GONE
                                 errorNull!!.visibility = View.GONE
-
                             }
                         } else {
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }
-
                     } catch (e: JSONException) {
                         e.printStackTrace()
                     }
-
                 } else {
                     Log.d("bayo", response.errorBody()!!.string())
                     errorNull!!.visibility = View.VISIBLE
@@ -346,6 +339,10 @@ class alerts : Fragment(),
         val menu_hotlist = MenuItemCompat.getActionView(item9)
         ui_hot = menu_hotlist.findViewById(R.id.hotlist_hot) as TextView
         updateHotCount(hot_number)
+
+        ui_hot!!.setOnClickListener {
+            startActivity(Intent(activity, Notification::class.java))
+        }
         object : MyMenuItemStuffListener(menu_hotlist, "Show hot message") {
            override fun onClick(v: View?) {
              //  activity.onHotlistSelected()

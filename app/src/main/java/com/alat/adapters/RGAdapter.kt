@@ -61,21 +61,6 @@ class RGAdapter(
         viewType: Int
     ): MyViewHolder {
 
-//        var viewHolder: RGAdapter.MyViewHolder? = null
-//        val inflater =
-//            LayoutInflater.from(parent.context)
-//        when (viewType) {
-//            1 -> {
-//                val v: View = inflater.inflate(R.layout.user_row_item, parent, false)
-//                viewHolder = MyViewHolder(v)
-//            }
-//            2 -> {
-////                val v: View = inflater.inflate(R.layout.list_item_admob, parent, false)
-////                viewHolder = ViewHolderAdMob(v)
-//            }
-//        }
-//        return viewHolder!!
-
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_row_item, parent, false)
         return MyViewHolder(itemView)

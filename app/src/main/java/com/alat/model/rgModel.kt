@@ -25,14 +25,19 @@ class rgModel {
 
     var checked: Boolean? = false
 
-    var content: String? = null
+    var station_name: String? = null
 
-    var fullname: String? = null
+    var name: String? = null
 
     var firstname: String? = null
 
     var lastname: String? = null
 
+
+
+    var content: String? = null
+
+    var fullname: String? = null
 
 
     var mssdn: String? = null

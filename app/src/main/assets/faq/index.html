@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<title>Bootstrap 4 Accordion with Plus Minus Icons</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script src="js/owl.carousel.min.js"></script>
+
+	<script src="js/jquery.stellar.min.js"></script>
+	<script src="js/main.js"></script>
+
+	<script src="js/mains.js"></script>
+	<style>
+		.bs-example{
+			margin: 10px;
+			background-color: #ffff
+		}
+		.card-header {
+			background-color: #0f4356;
+			color: #ffff;
+		}
+		.accordion .fa{
+			margin-right: 0.5rem;
+		}
+		.btn-link{
+			color: #ff8528;
+		}
+		.btn-link:hover{
+			color: #fff
+		}
+	</style>
+	<script>
+		$(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function(){
+        	$(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+        	$(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+        	$(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+</script>
+</head>
+<body>
+	<div class="bs-example">
+		<div class="accordion" id="accordionExample">
+			<br><div class="card">
+				<div class="card-header  btn-link" id="headingOne"  data-toggle="collapse" data-target="#collapseOne">
+					<h2 class="mb-0">
+						<button type="button"  class="btn btn-link"><i class="fa fa-plus"></i> <strong> GENERAL</strong></button>
+					</h2>
+				</div>
+
+				<div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+					<div class="card-body">
+						<ol>
+							<li> <b>WHAT IS ALATPRES?</b> <br>
+								Alatpres is a B2C2B public safety emergency notification and disaster management app that focuses on fast and reliable sharing of safety alerts across different pre-configured levels of response. The solution promotes partnership between communities and public safety teams and provides inter-agency communication to ensure coordinated response to any public safety incident. The solution also generates reports and insights for users to enable critical decision making.
+							</li>
+
+							<li> <b>WHO IS IT FOR?</b><br>
+								The solution is designed for individuals, community policing groups, learning institutions, business entities, first-response providers, government agencies and other public safety teams
+							</li>
+							<li><b>What does Alatpres aim to achieve?</b><br>
+								As a social-Tech, Alatpres aims to promote a pro-active and collaborative culture to public safety management in ways that societies will be Safer, Connected and Digitally Empowered
+							</li>
+
+							<li> <b>What is an ‘Alat’?</b><br>
+								An Alat is simply an Alert/message sent on Alatpres to other users. Alats can be in form of a text, photo, document or audio recording.
+							</li>
+
+							<li> <b>What is the ‘Response Providers Database’ for?</b><br>
+								This is a collection of response providers available on Alatpres. It allows users to effortlessly find and get information about first-response providers within their locality.  This includes info on their Alatpres ID, nature of response services they provide, contact info etc. The database is also conveniently accessible during group level configurations.
+							</li>
+
+							<li> <b>HOW CAN I INVITE FRIENDS TO JOIN ALATPRES?</b><br>
+								Alatpres allows you to send a download link to your friends via several messaging channels such as SMS, WhatsApp, Telegram, Email etc. 
+
+							</li>
+
+							<li> <b>Can I use Alatpres on my iPhone?</b><br>
+								No. Currently Alatpres is only available for Android devices.
+
+							</li>
+
+							<li> <b>What is a Response Team/Provider?</b><br>
+								This can be an individual, group of individuals, an organization or government agency providing any form of first-response or public safety service. This can be but not limited to Private security firms, government security agencies & departments, medical teams, community policing teams, fire brigades, evacuation & rescue teams, professional volunteering teams etc.
+							</li>
+						</ol>
+
+					</div>
+				</div>
+			</div><br>
+			<div class="card">
+				<div class="card-header" id="headingThree" data-toggle="collapse" data-target="#collapseThree">
+					<h2 class="mb-0">
+						<button type="button" class="btn btn-link collapsed"  ><i class="fa fa-plus"></i><strong >RESPONSE GROUPS</strong></button>
+					</h2>
+				</div>
+				<div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+					<div class="card-body">
+						<ol>
+							<li><b>WHAT IS AN “RG”?</b><br>
+								‘RG’ is an abbreviation for a Response Group. It is a group of people from but not limited to the police, first-response teams, local leaders community policing teams and residents who come together to identify, share and solve public safety issues in their locality. RGs can be formed at homes, workplaces, residential areas & estates, business entities…virtually everywhere for easy sharing of public safety intelligence and incidences as they happen as well as prompting quick response and other complimentary support 
+							</li>
+
+							<li><b>Is there a limit on the number of RGs I can create?</b><br>
+							No. Alatpres allows users to create as many RGs as they can. However, You must upgrade to the PRO plan to create RGs depending on one’s safety needs. You can for-instance have a family RG, workplace RG, your business RG…</li>
+
+							<li><b>Can I be a member of someone’s’ RG</b><br>
+								Yes. You require to have the RG’s unique ID and go to ‘Join RG’ menu and input the RG’s ID and request to join. One is automatically joined to open groups upon request while approval to join is required for closed groups
+							</li>
+
+							<li><b>What is Global RG?</b><br>
+								This is a dedicated channel that allows registered response authorities/teams to share real-time safety and incident information to the public. All users are automatically added to this group. Only enterprise users registered as first-responders can share Alats to the group.
+							</li>
+
+							<li><b>What do you mean by group configuration?</b><br>
+								Alatpres allows users to add members and integrate response service providers into their groups to allow quick sharing of Alats to multiple response providers by a single click. Level configurations simply mean pre-configuring response teams for different natures of alerts.  There are three levels of group configuration. 
+								Level 1: This configured automatically and includes only the members of the group.
+								Level2: Here it is recommended you integrate response providers that will receive and action the group’s <b>medium</b> rated Alats. This can instance be your area community leader etc.
+								Level 3: It is recommended adding response providers that will receive and action to the group’s <b>high</b> rated Alats. This can be for instance your local police station, county fire brigade etc.
+							</li>
+
+							<li><b>What is an open group?</b><br>
+								Also called a public group. This is a group with zero joining restrictions. A user is automatically joined into the group upon request. It is recommended to create open groups where participation for everyone is necessary e.g. on public facilities
+							</li>
+						</ol>
+
+					</div>
+				</div>
+			</div><br>
+			<div class="card">
+				<div class="card-header" id="heading4"  data-toggle="collapse" data-target="#collapse4">
+					<h2 class="mb-0">
+						<button type="button" class="btn btn-link collapsed"><i class="fa fa-plus"></i><strong>ALATS</strong></button>
+					</h2>
+				</div>
+				<div id="collapse4" class="collapse" aria-labelledby="heading4" data-parent="#accordionExample">
+					<div class="card-body">
+						<ol>
+
+							<li><b>I don’t have bundles, can I receive Alats?</b><br>
+								Yes. All Alats are delivered both to the user’s online dashboard as well offline via SMS. This ensures you don’t miss out on any critical life-saving information.
+							</li>
+
+							<li><b>Why do I have to choose nature of Alat when creating an Alat?</b><br>
+							This allows an Alat to be shared to relevant pre-configured response teams for an appropriate response.</li>
+
+							<li><b>How do I determine an Alat is high, medium or low rated?</b><br>
+								<b>High risk Alat:</b> This can also be referred to a ‘critical Alat”. This is an incident alert for a life-threatening situation and massive property damage & adverse public safety consequence is imminent. Prompt and useful response is required. Armed robbery, flooding, disease-outbreak, fire etc. are good examples of such Alat.<br>
+								<b>Medium risk Alat:</b>  This can be an incident alert for a situation that has potential to cause human-harm, property damage or pose a public safety risk if left un-addressed. Level2 configured response teams will receive these nature of Alat.<br> 
+								<b>Low risk Alat:</b> This is can be an incident alert that requires minimal to no response from the RG members and no one is at immediate risk of any sort of harm. E.g. a mere suspicion incident Alat<br>
+								<b>Disclaimer:</b> Alatpres does not prescribe any criteria of rating Alats and the judgement is left upon the user to determine in consideration of other unique factors.
+								
+							</li>
+
+							
+						</ol>
+
+
+
+					</div>
+				</div>
+			</div><br>
+
+			<div class="card">
+				<div class="card-header" id="headings4"  data-toggle="collapse"
+				data-target="#collapse4s">
+				<h2 class="mb-0">
+					<button type="button" class="btn btn-link collapsed"><i class="fa fa-plus"></i><strong>PRICING</strong></button>
+				</h2>
+			</div>
+			<div id="collapse4s" class="collapse" aria-labelledby="headings4" data-parent="#accordionExample">
+				<div class="card-body">
+					<ol>
+
+						<li><b>How does a free trial work?</b><br>
+							Free trials provide our users with a full version of a pro or enterprise plan for thirty days. You will however realize that the trial period does impose a few temporarily limits on the app like the number of RGs you can create. Otherwise, you get the full experience of the Alatpres App, so you know exactly what you are getting when you become an Alatpres user.
+						</li>
+
+						<li><b>What happens when my free trial ends?</b><br>
+							You will automatically be downgraded to our free plan if you do nothing. If you chose to keep your plan, you will be required to choose your subscription plan and make a payment
+							You will automatically be downgraded to our free plan if you do nothing. If you chose to keep your plan, you will be required to choose your subscription plan and make a payment
+						</li>
+
+						<li><b>What kind of payments do you accept?</b><br>
+							Currently we accept mobile money payments via Mpesa and Direct Bank Transfers. If you would like us to accept any form of offline payment, please write to us  <a href="">support@alatpres.com</a>
+						</li>
+
+					</ol>
+
+				</div>
+			</div>
+		</div><br>
+		<div class="card">
+			<div class="card-header" id="heading6" data-toggle="collapse" data-target="#collapse6">
+				<h2 class="mb-0">
+					<button type="button" class="btn btn-link collapsed" ><i class="fa fa-plus"></i> <strong>SECURITY</strong></button>
+				</h2>
+			</div>
+			<div id="collapse6" class="collapse" aria-labelledby="heading6" data-parent="#accordionExample">
+				<div class="card-body">
+					<ol>
+						<li><b>Is my data safe?</b><br>
+							We take data security seriously. Our servers are hosted in a world class data center and we ensure that our application is always up-to-date with the latest security patches.
+						</li>
+
+					</ol>
+
+				</div>
+			</div>
+		</div><br>
+	</div>
+</div>
+</body>
+</html>

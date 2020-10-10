@@ -16,7 +16,9 @@ import android.widget.TextView
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.appcompat.widget.ShareActionProvider
 import androidx.appcompat.widget.Toolbar
+import androidx.core.view.MenuItemCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -63,18 +65,12 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
     private var mAdapter: AlertAdapter? = null
     private var searchView: SearchView? = null
     private var mProgressLayout: LinearLayout? = null
-
     private var promptPopUpView: PromptPopUpView? = null
-
-
-
-
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
     var errorNull: TextView? = null
     private var mProgress: ProgressDialog? = null
     var MYCODE = 1000
-
     var mToolbar: Toolbar? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -110,7 +106,6 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
             )
         )
         recyclerView!!.adapter = mAdapter
-
         mProgressLayout!!.visibility = View.VISIBLE
         errorNull!!.visibility = View.GONE
 
@@ -157,7 +152,6 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -225,23 +219,25 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
 
 
 
-        val item = menu?.findItem(R.id.action_share)
+        val item22 = menu?.findItem(R.id.action_share)
         val item2 = menu?.findItem(R.id.join)
-        val item3 = menu?.findItem(R.id.invites)
+        val item3 = menu?.findItem(R.id.aboutus)
+        val item9 = menu?.findItem(R.id.invites)
         val item4 = menu?.findItem(R.id.about)
         val item5 = menu?.findItem(R.id.logout)
         val item6 = menu?.findItem(R.id.action_invite)
-
-
-        item?.isVisible = false
+        item22?.isVisible = true
         item2?.isVisible = false
         item3?.isVisible = false
         item4?.isVisible = false
+        item9?.isVisible = false
         item5?.isVisible = false
         item6?.isVisible = false
+        val mShareActionProvider: ShareActionProvider? =
+            MenuItemCompat.getActionProvider(item22) as ShareActionProvider?
+        mShareActionProvider?.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME)
 
-
-
+        mShareActionProvider?.setShareIntent(createShareIntent())
         val searchManager =
             getSystemService(Context.SEARCH_SERVICE) as SearchManager
         searchView = menu!!.findItem(R.id.action_search)
@@ -288,12 +284,25 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
             }
             else -> super.onOptionsItemSelected(item)
         }
-
         return true
     }
 
+    // Create and return the Share Intent
+    private fun createShareIntent(): Intent? {
+        val shareIntent =
+            Intent(Intent.ACTION_SEND)
+        shareIntent.type = "text/plain"
+        shareIntent.putExtra(
+            Intent.EXTRA_TEXT, "Group Name: " + response_group + "\n\nGroup ID: " + group_id
+        )
+        val intent =
+            Intent.createChooser(shareIntent, "Share Via")
+        return shareIntent
+    }
 
-   fun BackAlert() {
+
+
+    fun BackAlert() {
        AlertDialog.Builder(this)
            .setMessage("Are you sure want to go back?")
            .setCancelable(false)

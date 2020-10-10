@@ -40,30 +40,31 @@
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+         android:visibility="gone"
         android:layout_gravity="bottom|end"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginRight="@dimen/_5sdp"
-            android:text="Add Alert!!"
-            android:textColor="@color/error"
-            android:textStyle="bold" />
+         <TextView
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="bottom|end"
+             android:layout_marginRight="@dimen/_5sdp"
+             android:text="Create Global Alat!!"
+             android:textColor="@color/error"
+             android:textStyle="bold" />
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
-            android:id="@+id/joinGlobal"
-            style="@style/Widget.Design.FloatingActionButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom|end"
-            android:layout_marginEnd="16dp"
-            android:layout_marginRight="16dp"
-            android:layout_marginBottom="16dp"
-            android:background="@color/colorPrimary"
-            android:backgroundTint="@color/colorPrimary"
-            app:srcCompat="@drawable/addalaert" />
+         <com.google.android.material.floatingactionbutton.FloatingActionButton
+             android:id="@+id/joinGlobal"
+             style="@style/Widget.Design.FloatingActionButton"
+             android:layout_width="wrap_content"
+             android:layout_height="wrap_content"
+             android:layout_gravity="bottom|end"
+             android:layout_marginEnd="16dp"
+             android:layout_marginRight="16dp"
+             android:layout_marginBottom="16dp"
+             android:background="@color/colorPrimary"
+             android:backgroundTint="@color/colorPrimary"
+             app:srcCompat="@drawable/addalaert" />
 
 
     </LinearLayout>

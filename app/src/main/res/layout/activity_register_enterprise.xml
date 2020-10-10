@@ -494,7 +494,6 @@
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/nextx">
-
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -695,7 +694,7 @@
                     android:layout_marginLeft="@dimen/_10sdp"
                     android:textColor="@color/colorBlack"
                     android:textSize="@dimen/_12ssp"
-
+                     android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -730,35 +729,77 @@
                     android:layout_marginRight="@dimen/_30sdp"
                     app:ms_floatingLabelColor="#00FF00"
                     app:ms_floatingLabelText="Response Service Provider "
-                    app:ms_hint="Response Service Provider Only"
+                    app:ms_hint="Are you a Response Service Provider"
                     app:ms_multiline="false"
-
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/package_sub"/>
 
-
-                <fr.ganfra.materialspinner.MaterialSpinner
-                    android:id="@+id/nature_response"
+                <LinearLayout
+                    android:id="@+id/nature_response1"
                     android:layout_width="match_parent"
-                    android:visibility="gone"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="@dimen/_5sdp"
+                    android:layout_centerInParent="true"
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_30sdp"
-                    app:ms_arrowColor="@color/colorAccent"
-                    app:ms_arrowSize="16dp"
-                    android:paddingBottom="@dimen/_10sdp"
-                    app:ms_floatingLabelColor="#00FF00"
-                    app:ms_floatingLabelText="nature of Your Response Servic"
-                    app:ms_hint="Select nature of Your Response Service"
-                    app:ms_multiline="false"
-
+                    android:paddingTop="@dimen/_10sdp"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/rsp"/>
+                    app:layout_constraintTop_toBottomOf="@+id/rsp"
+                    >
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Select Nature of Response"/>
+                </LinearLayout>
+
+                <com.alat.adapters.MultiSelectionSpinner
+                    android:id="@+id/nature_response"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone"
+                    android:autofillHints="Select Nature of Response"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nature_response1"/>
+
+                <LinearLayout
+                    android:id="@+id/country_operation1"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_centerInParent="true"
+                    android:visibility="gone"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    android:paddingTop="@dimen/_10sdp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/nature_response">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:text="Select County/s of operation"/>
+                </LinearLayout>
+
+                <com.alat.adapters.MultiSelectionSpinner
+                    android:id="@+id/country_operation"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:layout_marginLeft="@dimen/_30sdp"
+                    android:layout_marginRight="@dimen/_30sdp"
+                    android:spinnerMode="dropdown"
+                    android:visibility="gone"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/country_operation1"/>
+
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/user_id"
                     android:layout_width="match_parent"
@@ -766,11 +807,10 @@
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_30sdp"
                     app:errorEnabled="true"
-
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/nature_response">
+                    app:layout_constraintTop_toBottomOf="@+id/country_operation">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
@@ -831,7 +871,6 @@
                         android:textColor="@color/colorBlack"
                         android:textSize="@dimen/_13ssp" />
                 </com.google.android.material.textfield.TextInputLayout>
-
 
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/confirm_password"

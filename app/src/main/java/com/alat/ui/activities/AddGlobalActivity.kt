@@ -134,7 +134,6 @@ class AddGlobalActivity : AppCompatActivity() {
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

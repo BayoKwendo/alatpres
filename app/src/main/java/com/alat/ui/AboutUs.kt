@@ -36,7 +36,7 @@ class AboutUs : AppCompatActivity() {
             .setDescription("AlatPres")
             .setImage(R.mipmap.ic_launcher)
             .addItem(Element().setTitle("Version Name $version"))
-            .addItem(Element().setTitle("Version Code $verCode"))
+//            .addItem(Element().setTitle("Version Code $verCode"))
             .addGroup("Connect with us")
             .addEmail("support@alatpres.com")
             .addWebsite("http://alatpres.com/")

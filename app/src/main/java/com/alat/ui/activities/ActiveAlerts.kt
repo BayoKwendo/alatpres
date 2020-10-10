@@ -103,9 +103,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         user = pref!!.getString("userid", null)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = response_group;
-        mProgress = ProgressDialog(this)
-        mProgress!!.setMessage("Processing...")
-        mProgress!!.setCancelable(true)
 
 
         recyclerView = findViewById(R.id.recycler_view)
@@ -139,7 +136,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
     private fun getStudent() {
 
 
-        mToolbar!!.title = "Active Alerts"
+        mToolbar!!.title = "Active Alats"
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -174,7 +171,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
@@ -352,7 +348,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
     fun AlertStatus() {
 
         AlertDialog.Builder(this)
-            .setMessage("Change status of this Alert??")
+            .setMessage("Change status of this Alat??")
             .setCancelable(true)
             .setPositiveButton("Neutralized") { _, id ->
                 //  accept()

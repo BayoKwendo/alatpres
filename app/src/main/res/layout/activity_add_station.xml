@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:id="@+id/main_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:visibility="visible">
+
+        <androidx.cardview.widget.CardView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="80dp"
+            android:layout_marginBottom="20dp"
+            app:cardElevation="0dp">
+
+            <androidx.core.widget.NestedScrollView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:scrollbarSize="@dimen/_2sdp"
+                android:scrollbars="vertical">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="4dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+
+                    <gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+                        android:id="@+id/SearchableSpinner1"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="24dp"
+                        android:layout_marginStart="24dp"
+                        android:layout_marginEnd="24dp"
+                        android:gravity="center_horizontal"
+                        app:ShowBorders="true"
+                        android:visibility="visible"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        app:layout_constraintBottom_toTopOf="@+id/mlocation"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:BordersSize="1dp"
+                        app:ItemsDivider="@color/gray_btn_bg_color"
+                        app:RevealEmptyText="Click here Select Client"
+                        app:SearchHintText="Select Client"
+                        app:BoarderColor="@color/colorAccent"
+                        app:SpinnerExpandHeight="0dp"/>
+
+<!--                 -->
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/mlocation"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_11ssp"
+                        app:errorEnabled="true"
+                        app:layout_constraintEnd_toEndOf="@+id/SearchableSpinner1"
+                        app:layout_constraintStart_toStartOf="@+id/SearchableSpinner1"
+                        app:layout_constraintTop_toBottomOf="@+id/SearchableSpinner1">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/colorAccent"
+                            android:hint="Location  of the Station"
+                            android:inputType="text"
+                            android:maxLength="15"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_13ssp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/rg_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="@dimen/_15sdp"
+                        android:layout_marginRight="@dimen/_15sdp"
+                        android:layout_marginTop="@dimen/_11ssp"
+                        app:errorEnabled="true"
+                        app:layout_constraintEnd_toEndOf="@+id/mlocation"
+                        app:layout_constraintStart_toStartOf="@+id/mlocation"
+                        app:layout_constraintTop_toBottomOf="@+id/mlocation">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:backgroundTint="@color/colorAccent"
+                            android:hint="Preferred Station Name"
+                            android:inputType="text"
+                            android:maxLength="15"
+                            android:padding="@dimen/_10sdp"
+                            android:textColor="@color/colorBlack"
+                            android:textSize="@dimen/_13ssp" />
+                    </com.google.android.material.textfield.TextInputLayout>
+
+
+                    <Button
+                        android:id="@+id/msubmit"
+                        android:layout_width="@dimen/_100sdp"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentBottom="true"
+                        android:layout_marginTop="@dimen/_20sdp"
+                        android:layout_marginBottom="@dimen/_10sdp"
+                        android:background="@drawable/button_shape"
+                        android:gravity="center"
+                        android:text="Submit"
+                        android:textColor="#ffffff"
+                        android:textSize="15sp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/rg_name"
+                        app:layout_constraintVertical_bias="1.0" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.cardview.widget.CardView>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
+
+
+    <!--Next View-->
+
+    </RelativeLayout>
+

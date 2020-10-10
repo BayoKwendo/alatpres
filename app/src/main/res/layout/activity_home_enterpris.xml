@@ -125,7 +125,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="@dimen/_5sdp"
-                android:text="Create Alert!!"
+                android:text="Create Alat!!"
                 android:textColor="@color/error"
                 android:textStyle="bold" />
 
@@ -157,7 +157,7 @@
                 android:layout_height="wrap_content"
                 android:layout_gravity="bottom|end"
                 android:layout_marginRight="@dimen/_5sdp"
-                android:text="Public Group"
+                android:text="Global RGs"
                 android:textColor="@color/error"
                 android:textStyle="bold" />
 
