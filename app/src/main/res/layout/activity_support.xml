@@ -20,11 +20,12 @@
         android:layout_marginLeft="@dimen/_15sdp"
         android:layout_marginTop="@dimen/_20sdp"
         android:layout_marginRight="@dimen/_15sdp">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="@dimen/_13sdp"
-            android:text= "Experience any challange while using our app? Don't worry, just tell us what you're facing and we will get back to you within 24hrs or you can email us via"
+            android:text= "Experiencing any challenge while using this app? Don't worry, just tell us what you're facing and we will get back to you within 24hrs or you can email us via"
             android:textColor="@color/colorBlack"
             android:textStyle="bold" />
 

@@ -1,6 +1,8 @@
 package com.alat.ui.activities
 
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -17,9 +19,10 @@ import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.UpdateSubscription
-import com.alat.ui.activities.auth.LoginActivity
+import com.alat.ui.activities.mpesa.Ban_Transfer
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
+import libs.mjn.prettydialog.PrettyDialog
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -48,55 +51,35 @@ class account : AppCompatActivity() {
     private val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     private var linear_layout_1: LinearLayout? = null
     private  var linear_layout_2:android.widget.LinearLayout? = null
-
     private var tv_days: TextView? = null
     private  var tv_hour:android.widget.TextView? = null
-
-
-    private val ITEMS3= arrayOf("Monthly ksh. 100", "Quarterly Ksh. 400", "Yearly Ksh. 1,100")
-
+    private val ITEMS3= arrayOf("Monthly ksh. 80", "Quarterly Ksh. 220", "Yearly Ksh. 750")
     var spinner_3: MaterialSpinner? = null
-
     var tv_minute:android.widget.TextView? = null
-
     private  var tv_second:android.widget.TextView? = null
     private val handler: Handler = Handler()
     private var runnable: Runnable? = null
-
     private var btnConfirm: Button? = null
     private var btnBack: Button? = null
     private var firstRun = true
-
-
     var selectedItem3: String? = null
-
-
     var account_status: String? = null
     var date: String? = null
     var price: String? = null
-
     var pref: SharedPreferences? = null
-
     private var account: String? = null
-
     private var userid: String? = null
-
     private var mProgress: ProgressDialog? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_basic)
         Objects.requireNonNull(supportActionBar)!!.setDisplayShowHomeEnabled(true)
-
-
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         edtPIN = findViewById<View>(R.id.account) as TextView
-
-
+        btnBack = findViewById<View>(R.id.btn_disable) as Button
         pref =
             this!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
-
         account = pref!!.getString("account_status", null)
         userid = pref!!.getString("userid", null)
 
@@ -117,28 +100,37 @@ class account : AppCompatActivity() {
                 linear_layout_1!!.setVisibility(View.GONE)
                 linear_layout_2!!.setVisibility(View.VISIBLE)
                 getStudent()
-
-
             }
-            "0"-> {
+            "0" -> {
 
 
                 linear_layout_1!!.setVisibility(View.VISIBLE)
                 linear_layout_2!!.setVisibility(View.GONE)
             }
-
-
-            //  Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
-            //Adapters
-            // otherwise listener will be called on initialization
         }
 
 
+        btnBack!!.setOnClickListener {
+            if (account == "1") {
+                adsbtn()
+                promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
 
 
-
-      //  Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
-        //Adapters
+            } else {
+                dialogue_error()
+                promptPopUpView?.changeStatus(1, "Please upgrade to Pro account for you to disable ads")
+            }
+        }
+        when (account) {
+            "1" -> {
+                linear_layout_1!!.setVisibility(View.GONE)
+                linear_layout_2!!.setVisibility(View.VISIBLE)
+            }
+            "0" -> {
+                linear_layout_1!!.setVisibility(View.VISIBLE)
+                linear_layout_2!!.setVisibility(View.GONE)
+            }
+        }
         val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_3 = findViewById<View>(R.id.package_sub) as MaterialSpinner
@@ -155,58 +147,81 @@ class account : AppCompatActivity() {
                 } else {
                     selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                    if(selectedItem3 == "Monthly ksh. 100"){
+                    if (selectedItem3 == "Monthly ksh. 100"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 30)
                         date = dateFormat.format(c.time)
-
-                        price = "100"
+                        price = "80"
                       //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                    }else if(selectedItem3 == "Quarterly Ksh. 400"){
+                    } else if(selectedItem3 == "Quarterly Ksh. 250"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
-                        c.add(Calendar.DATE, 120)
+                        c.add(Calendar.DATE, 90)
                         date = dateFormat.format(c.time)
-
-                        price = "400"
+                        price = "220"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                     }
-                    else if(selectedItem3 == "Yearly Ksh. 1,100"){
+                    else if(selectedItem3 == "Yearly Ksh. 900"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 355)
                         date = dateFormat.format(c.time)
-                        price = "1100"
+                        price = "750"
                     }
                 }
             }
-
-
             // TODO Auto-generated method stub
-
             override fun onNothingSelected(arg0: AdapterView<*>?) {
                 // TODO Auto-generated method stub
             }
         }
 
-
-
-
         btnConfirm!!.setOnClickListener(View.OnClickListener {
             BackAlert()
         })
+    }
 
+    @SuppressLint("ResourceAsColor")
+    private fun adsbtn() {
 
+        promptPopUpView = PromptPopUpView(this)
 
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+                btnBack!!.isEnabled = false;
+               btnBack!!.setBackgroundColor(R.color.quantum_grey)
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
+    private fun dialogue() {
+
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
+    private fun dialogue_error() {
+        promptPopUpView = PromptPopUpView(this)
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int -> }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
     }
 
 
-
     private fun getStudent() {
-
         // Toast.makeText(this@GroupsRequests, userid  , Toast.LENGTH_LONG).show()
-
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -365,15 +380,28 @@ class account : AppCompatActivity() {
 
 
     fun BackAlert() {
-        AlertDialog.Builder(this)
-            .setMessage("Upgrade to Pro")
-            .setCancelable(false)
-            .setPositiveButton("Yes") { _, id ->
+
+
+        val pDialog = PrettyDialog(this)
+        pDialog
+            .setIconTint(R.color.colorPrimary)
+            .setTitle("Upgrade to PRO ACCOUNT")
+            .setTitleColor(R.color.pdlg_color_blue)
+            .setMessage("Choose the payment method you recommend")
+            .setMessageColor(R.color.pdlg_color_gray)
+            .addButton(
+                "Mpesa Payment",
+                R.color.pdlg_color_white,
+                R.color.colorAccent
+            ) {
+                pDialog.dismiss()
                 if (selectedItem3 == null) {
-
-                    Toast.makeText(this@account, "Please select a subscription package", Toast.LENGTH_LONG).show();
-
-                }else {
+                    Toast.makeText(
+                        this@account,
+                        "Please select a subscription package",
+                        Toast.LENGTH_LONG
+                    ).show();
+                } else {
                     val i =
                         Intent(this@account, MPESAExpressActivity::class.java)
                     i.putExtra("price", price)
@@ -381,10 +409,22 @@ class account : AppCompatActivity() {
                     startActivity(i)
                 }
             }
-                //finish()
-            .setNegativeButton("No", null)
-            .show().withCenteredButtons()
+            .addButton(
+                "Direct Bank Transfer",
+                R.color.pdlg_color_white,
+                R.color.colorAccent
+            ) {
+                pDialog.dismiss()
+                val i =
+                    Intent(this@account, Ban_Transfer::class.java)
+                i.putExtra("price", price)
+                i.putExtra("time", date)
+                startActivity(i)
+
+            }
+            .show()
     }
+
 
     private fun AlertDialog.withCenteredButtons() {
         val positive = getButton(AlertDialog.BUTTON_POSITIVE)

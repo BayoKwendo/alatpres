@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>Bootstrap 4 Accordion with Plus Minus Icons</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+    <script src="js/jquery.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/owl.carousel.min.js"></script>
+
+    <script src="js/jquery.stellar.min.js"></script>
+    <script src="js/main.js"></script>
+
+    <script src="js/mains.js"></script>
+    <style>
+        .bs-example{
+            margin: 10px;
+            background-color: #ffff
+        }
+        .card-header {
+          background-color: #0f4356;
+          color: #ffff;
+      }
+      .accordion .fa{
+        margin-right: 0.5rem;
+    }
+    .btn-link{
+        color: #ff8528;
+    }
+    .btn-link:hover{
+        color: #fff
+    }
+</style>
+<script>
+    $(document).ready(function(){
+        // Add minus icon for collapse element which is open by default
+        $(".collapse.show").each(function(){
+            $(this).prev(".card-header").find(".fa").addClass("fa-minus").removeClass("fa-plus");
+        });
+        
+        // Toggle plus minus icon on show hide of collapse element
+        $(".collapse").on('show.bs.collapse', function(){
+            $(this).prev(".card-header").find(".fa").removeClass("fa-plus").addClass("fa-minus");
+        }).on('hide.bs.collapse', function(){
+            $(this).prev(".card-header").find(".fa").removeClass("fa-minus").addClass("fa-plus");
+        });
+    });
+</script>
+</head>
+<body>
+
+
+    <div class="bs-example">
+       <h4 class="text-center" style="   color: #ff8528;">Welcome to Mahitaji</h4><br>
+       <p>Mahitaji is a top up service given on your already existing loan</p>
+       <p>It is allocated to you by a lender & <b style="color: #ff8528;">must be paid within 7 days.</b></p>
+       <p>Interest rate is charged on a daily basis</p>
+
+       <h4>FAQ's</h4>
+       <div class="accordion" id="accordionExample">
+        <div class="card">
+            <div class="card-header  btn-link" id="headingOne"  data-toggle="collapse" data-target="#collapseOne">
+                <h2 class="mb-0">
+                    <button type="button"  class="btn btn-link"><i class="fa fa-plus"></i> <strong> Can Mahitaji be withdrawn? </strong></button>                                   
+                </h2>
+            </div>
+
+            <div id="collapseOne" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample">
+                <div class="card-body">
+                   <P>
+                    No. Marafiki can only be used to pay for services i.e M-PESA PayBill & Till Number.
+                </P>
+            </div>
+        </div>
+    </div><br>
+    <div class="card">
+        <div class="card-header" id="headingThree"  data-toggle="collapse" data-target="#collapseThree">
+            <h2 class="mb-0">
+                <button type="button" class="btn btn-link collapsed" ><i class="fa fa-plus"></i><strong >What else can I use it for?</strong></button>                     
+            </h2>
+        </div>
+        <div id="collapseThree" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample">
+            <div class="card-body">
+             <ol>
+                 You can also use it to buy Airtime or buy KPLC tokens
+
+             </div>
+         </div>
+     </div><br>
+
+ </div>
+</div>
+</body>
+</html>                            

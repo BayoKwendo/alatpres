@@ -39,7 +39,7 @@
             android:layout_marginRight="@dimen/_30sdp"
             app:ms_floatingLabelColor="#00FF00"
             app:ms_floatingLabelText="Response Service Provider "
-            app:ms_hint="Response Service Provider Only"
+            app:ms_hint="Are you a Response Service Provider"
             app:ms_multiline="false" />
 
 

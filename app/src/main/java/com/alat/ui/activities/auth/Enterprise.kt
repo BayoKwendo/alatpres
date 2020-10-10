@@ -6,11 +6,11 @@ import adil.dev.lib.materialnumberpicker.dialog.OrgDialogue
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.text.SpannableStringBuilder
 import android.text.TextPaint
+import android.text.TextUtils
 import android.text.method.LinkMovementMethod
 import android.text.style.ClickableSpan
 import android.util.Log
@@ -30,6 +30,7 @@ import com.alat.BasicUserActivity
 import com.alat.R
 import com.alat.adapters.CountriesArrayListAdapter
 import com.alat.adapters.CountriesListAdapter
+import com.alat.adapters.MultiSelectionSpinner
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
@@ -92,7 +93,6 @@ class Enterprise : AppCompatActivity() {
     private var dob: String? = null
     private var county: String? = null
 
-
     //Contact
     private var textInputemail: TextInputLayout? = null
     private var textInputmssidn: TextInputLayout? = null
@@ -126,49 +126,38 @@ class Enterprise : AppCompatActivity() {
     private var confirm_user_id: String? = null
 
     private val ITEMS3= arrayOf("Monthly ksh. 300", "Quarterly Ksh. 3400", "Yearly Ksh. 44,100")
-
     private val ITEMS1 = arrayOf("YES", "NO")
-
-    private val ITEMS2 = arrayOf("security", "medical",
-        "Law  enforcement  &Security","Ambulance & Other  Transport",
-        "Search,Rescue & Evacuation","Telehealth", "Disease Control&Prevention",
-        "Fire","Food & Water Safety","Emergency Veterinary Services","Communication Network Backup","Highway Emergencies",
-        "Power & Electrical Emergency","Cyber Crime","Proffesional Voluteering","Unmaned Aerial Vehicle  Services")
+    private val ITEMS2 = arrayOf("ddjdj", "fjfjf")
     var spinner: MaterialSpinner? = null
-    var spinner_2: MaterialSpinner? = null
-
-
     var spinner_3: MaterialSpinner? = null
-
-
     var selectedItem: String? = null
     var selectedItem2: String? = null
-
     var selectedItem3: String? = null
-
-
     var account_status: String? = null
-
-
     private var backText: TextView? = null
     private var mSearchableSpinner1: SearchableSpinner? = null
     private var mSimpleListAdapter1: CountriesListAdapter? = null
     private var mSimpleArrayListAdapter1: CountriesArrayListAdapter? = null
-
     private var countries: String? = null
-
     private val mCountries: ArrayList<String> = ArrayList()
-
-
-
-    var prefs: SharedPreferences? = null
-    private var btn_register: Button? = null
+    private var pw: PopupWindow? = null
+    private var expanded = false
+    var mySpinner: MultiSelectionSpinner? = null
+    var listString: String? = null
+    var listString2: String? = null
+    var mySpinner1: MultiSelectionSpinner? = null
+    var myLinear: LinearLayout? = null
+    var myLinear1: LinearLayout? = null
+    var checkSelected: BooleanArray? = null
+    var selectedItemss: ArrayList<String>? = null
+    var selectedItemCountry: ArrayList<String>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_enterprise)
         val toolbar =
             findViewById<Toolbar>(R.id.toolbar)
+        
         setSupportActionBar(toolbar)
         if (supportActionBar != null) {
             supportActionBar!!.setDisplayShowTitleEnabled(false)
@@ -176,6 +165,12 @@ class Enterprise : AppCompatActivity() {
             supportActionBar!!.setDisplayShowHomeEnabled(true)
             supportActionBar!!.elevation = 0f
         }
+
+        mySpinner = findViewById(R.id.nature_response)
+        mySpinner1 = findViewById(R.id.country_operation)
+        myLinear1 = findViewById(R.id.country_operation1)
+        myLinear = findViewById(R.id.nature_response1)
+
         init()
         linearLayout = findViewById(R.id.main_view)
         frameLayout = findViewById(R.id.next_view)
@@ -219,7 +214,7 @@ class Enterprise : AppCompatActivity() {
         spanText.append(policy)
         spanText.setSpan(object : ClickableSpan() {
             override fun onClick(widget: View) {
-                loadTerms()
+                loadPolicy()
             }
 
             override fun updateDrawState(textPaint: TextPaint) {
@@ -249,16 +244,24 @@ class Enterprise : AppCompatActivity() {
                 arg2: Int, arg3: Long
             ) {
                 if (spinner!!.selectedItem == null) {
-                    spinner_2!!.visibility = View.GONE
+
                     // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
                     return
                 } else {
                     selectedItem = spinner!!.selectedItem.toString()
 
                     if (selectedItem == "YES") {
-                        spinner_2!!.visibility = View.VISIBLE
+                        mySpinner!!.visibility = View.VISIBLE
+                        mySpinner1!!.visibility = View.VISIBLE
+                        myLinear!!.visibility = View.VISIBLE
+                        myLinear1!!.visibility = View.VISIBLE
+
                     } else {
-                        spinner_2!!.visibility = View.GONE
+                        mySpinner!!.visibility = View.GONE
+                        mySpinner1!!.visibility = View.GONE
+                        myLinear1!!.visibility = View.GONE
+                        myLinear!!.visibility = View.GONE
+
                     }
                     // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
                 }
@@ -281,7 +284,8 @@ class Enterprise : AppCompatActivity() {
         spinner_3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
             override fun onItemSelected(
                 arg0: AdapterView<*>?, arg1: View?,
-                arg2: Int, arg3: Long  ) {
+                arg2: Int, arg3: Long
+            ) {
                 if (spinner_3!!.selectedItem == null) {
                    // Toast.makeText(this@Enterprise, "Please select an Alert Type", Toast.LENGTH_LONG).show();
                     return
@@ -305,33 +309,7 @@ class Enterprise : AppCompatActivity() {
 
         val adapter1 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS2)
         adapter1.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner_2 = findViewById<View>(R.id.nature_response) as MaterialSpinner
-        spinner_2?.adapter = adapter1
-        spinner_2!!.isSelected = false;  // otherwise listener will be called on initialization
-        spinner_2!!.setSelection(0, true)
-        spinner_2?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(
-                arg0: AdapterView<*>?, arg1: View?,
-                arg2: Int, arg3: Long
-            ) {
-                selectedItem2 = when (spinner_2!!.selectedItem) {
-                    null -> {
-                        // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
-                        "NULL"
 
-                    }
-                    else -> {
-                        spinner_2!!.selectedItem.toString()
-
-                    }
-                }
-                // TODO Auto-generated method stub
-            }
-
-            override fun onNothingSelected(arg0: AdapterView<*>?) {
-                // TODO Auto-generated method stub
-            }
-        }
 
         btn_submit = findViewById(R.id.submit)
 
@@ -349,6 +327,7 @@ class Enterprise : AppCompatActivity() {
         mSearchableSpinner1!!.setStatusListener(object : IStatusListener {
             override fun spinnerIsOpening() {
             }
+
             override fun spinnerIsClosing() {}
         })
 
@@ -359,6 +338,39 @@ class Enterprise : AppCompatActivity() {
 //        }
         parseEntityDatas()
 
+
+
+        country()
+        initialize()
+
+
+    }
+
+    private fun loadPolicy() {
+        val builder: MaterialDialog.Builder = MaterialDialog.Builder(this@Enterprise)
+            .customView(R.layout.dialog_webview, false)
+            .cancelable(false)
+            .positiveText(R.string.dismiss)
+            .onPositive({ _, which -> termsMaterialDialog!!.dismiss() })
+        termsMaterialDialog = builder.build()
+        termsMaterialDialog!!.show()
+        val webView: WebView =
+            termsMaterialDialog!!.customView!!.findViewById(R.id.webview)
+        try {
+
+            // Load from changelog.html in the assets folder
+            val json: String = resources.openRawResource(R.raw.terms).bufferedReader().use { it.readText() }
+
+            Log.d("bayo", json)
+
+            webView.loadUrl("file:///android_res/raw/policy.html")
+
+        } catch (e: Throwable) {
+            webView.loadData(
+                "<h1>Unable to load</h1><p>" + e.localizedMessage + "</p>", "text/html",
+                "UTF-8"
+            )
+        }
     }
 
 
@@ -426,6 +438,64 @@ class Enterprise : AppCompatActivity() {
         }
         return super.onOptionsItemSelected(item)
     }
+
+
+    private fun initialize() {
+        //data source for drop-down list
+        val items = java.util.ArrayList<String>()
+        items.add("General Response Service")
+        items.add("Medical")
+        items.add("Law  Enforcement  &Security")
+        items.add("Ambulance and Other  Transport")
+        items.add("Search,Rescue and Evacuation")
+        items.add("Telehealth")
+        items.add("Fire")
+        items.add("Disease Control&Prevention")
+        items.add("Food and Water Safety")
+        items.add("Highway Emergencies")
+        items.add("Professional Volunteering")
+        items.add("Cyber Crime")
+        items.add("Unmaned Aerial Vehicle  Services")
+        items.add("Power and Electrical Emergency")
+        items.add("Communication Network Backup")
+        items.add("Emergency Veterinary Services")
+        items.add("Others")
+
+            mySpinner!!.setItems(items)
+            //data source for drop-down list
+            selectedItemss = mySpinner!!.selectedItems
+
+            listString =   TextUtils.join(", ", mySpinner!!.selectedItems)
+
+
+            mySpinner!!.setSelection(selectedItemss);
+
+    }
+
+    private fun country() {
+        try {
+            val items = java.util.ArrayList<String>()
+            val myJson =  inputStreamToString(this.resources.openRawResource(R.raw.counties))
+            Log.i("jsonbayo", myJson)
+            val jArray = JSONArray(myJson.toString())
+            for (i in 0 until jArray.length()) {
+                val json_obj = jArray.getJSONObject(i)
+                items.add(json_obj!!.getString("county"))
+                mySpinner1!!.setItems(items)
+                //data source for drop-down list
+                selectedItemCountry = mySpinner1!!.selectedItems
+                listString2 =   TextUtils.join(", ", mySpinner1!!.selectedItems)
+
+
+
+                mySpinner1!!.setSelection(selectedItemCountry);
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+
+    }
+
 
     private fun init() {
         textInputname = findViewById(R.id.name)
@@ -723,7 +793,7 @@ class Enterprise : AppCompatActivity() {
 //            val br = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.africancountries)))
 //            var temp: String?
 //            while (br.readLine().also { temp = it } != null) sb.append(temp)
-            Log.i("jsonbayo", myJson )
+            Log.i("jsonbayo", myJson)
 
             mCountries.clear()
 
@@ -789,8 +859,8 @@ class Enterprise : AppCompatActivity() {
         params["mssdn2"] = mssidn2!!
         params["mssdn"] = mssidn!!
         params["account_status"] = "0"
-        params["response_provider"] = selectedItem!!
-        params["nature_response"] = selectedItem2!!
+        params["response_provider"] = mySpinner!!.buildSelectedItemString()!!
+        params["nature_response"] = listString!!
         params["county"] = county!!
         params["userid"] = user_id!!
         params["password"] = password!!
@@ -833,7 +903,7 @@ class Enterprise : AppCompatActivity() {
                     } else if (response.code() == 200) {
 
 
-                        if(selectedItem == "YES"){
+                        if (selectedItem == "YES") {
                             createProvider()
                         } else {
 
@@ -854,8 +924,6 @@ class Enterprise : AppCompatActivity() {
                             }, 3000)
 
                         }
-
-
 
 
                     }
@@ -911,9 +979,10 @@ class Enterprise : AppCompatActivity() {
         params["lastname"] = other_name!!
         params["email"] = email!!
         params["mssdn"] = mssidn!!
-        params["nature_response"] = selectedItem2!!
+        params["nature_response"] =mySpinner!!.buildSelectedItemString()!!
         params["userid"] = user_id!!
         params["town"] = town!!
+        params["county_operation"] = mySpinner1!!.buildSelectedItemString()!!
         params["code"] = code!!
         params["physical_address"] = physical!!
         params["postal_address"] = postal!!
@@ -943,24 +1012,27 @@ class Enterprise : AppCompatActivity() {
                         mProgress?.dismiss()
 
                         dialogue_error()
-                        promptPopUpView?.changeStatus(1, "Unable to create Provider! please try again")
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Unable to create Provider! please try again"
+                        )
                     } else if (response.code() == 200) {
 
-                            mProgress?.dismiss()
+                        mProgress?.dismiss()
 
-                            Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
-                                .show()
+                        Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
+                            .show()
 
-                            dialogue()
-                            promptPopUpView?.changeStatus(2, "Registration was successful!")
+                        dialogue()
+                        promptPopUpView?.changeStatus(2, "Registration was successful!")
 
 
-                            Handler().postDelayed({
-                                val intent = Intent(this@Enterprise, LoginActivity::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
-                                startActivity(intent)
-                                finish()
-                            }, 3000)
+                        Handler().postDelayed({
+                            val intent = Intent(this@Enterprise, LoginActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
+                        }, 3000)
 
                     }
 

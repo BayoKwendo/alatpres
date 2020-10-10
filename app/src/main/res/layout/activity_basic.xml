@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BasicUserActivity">
+
     <LinearLayout
         android:id="@+id/main_fragment"
         android:layout_width="match_parent"
@@ -16,131 +18,129 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintVertical_bias="0.0">
 
-      <com.google.android.material.appbar.AppBarLayout
-        android:id="@+id/toolbaar"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-          android:visibility="gone"
-        android:theme="@style/AppTheme.AppBarOverlay"
-        tools:ignore="MissingConstraints">
-
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/toolbaar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            app:popupTheme="@style/AppTheme.PopupOverlay" />
+            android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.AppBarOverlay"
+            android:visibility="gone"
+            tools:ignore="MissingConstraints">
 
-    </com.google.android.material.appbar.AppBarLayout>
+            <androidx.appcompat.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="?attr/colorPrimary"
+                app:popupTheme="@style/AppTheme.PopupOverlay" />
 
+        </com.google.android.material.appbar.AppBarLayout>
 
 
         <LinearLayout
 
+            android:id="@+id/linear_layout_1"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_gravity="center"
-            android:visibility="gone"
             android:gravity="center_vertical"
-            android:id="@+id/linear_layout_1"
-            android:orientation="vertical">
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/accounts"
-            android:text="You're currently using basic account"
-            android:padding="@dimen/_10sdp"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/_20sdp"
-            />
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/account"
-            android:text="ALATPRES BASIC ACCOUNT"
-            android:padding="@dimen/_10sdp"
-            android:gravity="center"
-            android:textColor="@color/colorAccent"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/_20sdp"
-            />
+            android:orientation="vertical"
+            android:visibility="gone">
+
+            <TextView
+                android:id="@+id/accounts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:text="You're currently using basic account"
+                android:textSize="@dimen/_20sdp" />
+
+            <TextView
+                android:id="@+id/account"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/_10sdp"
+                android:gravity="center"
+                android:padding="@dimen/_10sdp"
+                android:text="ALATPRES BASIC ACCOUNT"
+                android:textColor="@color/colorAccent"
+                android:textSize="@dimen/_20sdp" />
 
             <fr.ganfra.materialspinner.MaterialSpinner
                 android:id="@+id/package_sub"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/_30sdp"
+                android:layout_marginTop="@dimen/_20ssp"
+                android:layout_marginRight="@dimen/_30sdp"
+                android:layout_marginBottom="@dimen/_20ssp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
                 app:ms_arrowColor="@color/colorAccent"
                 app:ms_arrowSize="16dp"
-                android:layout_marginTop="@dimen/_20ssp"
-                android:layout_marginBottom="@dimen/_20ssp"
-                android:layout_marginLeft="@dimen/_30sdp"
-                android:layout_marginRight="@dimen/_30sdp"
                 app:ms_floatingLabelColor="#00FF00"
                 app:ms_floatingLabelText="Subscription Package"
                 app:ms_hint="Select your Subscription Package"
-                app:ms_multiline="false"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"/>
+                app:ms_multiline="false" />
 
             <Button
-            android:id="@+id/btn_upgrade"
-            android:layout_width="150dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="20sp"
-            android:layout_marginEnd="8dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/button_shape"
-            android:text="Upgrade"
-            android:textColor="@android:color/white" />
+                android:id="@+id/btn_upgrade"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="20sp"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/button_shape"
+                android:text="Upgrade now"
+                android:textColor="@android:color/white" />
         </LinearLayout>
 
     </LinearLayout>
 
 
-
     <LinearLayout
 
+        android:id="@+id/linear_layout_2"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_gravity="center"
         android:gravity="center_vertical"
-        android:id="@+id/linear_layout_2"
         android:orientation="vertical">
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
             android:text="ALATPRES PRO ACCOUNT"
-            android:padding="@dimen/_10sdp"
-            android:gravity="center"
             android:textColor="@color/colorAccent"
-            android:layout_marginTop="@dimen/_10sdp"
-            android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/_20sdp"
-            />
+            android:textSize="@dimen/_20sdp" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="You're currently subscribe to Pro account:  \n\n Expire in : "
-            android:padding="@dimen/_10sdp"
-            android:gravity="center"
-            android:layout_marginTop="@dimen/_10sdp"
             android:layout_gravity="center_horizontal"
-            android:textSize="@dimen/_20sdp"
-            />
+            android:layout_marginTop="@dimen/_10sdp"
+            android:gravity="center"
+            android:padding="@dimen/_10sdp"
+            android:text="You're currently subscribe to Pro account:  \n\n Expire in : "
+            android:textSize="@dimen/_20sdp" />
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:gravity="center_vertical"
-            android:background="@color/colorAccent"
-            android:layout_height="wrap_content"
-            android:visibility="visible"
-            android:layout_marginTop="@dimen/_16sdp"
             android:id="@+id/linear_layout_3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/_16sdp"
+            android:background="@color/colorAccent"
+            android:gravity="center_vertical"
+            android:visibility="visible"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout">
@@ -254,9 +254,23 @@
                     android:textStyle="normal" />
             </LinearLayout>
         </LinearLayout>
+
     </LinearLayout>
 
+    <Button
+        android:id="@+id/btn_disable"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginBottom="@dimen/_30ssp"
+        android:background="@drawable/button_shape"
+        android:text="Disable Ads"
+        android:textAllCaps="false"
+        android:textColor="@android:color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

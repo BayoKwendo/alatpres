@@ -33,6 +33,7 @@ import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FriendYourRGs
+import com.alat.interfaces.ViewGroups
 import com.alat.interfaces.existRG
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
@@ -176,8 +177,8 @@ class exitResponse : Fragment(),
         params["userid"] = userid!!
 
 
-        val api: FriendYourRGs = retrofit.create(FriendYourRGs::class.java)
-        val call: Call<ResponseBody> = api.fRGs(params)
+        val api: ViewGroups = retrofit.create(ViewGroups ::class.java)
+        val call: Call<ResponseBody> = api.viewRG(params)
 
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
@@ -185,20 +186,11 @@ class exitResponse : Fragment(),
                 //Toast.makeText()
                 if (response.isSuccessful) {
                     if (response.body() != null) {
-
-                        // val jsonresponse = response.body().toString()
-
-                        // Log.d("onSuccessS", response.errorBody()!!.toString())
-
-
                         if (response.code().toString() == "200"){
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }
-
-
                         try {
-
                             Log.d("SUCCESS", response.body().toString())
                             val o = JSONObject(response.body()!!.string())
                             val array: JSONArray = o.getJSONArray("records")
@@ -209,17 +201,13 @@ class exitResponse : Fragment(),
                                     array.toString(),
                                     object : TypeToken<List<rgModel?>?>() {}.type
                                 )
-
                             Collections.reverse(items);
                             contactList!!.clear()
                             contactList!!.addAll(items)
                             mAdapter!!.notifyDataSetChanged()
                             mProgressLayout!!.visibility = View.GONE
                             errorNull!!.visibility = View.GONE
-
-
                             //    Log.d("onSuccess1", firstSport.toString())
-
                         } catch (e: JSONException) {
                             e.printStackTrace()
                         }

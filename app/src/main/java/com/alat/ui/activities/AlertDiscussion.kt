@@ -111,9 +111,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
             getSharedPreferences("MyPref", 0) // 0 - for private mode
         fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
-        mProgress = ProgressDialog(this)
-        mProgress!!.setMessage("Sending...")
-        mProgress!!.setCancelable(true)
+
 
         addMessage!!.setOnClickListener {
             val i =
@@ -215,6 +213,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
 
 
                 } else {
+
                     mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())

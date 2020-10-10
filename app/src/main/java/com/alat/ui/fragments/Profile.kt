@@ -238,16 +238,9 @@ class Profile : Fragment() {
 
                     account = pref!!.getString("account_status", null)
 
-                    if (account == "0") {
-                        dialogue_errors()
-                        promptPopUpView?.changeStatus(
-                            1,
-                            "You not allow to edit your details! \n kindly upgrade to Pro Account"
-                        )
-                    } else{
 
                         update()
-                  }
+
                    // mProgress?.show()
                 }
                 true

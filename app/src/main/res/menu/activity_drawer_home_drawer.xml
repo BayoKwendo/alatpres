@@ -8,52 +8,70 @@
 
 
 
+
         <item
             android:id="@+id/alert_entr"
-            android:icon="@drawable/alert"
+            android:icon ="@drawable/resources"
             android:visible="false"
-            android:title="Alerts" />
-
-        <item
-            android:id="@+id/create_client"
-            android:icon="@drawable/alert"
-            android:visible="false"
-            android:title="Add Client" />
-        <item
-            android:id="@+id/create_station"
-            android:icon="@drawable/alert"
-            android:visible="false"
-            android:title="Add Station" />
-        <item
-            android:id="@+id/local_grp"
-            android:icon ="@drawable/alert"
-            android:visible="false"
-            android:title="Local Response Group" />
-
+            android:title="Local RGs" />
         <item
             android:id="@+id/client_grp"
-            android:icon="@drawable/alert"
+            android:icon="@drawable/resources"
             android:visible="false"
-            android:title="Client Response Group" />
-
+            android:title="Client RGs" />
 
         <item
-            android:id="@+id/resp_manage"
-            android:icon="@drawable/alert"
+            android:id="@+id/station_rg"
+            android:icon="@drawable/resources"
             android:visible="false"
-            android:title="Response Group Manage" />
+            android:title="Station RGs" />
 
         <item
             android:id="@+id/alert"
             android:icon="@drawable/alert"
             android:visible="false"
-            android:title="Alerts" />
-
+            android:title="Alats" />
+        <item
+            android:id="@+id/create_respRG"
+            android:icon="@drawable/addrg"
+            android:visible="false"
+            android:title="Create Local RG" />
         <item
             android:id="@+id/create_resp"
             android:icon="@drawable/addrg"
             android:visible="false"
             android:title="Create Response Group" />
+
+        <item
+            android:id="@+id/create_client"
+            android:icon="@drawable/baseline_add_circle_white_24dp"
+            android:visible="false"
+            android:title="Add Client" />
+        <item
+            android:id="@+id/create_station"
+            android:icon="@drawable/baseline_add_circle_white_24dp"
+            android:visible="false"
+            android:title="Add Station" />
+
+        <item
+            android:id="@+id/join_resp_ent"
+            android:icon="@drawable/rg"
+            android:visible="false"
+            android:title="Join Response Group" />
+
+        <item
+            android:id="@+id/random_client"
+            android:icon="@drawable/rg"
+            android:visible="false"
+            android:title="Random Clients" />
+
+        <item
+            android:id="@+id/resp_manage"
+            android:icon="@drawable/manage"
+            android:visible="false"
+            android:title="Manage Alats" />
+
+
         <item
             android:id="@+id/join_resp"
             android:icon="@drawable/rg"
@@ -72,16 +90,16 @@
             android:icon="@drawable/generate"
             android:visible="false"
             android:title="Generate Report" />
-        <item
-            android:id="@+id/resp_team"
-            android:icon="@drawable/rg"
-            android:visible ="false"
-            android:title="Response Providers Database" />
+<!--        <item-->
+<!--            android:id="@+id/resp_team"-->
+<!--            android:icon="@drawable/rg"-->
+<!--            android:visible ="false"-->
+<!--            android:title="Response Providers Database" />-->
         <item
             android:id="@+id/manage_alert"
             android:icon="@drawable/manage"
             android:visible ="false"
-            android:title="Manage Alert" />
+            android:title="Manage Alats" />
         <item
             android:id="@+id/sign_out"
             android:icon="@drawable/signout_"
@@ -118,9 +136,11 @@
             android:visible="false"
             android:title="Feedback" />
         <item
-            android:id="@+id/invite_friend"
-            android:visible="false"
-            android:title="Invite a friend" />
+        android:id="@+id/invite_friend"
+        android:visible="false"
+        android:title="Invite a friend/member" />
+
+
         <item
             android:id="@+id/faqs"
             android:visible="false"

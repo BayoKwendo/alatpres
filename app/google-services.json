@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "760434390699",
+    "firebase_url": "https://alatpres-cd3cc.firebaseio.com",
+    "project_id": "alatpres-cd3cc",
+    "storage_bucket": "alatpres-cd3cc.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:760434390699:android:c6bd9c3ed1d9b50363e9ee",
+        "android_client_info": {
+          "package_name": "com.alat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "760434390699-q3svgh7pgvattqhec5evgehkf4eq0kqe.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.alat",
+            "certificate_hash": "ea65cf21d1648b94ae305e98bef181d54001ac75"
+          }
+        },
+        {
+          "client_id": "760434390699-m985a1q3htmig6t7706dnkhdojd39abe.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBz_K4uvIdyRs0CwiqAfeCZp1l5iSEi1LA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "760434390699-m985a1q3htmig6t7706dnkhdojd39abe.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

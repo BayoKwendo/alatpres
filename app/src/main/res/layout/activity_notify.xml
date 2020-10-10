@@ -10,8 +10,9 @@
     <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="100dp"
+
         android:layout_marginBottom="30dp"
+        android:layout_gravity="center"
         android:layout_marginLeft="10dp"
         android:layout_marginRight="10dp"
         card_view:cardCornerRadius="2dp"
@@ -21,6 +22,8 @@
 
         <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="match_parent"
+            android:layout_gravity="center"
+            android:gravity="center"
             android:layout_height="match_parent"
             android:orientation="vertical">
 
@@ -66,7 +69,7 @@
                                     android:gravity="center_horizontal"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:singleLine="true"
-                                    android:text="Group Join Requests"
+                                    android:text="RG JOINING REQUESTS"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -78,7 +81,7 @@
                             android:id="@+id/neutralized"
                             android:layout_width="match_parent"
                             android:layout_height="80dp"
-                            android:layout_marginTop="15dp"
+                            android:layout_marginTop="30dp"
                             card_view:cardCornerRadius="2dp"
                             card_view:cardElevation="8dp">
                             <LinearLayout
@@ -102,7 +105,7 @@
                                     android:gravity="center_horizontal"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:singleLine="true"
-                                    android:text="Invitations"
+                                    android:text="CHECK INVITATIONS THAT YOU HAVE"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -114,6 +117,7 @@
                             android:id="@+id/version"
                             android:layout_width="match_parent"
                             android:layout_height="80dp"
+                            android:visibility="gone"
                             android:layout_marginTop="15dp"
                             card_view:cardCornerRadius="2dp"
                             card_view:cardElevation="8dp">
@@ -139,6 +143,79 @@
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:singleLine="true"
                                     android:text="New Updates (0)"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/updates"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="30dp"
+                            android:visibility="gone"
+                            card_view:cardCornerRadius="2dp"
+                            card_view:cardElevation="8dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+                                <View
+                                    android:layout_width="5dp"
+                                    android:layout_height="90dp"
+                                    android:background="@color/colorPrimary"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginStart="20dp"
+                                    android:ellipsize="marquee"
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="false"
+                                    android:gravity="center_horizontal"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:singleLine="true"
+                                    android:text="!"
+                                    android:textColor="@color/colorBlack"
+                                    android:textSize="14sp"
+                                    android:textStyle="bold" />
+                            </LinearLayout>
+
+                        </androidx.cardview.widget.CardView>
+
+                        <androidx.cardview.widget.CardView
+                            android:id="@+id/versions"
+                            android:layout_width="match_parent"
+                            android:layout_height="80dp"
+                            android:layout_marginTop="15dp"
+                            card_view:cardCornerRadius="2dp"
+                            card_view:cardElevation="8dp">
+                            <LinearLayout
+                                android:layout_width="match_parent"
+                                android:layout_height="match_parent"
+                                android:gravity="center_vertical"
+                                android:orientation="horizontal">
+                                <View
+                                    android:layout_width="5dp"
+                                    android:layout_height="90dp"
+                                    android:background="@color/colorPrimary"/>
+
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="20dp"
+                                    android:layout_marginStart="20dp"
+                                    android:ellipsize="marquee"
+                                    android:focusable="true"
+                                    android:focusableInTouchMode="false"
+                                    android:gravity="center_horizontal"
+                                    android:marqueeRepeatLimit="marquee_forever"
+                                    android:singleLine="true"
+                                    android:text="NEW UPDATES (0)"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />

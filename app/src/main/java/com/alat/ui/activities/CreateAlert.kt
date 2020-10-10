@@ -34,13 +34,11 @@ import cafe.adriel.androidaudiorecorder.model.AudioSampleRate
 import cafe.adriel.androidaudiorecorder.model.AudioSource
 import com.alat.HomePage
 import com.alat.R
-import com.alat.helpers.Constants
-import com.alat.helpers.FilePath
-import com.alat.helpers.PromptPopUpView
-import com.alat.helpers.Utils
-import com.alat.interfaces.AddAlert
-import com.alat.interfaces.GetRGs
-import com.alat.interfaces.MultiInterface
+import com.alat.adapters.SimpleArrayListAdapter
+import com.alat.adapters.SimpleListAdapter
+import com.alat.helpers.*
+import com.alat.helpers.Constants.API_BASE_URL
+import com.alat.interfaces.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -54,6 +52,9 @@ import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.rengwuxian.materialedittext.MaterialEditText
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
+import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener
+import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener
 import libs.mjn.prettydialog.PrettyDialog
 import okhttp3.*
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -80,20 +81,21 @@ import kotlin.collections.HashMap
 class CreateAlert : AppCompatActivity() {
     private val ITEMS = arrayOf(
         "Suspicious Activity [SA]",
-        "Suspicious Person(s) [SP]", "Burglary/Robbery [BG]",
-        "Fraud/Vandalism[FRAUD]", "Disturbing of Peace",
+        "Suspicious Person(s) [SP]", "Burglary/Robbery [BG]","CyberCrime[CC]",
+        "Fraud/Vandalism[FRAUD]", "Disturbing of Peace[DOF]",
         "Riot/Demonstrations [RT]",
         "Terrorism [TM]", "Industrial Accident [ACC]", "Traffic Incidence [TI]",
         "Drugs & Alcohol [DRUG]",
         "Fire [FR]",
         "Medical Emergency [MED]",
         "Natural Disaster [ND]",
-        "Gender Violence",
-        "Environmental Crime",
-        "Public Health Concern",
-        "Poaching & Wildlife",
+        "Gender Violence[GV]",
+        "Environmental Crime[EC]",
+        "Public Health Concern[PH]",
+        "Poaching & Wildlife[PW]",
         "Domestic Violence/Homicide [DV]",
         "Sex Crime/Rape [RAPE]",
+
         "Murder Case [MDR]",
         "General Violence [GV]",
         "Bribery [BR]",
@@ -105,7 +107,8 @@ class CreateAlert : AppCompatActivity() {
         "Gambling [GAME]")
 
     var spinner: MaterialSpinner? = null
-
+    private var mSearchableSpinner1: SearchableSpinner? = null
+    private var mSimpleListAdapter: SimpleListAdapter? = null
     var spinner3: MaterialSpinner? = null
 
     var spinner_2: MaterialSpinner? = null
@@ -118,17 +121,19 @@ class CreateAlert : AppCompatActivity() {
     var bitmap: Bitmap? = null
 
     var path: String? = null
+    var orgphone: String? = null
 
     var SelectImageGallery: Button? = null
     var UploadImageServer:Button? = null
 
     var imageView: ImageView? = null
-
+    private var mSimpleArrayListAdapter: SimpleArrayListAdapter? = null
+    private val mStrings: ArrayList<String> = ArrayList()
     var imageName: EditText? = null
 
     var progressDialog: ProgressDialog? = null
 
-    var GetImageNameEditText: String? = null
+    var response_provider: String? = null
 
     var ImageName = "image_name"
 
@@ -138,8 +143,8 @@ class CreateAlert : AppCompatActivity() {
 
 
     var AUTOCOMPLETE_REQUEST_CODE = 1
-
-    var PICK_FILE_REQUEST = 100;
+//    private var mProgressfetch: ProgressDialog? = null
+//    var PICK_FILE_REQUEST = 100;
 
     private var textInputLocation: TextInputLayout? = null
 
@@ -187,11 +192,12 @@ class CreateAlert : AppCompatActivity() {
     var fname: String? = null
     var user: String? = null
     var check: Boolean? = null
-
-
     private val REQUEST_RECORD_AUDIO = 0
     private var account: String? = null
     private var roleID: String? = null
+    private val mID: ArrayList<String> = ArrayList()
+    private var mSimpleListAdapter7: IDListAdapter? = null
+
 
     private var mProgress: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -201,19 +207,16 @@ class CreateAlert : AppCompatActivity() {
         mProgress!!.setMessage("Saving...")
         mProgress!!.setCancelable(true)
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-
         if (!Places.isInitialized()) {
             Places.initialize(this, application.getString(R.string.google_maps_key))
         }
-
-
         pref =
             getSharedPreferences("MyPref", 0) // 0 - for private mode
-
         account = pref!!.getString("account_status", null)
         roleID = pref!!.getString("role", null)
+        user = pref!!.getString("userid", null)
 
-
+        getStudents()
         //Adapters
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -225,8 +228,7 @@ class CreateAlert : AppCompatActivity() {
         notes = findViewById(R.id.notes)
         mattach = findViewById(R.id.attach)
 
-
-        if (account == "0") {
+       if (account == "0") {
             notes!!.visibility = View.GONE
 
         } else if (account == "1") {
@@ -254,6 +256,23 @@ class CreateAlert : AppCompatActivity() {
             dialog.setOnSelectingLevel { value -> level?.setText(value) }
             dialog.show()
         })
+
+        mSimpleListAdapter = SimpleListAdapter(this, mStrings)
+        mSimpleArrayListAdapter = SimpleArrayListAdapter(this, mStrings)
+        mSimpleListAdapter7 = IDListAdapter(this, mID)
+
+        mSearchableSpinner1 = findViewById<View>(R.id.SearchableSpinner1) as SearchableSpinner
+
+        mSearchableSpinner1!!.setAdapter(mSimpleListAdapter)
+        mSearchableSpinner1!!.setOnItemSelectedListener(mOnItemSelectedListener1)
+        mSearchableSpinner1!!.setStatusListener(object : IStatusListener {
+            override fun spinnerIsOpening() {
+
+            }
+
+            override fun spinnerIsClosing() {}
+        })
+
         spinner = findViewById<View>(R.id.spinner) as MaterialSpinner
         spinner?.adapter = adapter
         spinner!!.isSelected = false;  // otherwise listener will be called on initialization
@@ -310,6 +329,113 @@ class CreateAlert : AppCompatActivity() {
         getStudent()
     }
 
+
+
+
+    private val mOnItemSelectedListener1: OnItemSelectedListener = object : OnItemSelectedListener {
+        override fun onItemSelected(view: View?, position: Int, id: Long) {
+                if (position > 0) {
+                    response_provider = mSimpleListAdapter!!.getItem(position).toString()
+                    orgphone = mSimpleListAdapter7!!.getItem(position).toString()
+
+                   // Toast.makeText(this@CreateAlert, "VALUE" + orgphone, Toast.LENGTH_LONG).show();
+
+                }
+
+
+        }
+
+        override fun onNothingSelected() {
+            Toast.makeText(this@CreateAlert, "Nothing Selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
+    private fun getStudents() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+
+        val api: GetResponseProviders = retrofit.create(GetResponseProviders::class.java)
+        val call: Call<ResponseBody> = api.GetAlert(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+
+                    if (response.code().toString() == "200"){
+                        parseLogiDatas(remoteResponse)
+                    } else {
+//                        mProgressLayout!!.visibility = View.GONE
+                        dialogue_error();
+                        promptPopUpView?.changeStatus(1, "No data in response provider database")
+                    }
+                } else {
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
+    }
+
+
+    private fun parseLogiDatas(jsonresponse: String) {
+        try {
+            val o = JSONObject(jsonresponse)
+            val array: JSONArray = o.getJSONArray("records")
+            //  val array: JSONArray = JSONArray(jsonresponse)
+            val jsonarray = JSONArray(array.toString())
+            for (i in 0 until jsonarray.length()) {
+                val jsonobject: JSONObject = jsonarray.getJSONObject(i)
+
+
+                mStrings.add(jsonobject.getString("firstname") + ", "+ jsonobject.getString("county") + ", " + jsonobject.getString("town")
+                        + "town, " + jsonobject.getString("nature_response"))
+                 mID.add(jsonobject.getString("mssdn"))
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+
     private fun attachemts() {
 
         val pDialog = PrettyDialog(this)
@@ -322,8 +448,7 @@ class CreateAlert : AppCompatActivity() {
             .addButton(
                 "Images",
                 R.color.pdlg_color_white,
-                R.color.colorPrimary
-            ) {   val galleryIntent = Intent(
+                R.color.colorPrimary ) {   val galleryIntent = Intent(
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
                    startActivityForResult(galleryIntent, GALLERY)
@@ -418,8 +543,6 @@ class CreateAlert : AppCompatActivity() {
 
     private fun getStudent() {
 
-        val group_name: String? = null
-        val alerts = 0
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -439,43 +562,32 @@ class CreateAlert : AppCompatActivity() {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
-            .addConverterFactory(ScalarsConverterFactory.create())
-            .build()
-        val api: GetRGs = retrofit.create(GetRGs::class.java)
-        val call: Call<String>? = api.getRG(group_name, alerts)
+            .addConverterFactory(GsonConverterFactory.create())
 
-        call?.enqueue(object : Callback<String?> {
-            override fun onResponse(call: Call<String?>, response: Response<String?>) {
-                Log.d("Responsestring", response.body().toString())
+            .build()
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+
+        params["userid"] = user!!
+        val api: ViewGroups = retrofit.create(ViewGroups::class.java)
+        val call: Call<ResponseBody>? = api.viewRG(params)
+
+        call?.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
                 if (response.isSuccessful) {
-                    if (response.body() != null) {
-                        Log.d("onSuccess", response.body().toString())
-                        val jsonresponse = response.body().toString()
-                        parseLogiData(jsonresponse)
-                    } else {
-
-                        Log.i(
-                            "onEmptyResponse",
-                            "Returned empty response"
-                        ) //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
-                    }
+                    val remoteResponse = response.body()!!.string()
+                    parseLogiData(remoteResponse)
                 } else {
                     Log.d("bayo", response.errorBody()!!.string())
-//
-//                    internet()
-//                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-
-
+                    // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 }
             }
-
-            override fun onFailure(call: Call<String?>, t: Throwable) {
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 //   btn.text = "Proceed"
                 Log.i("onEmptyResponse", "" + t) //
-
-//                internet()
-//                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                // Toast.makeText(context,"Nothing ",Toast.LENGTH_LONG).show();
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 //mProgress?.dismiss()
             }
         })
@@ -486,19 +598,13 @@ class CreateAlert : AppCompatActivity() {
             val o = JSONObject(jsonresponse)
             val array: JSONArray = o.getJSONArray("records")
            //  val array: JSONArray = JSONArray(jsonresponse)
-
-
-
             val jsonarray = JSONArray(array.toString())
-
             for (i in 0 until jsonarray.length()) {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
                 catList.add(jsonobject.getString("group_name"))
             }
-
             val adapter_2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
             adapter_2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
             spinner_2 = findViewById<View>(R.id.spinner2) as MaterialSpinner
             spinner_2?.adapter = adapter_2
             spinner_2!!.isSelected = false;  // otherwise listener will be called on initialization
@@ -517,13 +623,10 @@ class CreateAlert : AppCompatActivity() {
                     }
                     // TODO Auto-generated method stub
                 }
-
                 override fun onNothingSelected(arg0: AdapterView<*>?) {
                     // TODO Auto-generated method stub
                 }
             }
-
-
             val adapter_3 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
             adapter_3.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
@@ -536,8 +639,6 @@ class CreateAlert : AppCompatActivity() {
                     arg0: AdapterView<*>?, arg1: View?,
                     arg2: Int, arg3: Long
                 ) {
-
-
                     if (spinner3!!.selectedItem != null) {
                         // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
                         selecteditem3 = spinner3!!.selectedItem.toString()
@@ -554,31 +655,6 @@ class CreateAlert : AppCompatActivity() {
 
             val adapter_4 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
             adapter_4 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
-            spinner3 = findViewById<View>(R.id.spinner5) as MaterialSpinner
-            spinner3?.adapter = adapter_4
-            spinner3!!.isSelected = false;  // otherwise listener will be called on initialization
-            spinner3!!.setSelection(0, true)
-            spinner3?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-                override fun onItemSelected(
-                    arg0: AdapterView<*>?, arg1: View?,
-                    arg2: Int, arg3: Long
-                ) {
-
-                    if (spinner3!!.selectedItem != null) {
-                        // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
-                        selecteditem3 = spinner3!!.selectedItem.toString()
-                    }
-                    // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
-
-                    // TODO Auto-generated method stub
-                }
-
-                override fun onNothingSelected(arg0: AdapterView<*>?) {
-                    // TODO Auto-generated method stub
-                }
-            }
-
 
 
 
@@ -738,18 +814,20 @@ class CreateAlert : AppCompatActivity() {
 
             if (jsonObject.getString("status") == "true") {
 
-
-                if (selecteditem3 == null) {
+                if (response_provider == null) {
                     // ImageUploadToServerFunction()
                     mProgress?.dismiss()
                     //waitingDialog!!.dismiss()
                     btnLogin!!.text = "Submit"
-
                     imageView!!.visibility = View.GONE
                     dialogue();
                     promptPopUpView?.changeStatus(2, "SUCCESSFUL")
-                }
-                else{
+                } else{
+                    if (selecteditem3 == null) {
+                        sendAlert()
+                     }
+                    else{
+
 
                         if(path == null){
                             uploadImages2()
@@ -757,7 +835,7 @@ class CreateAlert : AppCompatActivity() {
                             uploadImage2(path!!)
                         }
                     }
-
+                }
 
 
 
@@ -961,7 +1039,7 @@ class CreateAlert : AppCompatActivity() {
     fun done() {
         AlertDialog.Builder(this)
             .setTitle("Confirmation")
-            .setMessage("Are you sure you want to initiate a dispatch from your response teams?\n It is punishable in law to raise false alarm\n\nProceed??")
+            .setMessage("Are you sure you want to initiate a dispatch from your response teams?\n It is punishable in law to raise false alarms\n\nProceed??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
                 btnLogin!!.text = "Submitting.."
@@ -998,9 +1076,27 @@ class CreateAlert : AppCompatActivity() {
 
         //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
 
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
         val imgname = Calendar.getInstance().timeInMillis.toString()
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(MultiInterface.IMAGEURL)
+            .baseUrl(API_BASE_URL)
+            .client(client)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
@@ -1023,7 +1119,12 @@ class CreateAlert : AppCompatActivity() {
                if (response.isSuccessful) {
                    val remoteResponse = response.body()!!
                    Log.d("test", remoteResponse)
+                  // Log.d("TAG", "File Saved::--->" + t.toString())
                  parseLoginData(remoteResponse)
+
+
+                   dialogue();
+                   promptPopUpView?.changeStatus(2, "SUCCESSFUL")
                    mProgress?.dismiss()
 
                } else {
@@ -1042,6 +1143,103 @@ class CreateAlert : AppCompatActivity() {
             }
 
 
+        })
+    }
+
+
+
+    private fun sendAlert() {
+
+        mProgress!!.show()
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+
+        mssidn = pref!!.getString("mssdn", null)
+
+        user = pref!!.getString("userid", null)
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+        //  response_id = intent.getStringExtra("groupSelect")
+
+        params["mssdn"] = mssidn!!
+        params["user_id"] = user!!
+        params["alert_name"] = alert_namess!!
+        params["alert_type"] = selectedItem!!
+        params["rl"] = setLevel!!
+        params["groupPhone"] = orgphone!!
+        params["location"] = setLoc!!
+        params["notes"] = addnotes!!
+        params["name"] = fullname!!
+
+
+        val api: sendSMSOffline = retrofit.create(sendSMSOffline::class.java)
+        val call: Call<ResponseBody> = api.send(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+
+                    if (response.code().toString() == "200") {
+
+                        mProgress?.dismiss()
+                        //waitingDialog!!.dismiss()
+                        btnLogin!!.text = "Submit"
+                        imageView!!.visibility = View.GONE
+                        dialogue();
+                        promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+                    } else {
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                        Log.d("BAYO", response.code().toString())
+                        mProgress?.dismiss()
+                    }
+                } else {
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
         })
     }
 
@@ -1148,14 +1346,7 @@ class CreateAlert : AppCompatActivity() {
             val jsonObject = JSONObject(jsonresponse)
 
             if (jsonObject.getString("status") == "true") {
-                    // ImageUploadToServerFunction()
-                    mProgress?.dismiss()
-                    //waitingDialog!!.dismiss()
-                    btnLogin!!.text = "Submit"
-
-                    imageView!!.visibility = View.GONE
-                    dialogue();
-                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                sendAlert()
 
             } else {
 
@@ -1192,9 +1383,27 @@ class CreateAlert : AppCompatActivity() {
 
         //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
 
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+
         val imgname = Calendar.getInstance().timeInMillis.toString()
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(MultiInterface.IMAGEURL)
+            .client(client)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
@@ -1218,13 +1427,7 @@ class CreateAlert : AppCompatActivity() {
                     val remoteResponse = response.body()!!
                     Log.d("test", remoteResponse)
 
-                    mProgress?.dismiss()
-                    //waitingDialog!!.dismiss()
-                    btnLogin!!.text = "Submit"
-
-                    imageView!!.visibility = View.GONE
-                    dialogue();
-                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                    sendAlert()
 
                 } else {
                     mProgress?.dismiss()

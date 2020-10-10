@@ -384,11 +384,11 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         "174379",
                         "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",  //https://developer.safaricom.co.ke/test_credentials
                         TransactionType.CustomerPayBillOnline,
-                         "2",
+                         "1",
                         "254717629732",
                         "174379",
                          phoneNumber,
-                        "x",
+                        "https://hivfactsheet.000webhostapp.com/alatpres.php",
                         "001ABC",
                         "Goods Payment"
                 );
@@ -401,15 +401,12 @@ public class MPESAExpressActivity extends AppCompatActivity {
                                 Timber.i(lnmResult.ResponseDescription);
                                 mProgress.dismiss();
                                 Toast.makeText(MPESAExpressActivity.this, lnmResult.ResponseDescription, Toast.LENGTH_SHORT).show();
-
-
                             }
 
                             @Override
                             public void onError(String error) {
                                 Timber.i(error);
                                 mProgress.dismiss();
-
                                 Toast.makeText(MPESAExpressActivity.this, error, Toast.LENGTH_SHORT).show();
                             }
                         }
@@ -571,13 +568,10 @@ public class MPESAExpressActivity extends AppCompatActivity {
                     }
                 }
             }
-
             @Override
             public void onFailure(Call<String> call, Throwable t) {
-
             }
         });
-
     }
 
     private void parseLoginData(String response){
@@ -602,16 +596,12 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         editor.clear();
                         editor.apply();
                         finish();
-
-
                         Intent intent = new Intent(MPESAExpressActivity.this, LoginActivity.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
-
                         dialog.dismiss();
                     }
                 }, 3000);
-
             }
         } catch (JSONException e) {
             e.printStackTrace();

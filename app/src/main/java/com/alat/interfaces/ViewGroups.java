@@ -13,7 +13,6 @@ public interface ViewGroups {
             "Accept: application/json",
             "Content-Type: application/json"
     })
-
 //    @FormUrlEncoded
     @POST("api/rg/readRG.php")
     Call<ResponseBody> viewRG(@Body Map<String, String> body);

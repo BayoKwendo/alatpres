@@ -14,6 +14,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -71,6 +72,9 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 
 
     var roleID: String? = null
+
+    var globalRG: String? = null
+
     var pref: SharedPreferences? = null
     private var btnResetPassword: Button? = null
     private var btnBack: Button? = null
@@ -89,20 +93,14 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         mToolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar!!);
 
-
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = response_group +"\t["+group_id+"]"
-
-
         mlinear = findViewById(R.id.linear)
-
         recyclerView = findViewById(R.id.recycler_view)
         errorNull = findViewById(R.id.texterror)
         contactList = ArrayList()
         mAdapter = AlertAdapter(this, contactList!!, this)
-
         mProgressLayout = findViewById(R.id.layout_discussions_progress);
-
         val mLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(this)
         recyclerView!!.layoutManager = mLayoutManager
@@ -112,8 +110,7 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                 this,
                 DividerItemDecoration.VERTICAL,
                 36
-            )
-        )
+            ) )
         recyclerView!!.adapter = mAdapter
 
         mProgressLayout!!.visibility = View.VISIBLE
@@ -131,12 +128,15 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         pref =
             getSharedPreferences("MyPref", 0) // 0 - for private mode
         roleID = pref!!.getString("role", null)
+        globalRG = pref!!.getString("response_provider", null)
 
-        if(roleID == "1") {
-            global!!.visibility = View.GONE
-            mlinear!!.visibility = View.GONE
+//        Toast.makeText(this, "" + globalRG,    Toast.LENGTH_LONG).show()
+//        ).show())
 
 
+        if( roleID == "2" && globalRG == "YES") {
+            global!!.visibility = View.VISIBLE
+            mlinear!!.visibility = View.VISIBLE
         }
 
         getStudent()
@@ -182,7 +182,6 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                 //Toast.makeText()
 
                 Log.d("Call request", call.request().toString());
-                Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());

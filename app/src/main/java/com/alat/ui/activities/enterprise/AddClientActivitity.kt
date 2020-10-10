@@ -83,17 +83,26 @@ class AddClientActivitity : Fragment() {
     private var description: String? = null
     private var nameRG: String? = null
     private var nature_RG: String? = null
+    private var mssidsn: String? = null
 
+    var pref: SharedPreferences? = null
 
      private val ITEMS1 = arrayOf("Open", "Private")
+    private var userid: String? = null
 
     var selectedItem: String? = null
+    private var fullname: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.activity_add_client, container, false)
+        pref =
+            activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
+        userid = pref!!.getString("userid", null)
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
+        mssidsn = pref!!.getString("mssdn", null)
         textInputname = view.findViewById(R.id.name)
         textInputlocation = view.findViewById(R.id.mlocation)
         textInputpostal = view.findViewById(R.id.postal_address)
@@ -151,6 +160,7 @@ class AddClientActivitity : Fragment() {
             if (!checkContactError()) return@setOnClickListener
             else {
                 createUser()
+                btn_submit!!.setText("Submitting...")
                 mProgress!!.show()
             }
         }
@@ -283,9 +293,11 @@ class AddClientActivitity : Fragment() {
         params["postal_address"] = postal!!
         params["website"] = website!!
         params["mssdn"] = mssidn!!
+        params["userid"] = userid!!
         params["name_rg"] = nameRG!!
         params["nature_rg"] = selectedItem!!
-
+        params["fullname"] = fullname!!
+        params["mssidn"] = mssidsn!!
 
         val api: AddClient = retrofit.create(AddClient::class.java)
         val call: Call<ResponseBody> = api.addClient(params)
@@ -309,13 +321,26 @@ class AddClientActivitity : Fragment() {
                         var jsonObject = JSONObject(remoteResponse)
                         if (jsonObject.getString("status") == "true") {
                             dialogue()
+                            btn_submit!!.setText("Submit")
+
                             promptPopUpView?.changeStatus(2, "Client has been added successfully")
                         } else if (jsonObject.getString("status") == "false"){
                             dialogue_error();
-                            promptPopUpView?.changeStatus(1, "Unsuccessfully")
+                            btn_submit!!.setText("Submit")
+
+                            promptPopUpView?.changeStatus(1, "Unable to create the Client. Please Try Again")
+                        }
+
+                        else if (jsonObject.getString("status") == "normal"){
+                            dialogue_error();
+                            btn_submit!!.setText("Submit")
+
+                            promptPopUpView?.changeStatus(1, "Client name is already taken. Please use a different name for the client.")
                         }
                         else{
                             dialogue_error();
+                            btn_submit!!.setText("Submit")
+
                             promptPopUpView?.changeStatus(1, "Something went wrong")
                         }
                     } catch (e: JSONException) {

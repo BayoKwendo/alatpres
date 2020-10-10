@@ -2,6 +2,7 @@ package com.alat
 
 
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
@@ -30,6 +31,7 @@ import com.alat.interfaces.FriendInivte
 import com.alat.ui.activities.ResponseProviders
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.AddClientActivitity
+import com.alat.ui.activities.enterprise.AddStation
 import com.alat.ui.fragments.*
 import com.google.android.material.navigation.NavigationView
 import io.karn.notify.Notify
@@ -69,7 +71,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private var account: String? = null
 
     private var roleID: String? = null
-
+    private var response: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,6 +92,14 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         roleID = pref!!.getString("role", null)
 
+        response = pref!!.getString("response_provider", null)
+
+
+//                Toast.makeText(
+//            this,
+//            "Selected: " + pref!!.getString("response_provider", null) ,
+//            Toast.LENGTH_LONG
+//        ).show()
 
 //
 //        if (roleID == "2") {
@@ -120,8 +130,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private fun initDrawer() {
         val drawer =
             findViewById<View>(R.id.drawer_layout) as DrawerLayout
-
-
         val toggle =
             ActionBarDrawerToggle(
                 this,
@@ -134,86 +142,96 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         toggle.syncState()
          navigationView =
              findViewById<View>(R.id.nav_view) as NavigationView
-//        pref =
-//            getSharedPreferences("MyPref", 0) // 0 - for private mode
-//        fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
-//        val drawers =
-//            findViewById<View>(R.id.tvDriverName) as TextView
-//
-//        drawers.setText(fname)
         navigationView!!.setNavigationItemSelectedListener(this)
-
         val alert = navigationView!!.getMenu().findItem(R.id.alert);
         val create_resp = navigationView!!.getMenu().findItem(R.id.create_resp);
+        val create_respRG = navigationView!!.getMenu().findItem(R.id.create_respRG);
+
         val join_resp = navigationView!!.getMenu().findItem(R.id.join_resp);
         val exit_resp = navigationView!!.getMenu().findItem(R.id.exit_resp);
         val generate_rep = navigationView!!.getMenu().findItem(R.id.generate_rep);
-        val resp_team = navigationView!!.getMenu().findItem(R.id.resp_team);
         val manage_alert = navigationView!!.getMenu().findItem(R.id.manage_alert);
         val profile = navigationView!!.getMenu().findItem(R.id.profile);
         val SetupGr = navigationView!!.menu.findItem(R.id.SetupGr);
-
+        val station_rg = navigationView!!.getMenu().findItem(R.id.station_rg);
         val alert_entr = navigationView!!.getMenu().findItem(R.id.alert_entr);
         val create_station = navigationView!!.getMenu().findItem(R.id.create_station);
         val create_client = navigationView!!.getMenu().findItem(R.id.create_client);
-        val local_grp = navigationView!!.getMenu().findItem(R.id.local_grp);
         val client_grp = navigationView!!.getMenu().findItem(R.id.client_grp);
         val resp_manage = navigationView!!.getMenu().findItem(R.id.resp_manage);
-
         val logout_alert = navigationView!!.getMenu().findItem(R.id.sign_out);
+        val join_resp_ent = navigationView!!.getMenu().findItem(R.id.join_resp_ent);
+        val random = navigationView!!.getMenu().findItem(R.id.random_client);
+
+
+
 
         navigationView!!.getMenu().setGroupVisible(R.id.SetupGroup, false);
 
-
         if (roleID == "1") {
-            navigationView!!.menu.performIdentifierAction(R.id.alert, 0);
 
+            navigationView!!.menu.performIdentifierAction(R.id.alert, 0);
             navigationView!!.getMenu().setGroupVisible(R.id.SetupGroup, false);
             alert_entr.isVisible = false
             create_station.isVisible = false
             create_client.isVisible = false
-            local_grp.isVisible = false
             client_grp.isVisible = false
-            resp_manage.isVisible = false
-            resp_team.isVisible = false
+            resp_manage.isVisible = true
+            join_resp_ent.isVisible = false
             alert.isVisible = true
+            station_rg.isVisible = false
             create_resp.isVisible = true
+            create_respRG.isVisible = false
             join_resp.isVisible = true
+            random.isVisible = false
             exit_resp.isVisible = true
             generate_rep.isVisible = true
             manage_alert.isVisible = true
             profile.isVisible = true
             SetupGr.isVisible = true
 
+        }
+        else if (roleID == "2") {
+            if (account == "0") {
+                navigationView!!.menu.performIdentifierAction(R.id.alert_entr, 0);
 
-        } else if (roleID == "2") {
-            navigationView!!.menu.performIdentifierAction(R.id.alert_entr, 0);
+            }else if (account == "1") {
+                navigationView!!.menu.performIdentifierAction(R.id.alert_entr, 0);
+            }
             navigationView!!.menu.getItem(0).isChecked = true;
-            alert.isVisible = true
+            alert.isVisible = false
             create_resp.isVisible = false
+            create_respRG.isVisible = true
+
             join_resp.isVisible = false
+            station_rg.isVisible = true
             exit_resp.isVisible = false
-            generate_rep.isVisible = false
+            generate_rep.isVisible = true
             manage_alert.isVisible = false
-            SetupGr.isVisible = false
+            join_resp_ent.isVisible = true
+            SetupGr.isVisible =  false
             profile.isVisible = true
-            logout_alert.isVisible = true
+            random.isVisible = true
+
+            logout_alert.isVisible = false
             SetupGr.isVisible = true
             alert_entr.isVisible = true
-            resp_team.isVisible = true
+            exit_resp.isVisible = true
             create_station.isVisible = true
             create_client.isVisible = true
-            local_grp.isVisible = true
             client_grp.isVisible = true
             resp_manage.isVisible = true
         }
 
-        val navigationHeaderView = navigationView!!.getHeaderView(0)
 
+        if (response == "NO") {
+            create_station.isVisible = false
+            create_client.isVisible = false
+        }
+        val navigationHeaderView = navigationView!!.getHeaderView(0)
         val tvName =
             navigationHeaderView.findViewById<View>(R.id.tvDriverName) as TextView
     }
-
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
 
@@ -234,25 +252,90 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         var fragment: Fragment? = null
 
-
-
         when (item.itemId) {
             R.id.alert -> {
                 fragment = alerts()
-                toolbar!!.title = "ALERTS";
+                toolbar!!.title = "Alats";
+            }
+            R.id.alert_entr -> {
+                    fragment = Alert_Enterpris()
+                    toolbar!!.title = "Local Rgs Alats";
+
             }
 
-//            R.id.alert -> {
-//                fragment = alerts()
-//                toolbar!!.title = "ALERTS";
-//            }
+            R.id.join_resp_ent -> {
+                if (account == "0") {
+                    if (roleID == "1") {
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly upgrade to a PRO to enjoy this feature. Thank you"
+                        )
+                    }else{
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                        )
+                    }
+                } else {
+                    fragment = JoinRGEnter()
+                    toolbar!!.title = "Join Response Group";
+                }
+            }
+
+            R.id.station_rg -> {
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = Station_Response()
+                    toolbar!!.title = "Station RGs Alats";
+                }
+
+            }
+
+            R.id.client_grp -> {
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = Client_Response()
+                    toolbar!!.title = "Client RGs Alats";
+                }
+            }
 
             R.id.create_client -> {
-                fragment = AddClientActivitity()
-                toolbar!!.title = "ADD CLIENT";
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = AddClientActivitity()
+                    toolbar!!.title = "ADD CLIENT"
+                }
+            }
+
+            R.id.create_station -> {
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = AddStation()
+                    toolbar!!.title = "ADD STATION"
+                }
+            }
+            R.id.random_client -> {
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = randomClients()
+                    toolbar!!.title = "Random Clients"
+                }
             }
 
             R.id.join_resp -> {
+
                 fragment = JoinRGs()
                 toolbar!!.title = "Join Group";
             }
@@ -260,21 +343,84 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 fragment = CreateRG()
                 toolbar!!.title = "Create Response Group";
             }
-
-            R.id.exit_resp -> {
-                fragment = exitResponse()
-                toolbar!!.title = "Exit Response Group";
+            R.id.create_respRG -> {
+                if (account == "0") {
+                    subscribe()
+                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                } else {
+                    fragment = CreateRG()
+                    toolbar!!.title = "Create Local RG";
+                }
             }
+            R.id.exit_resp -> {
+                if (account == "0") {
+                    if (roleID == "1") {
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly upgrade to a PRO to enjoy this feature. Thank you"
+                        )
+                    }else{
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                        )
+
+                    }
+                } else {
+                    fragment = exitResponse()
+                    toolbar!!.title = "Exit Response Group";
+                }
+            }
+
             R.id.generate_rep -> {
-
                 fragment = GenerateReport()
-
                 toolbar!!.title = "Generate Reports";
             }
-            R.id.manage_alert -> {
-                fragment = ManageAlert()
-                toolbar!!.title = "Manage Alerts";
+            R.id.resp_manage -> {
+                if (account == "0") {
+                    if (roleID == "1") {
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly upgrade to a PRO to enjoy this feature. Thank you"
+                        )
+                    }else{
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                        )
 
+                    }
+                } else {
+                    fragment = ManageAlert()
+                    toolbar!!.title = "Manage Alats";
+                }
+            }
+
+
+            R.id.manage_alert -> {
+                if (account == "0") {
+                    if (roleID == "1") {
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly upgrade to a PRO to enjoy this feature. Thank you"
+                        )
+                    }else{
+                        subscribe()
+                        promptPopUpView?.changeStatus(
+                            1,
+                            "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                        )
+
+                    }
+                } else {
+                    fragment = ManageAlert()
+                    toolbar!!.title = "Manage Alats";
+                }
             }
 
             R.id.SetupGr -> {
@@ -286,18 +432,23 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 feedback.isVisible = true
                 navigationView!!.getMenu().setGroupVisible(R.id.SetupGroup, true);
                 return true;
-
             }
 
             R.id.feedback -> {
                 fragment = Feedback()
-
                 toolbar!!.title = "Feedback";
-
             }
+
             R.id.join -> {
                 socialMedia()
             }
+
+            R.id.faqs -> {
+                fragment = FAQ()
+                toolbar!!.title = "FAQs";
+            }
+
+
             R.id.support -> {
                 fragment = Support()
                 toolbar!!.title = "Support";
@@ -305,7 +456,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
             R.id.resp_db -> {
                 fragment = ResponseProviders()
-
                 toolbar!!.title = "Response Providers Database";
             }
 
@@ -319,14 +469,13 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                      
                      Get AlatPres.
                      
-                     Download the app via https://play.google.com/store/apps/details?id=com.alatpres
+                     Download the app via https://play.google.com/store/apps/details?id=com.alatpres  
                     """.trimIndent()
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
                 startActivity(Intent.createChooser(sharingIntent, "Share Via"))
             }
             R.id.profile -> {
                 fragment = Profile()
-
                 toolbar!!.title = "Profile";
             }
 
@@ -350,7 +499,18 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         return true
     }
 
+    private fun subscribe() {
 
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
     private fun socialMedia() {
 
         val pDialog = PrettyDialog(this)
@@ -508,7 +668,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     drawer.closeDrawer(GravityCompat.START)
                 } else {
 
-                    toolbar!!.title = "ALERTS";
+                    toolbar!!.title = "Alats";
 
                     fragment = alerts::class.java.newInstance()
                     getFragmentManager().popBackStack()
@@ -637,7 +797,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
 
-
+//
 //
 //    private fun joinRequest() {
 //
