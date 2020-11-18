@@ -171,7 +171,7 @@ class ExistGroup : AppCompatActivity(), JGAdapter.ContactsAdapterListener  {
                         // Log.d("onSuccessS", response.errorBody()!!.toString())
 
 
-                        if (response.code().toString() == "200"){
+                        if (response.code().toString() == "201"){
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }

@@ -126,7 +126,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Name of the Company"
                                 android:inputType="text"
-                                android:maxLength="15"
+                                android:maxLength="1200"
                                 android:padding="@dimen/_10sdp"
                                 android:textSize="@dimen/_13ssp" />
                         </com.google.android.material.textfield.TextInputLayout>
@@ -146,7 +146,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Other Name/s"
                                 android:inputType="text"
-                                android:maxLength="15"
+                                android:maxLength="100"
                                 android:padding="@dimen/_10sdp"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="@dimen/_13ssp" />
@@ -168,7 +168,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Tax ID"
                                 android:inputType="text"
-                                android:maxLength="15"
+                                android:maxLength="100"
                                 android:padding="@dimen/_10sdp"
                                 android:textColor="@color/colorBlack"
                                 android:textSize="@dimen/_13ssp" />

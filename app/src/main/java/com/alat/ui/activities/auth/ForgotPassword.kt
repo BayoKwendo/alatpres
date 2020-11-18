@@ -119,6 +119,11 @@ class ForgotPassword : AppCompatActivity() {
                         mProgress?.dismiss()
                         dialogue()
                         promptPopUpView?.changeStatus(2, "Success!! \n\nAn email has been send to you!! Check it to continue with resetting")
+                    }else{
+
+                        mProgress?.dismiss()
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "email not found")
                     }
                     if (response.code() == 400) {
                         mProgress?.dismiss()

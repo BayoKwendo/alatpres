@@ -78,6 +78,8 @@ class BasicUserActivity : AppCompatActivity() {
     private var firstName: String? = null
     private var lastName: String? = null
     private var email: String? = null
+    var pref: SharedPreferences? = null
+
     private var mssidn: String? = null
     private var id: String? = null
     private  var dob: String? = null
@@ -492,7 +494,7 @@ class BasicUserActivity : AppCompatActivity() {
         params["mssdn"] = mssidn!!
         params["country"] = countries!!
         params["county"] = county!!
-        params["userid"] = user_id!!
+            params["userid"] = user_id!!
         params["password"] = password!!
 
         val api: CreateUser = retrofit.create(CreateUser::class.java)
@@ -509,14 +511,20 @@ class BasicUserActivity : AppCompatActivity() {
 
 
                 if (response.isSuccessful) {
-                    val remoteResponse = response.body()!!.string()
-                    Log.d("test", remoteResponse)
+//                    val remoteResponse = response.body()!!.string()
+//                    Log.d("test", remoteResponse)
 
                     if (response.code() == 201){
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Email already taken!!")
+                    }
+                    if (response.code() == 204){
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Phone already taken!!")
                     }
                     if (response.code() == 202){
                         mProgress?.dismiss()
@@ -532,7 +540,13 @@ class BasicUserActivity : AppCompatActivity() {
                     }
                     else if(response.code() == 200){
                         mProgress?.dismiss()
+                        pref =
+                            applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
 
+                        val editor2: SharedPreferences.Editor = pref!!.edit()
+                        editor2.putString("ads", "0")
+                        editor2.clear()
+                        editor2.apply()
                         Toast.makeText(this@BasicUserActivity, "Login to continue" , Toast.LENGTH_SHORT).show()
 
                         dialogue()

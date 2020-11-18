@@ -193,12 +193,11 @@ class AlertGlobal : AppCompatActivity(), ResponseAdapter.ContactsAdapterListener
                     Log.d("test", remoteResponse)
 
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "201"){
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }
                     parseLoginData(remoteResponse)
-
 
 
                 } else {
@@ -208,7 +207,6 @@ class AlertGlobal : AppCompatActivity(), ResponseAdapter.ContactsAdapterListener
                     mProgress?.dismiss()
                 }
             }
-
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 Log.i("onEmptyResponse", "" + t) //

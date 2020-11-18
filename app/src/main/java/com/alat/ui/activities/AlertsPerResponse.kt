@@ -13,6 +13,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -116,6 +117,11 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
 
     private fun getStudent() {
 
+//           Toast.makeText(
+//            this,
+//            "response_group",
+//            Toast.LENGTH_LONG
+//        ).show()
 
         mToolbar!!.title = response_group +"\t["+group_id+"]"
 
@@ -161,11 +167,12 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "201"){
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
+                    }else {
+                        parseLoginData(remoteResponse)
                     }
-                    parseLoginData(remoteResponse)
                 } else {
                     mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")

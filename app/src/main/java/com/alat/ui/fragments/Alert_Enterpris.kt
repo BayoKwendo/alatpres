@@ -25,6 +25,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
+import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
@@ -35,6 +36,11 @@ import com.alat.ui.AboutUs
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.CreateAlerteNT
+import com.alat.ui.activities.mpesa.Ban_Transfer
+import com.alat.ui.activities.mpesa.MPESAExpressActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -82,6 +88,8 @@ class Alert_Enterpris : Fragment(),
     private var searchView: SearchView? = null
     var errorNull: TextView? = null
     private var mProgressLayout: LinearLayout? = null
+    var views: View? = null
+    private var mAdView: AdView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -93,6 +101,8 @@ class Alert_Enterpris : Fragment(),
         contactList = ArrayList()
         mAdapter = RGAdapter(activity!!, contactList!!, this)
         recyclerView!!.isNestedScrollingEnabled = false;
+
+
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
         val mLayoutManager: RecyclerView.LayoutManager =
@@ -129,9 +139,69 @@ class Alert_Enterpris : Fragment(),
                 startActivity(Intent(activity!!, JoinGlobal::class.java))
             }
         }
+        if (accounts == "0"){
+             var ADS: String? = null
+            var pref2: SharedPreferences? = null
+
+            pref2 =
+                context!!.getSharedPreferences("ADS", 0) // 0 - for private mode
+            ADS = pref2!!.getString("ads", null)
+
+            if(ADS == "0") {
+
+                MobileAds.initialize(activity, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
+                views = activity!!.window!!.decorView.rootView;
+                Admob.createLoadBanner(activity!!.applicationContext, views);
+                Admob.createLoadInterstitial(activity!!.applicationContext, null);
+                mAdView = view.findViewById<View>(R.id.adView) as AdView?
+                val adRequest: AdRequest = AdRequest.Builder().build()
+                mAdView!!.loadAd(adRequest)
+
+            }
+        }
+
          return view
     }
 
+
+
+//    fun BackAlert() {
+//
+//
+//        val pDialog = PrettyDialog(activity)
+//        pDialog
+//            .setIconTint(R.color.colorPrimary)
+//            .setTitle("Upgrade to PRO ACCOUNT")
+//            .setTitleColor(R.color.pdlg_color_blue)
+//            .setMessage("Choose the payment method you recommend")
+//            .setMessageColor(R.color.pdlg_color_gray)
+//            .addButton(
+//                "Mpesa Payment",
+//                R.color.pdlg_color_white,
+//                R.color.colorAccent
+//            ) {
+//                pDialog.dismiss()
+//
+//                    val i =
+//                        Intent(activity!!, MPESAExpressActivity::class.java)
+//                    i.putExtra("price", "")
+//                    startActivity(i)
+//
+//            }
+//            .addButton(
+//                "Direct Bank Transfer",
+//                R.color.pdlg_color_white,
+//                R.color.colorAccent
+//            ) {
+//                pDialog.dismiss()
+//                val i =
+//                    Intent(activity!!, Ban_Transfer::class.java)
+//                i.putExtra("price", price)
+//                startActivity(i)
+//
+//            }
+//            .show()
+//    }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         floatingActionButton!!.setOnClickListener {
@@ -289,7 +359,8 @@ class Alert_Enterpris : Fragment(),
         }
         val item = menu.findItem(R.id.action_share)
         // Fetch and store ShareActionProvider
-
+        val item7 = menu.findItem(R.id.aboutus)
+        item7.isVisible = true
         val item6 = menu.findItem(R.id.action_invite)
         item6.isVisible = false
 

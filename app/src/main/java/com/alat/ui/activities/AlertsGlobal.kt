@@ -191,7 +191,7 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "201"){
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }

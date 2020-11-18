@@ -140,8 +140,6 @@ class ResponseProviders : Fragment(), RespProvAdapter.ContactsAdapterListener  {
 
     private fun getStudent() {
 
-
-
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -163,7 +161,6 @@ class ResponseProviders : Fragment(), RespProvAdapter.ContactsAdapterListener  {
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         val params: HashMap<String, String> = HashMap()
 
         val api: GetResponseProviders = retrofit.create(GetResponseProviders::class.java)

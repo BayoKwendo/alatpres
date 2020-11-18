@@ -177,11 +177,12 @@ class NeutralizeAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200") {
+                    if (response.code().toString() == "201") {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
+                    }else {
+                        parseLoginData(remoteResponse)
                     }
-                    parseLoginData(remoteResponse)
                 } else {
                     mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")

@@ -6,6 +6,7 @@ import adil.dev.lib.materialnumberpicker.dialog.OrgDialogue
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.text.SpannableStringBuilder
@@ -151,6 +152,7 @@ class Enterprise : AppCompatActivity() {
     var checkSelected: BooleanArray? = null
     var selectedItemss: ArrayList<String>? = null
     var selectedItemCountry: ArrayList<String>? = null
+    var pref: SharedPreferences? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -245,7 +247,7 @@ class Enterprise : AppCompatActivity() {
             ) {
                 if (spinner!!.selectedItem == null) {
 
-                    // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
+
                     return
                 } else {
                     selectedItem = spinner!!.selectedItem.toString()
@@ -255,6 +257,8 @@ class Enterprise : AppCompatActivity() {
                         mySpinner1!!.visibility = View.VISIBLE
                         myLinear!!.visibility = View.VISIBLE
                         myLinear1!!.visibility = View.VISIBLE
+
+                    //    Toast.makeText(this@Enterprise, "Please" + , Toast.LENGTH_LONG).show();
 
                     } else {
                         mySpinner!!.visibility = View.GONE
@@ -859,8 +863,8 @@ class Enterprise : AppCompatActivity() {
         params["mssdn2"] = mssidn2!!
         params["mssdn"] = mssidn!!
         params["account_status"] = "0"
-        params["response_provider"] = mySpinner!!.buildSelectedItemString()!!
-        params["nature_response"] = listString!!
+        params["response_provider"] = selectedItem!!
+        params["nature_response"] = mySpinner!!.buildSelectedItemString()!!
         params["county"] = county!!
         params["userid"] = user_id!!
         params["password"] = password!!
@@ -880,14 +884,20 @@ class Enterprise : AppCompatActivity() {
 
 
                 if (response.isSuccessful) {
-                    val remoteResponse = response.body()!!.string()
-                    Log.d("test", remoteResponse)
+//                    val remoteResponse = response.body()!!.string()
+//                    Log.d("test", remoteResponse)
 
                     if (response.code() == 201) {
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Email already taken!!")
+                    }
+                    if (response.code() == 204){
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Phone already taken!!")
                     }
                     if (response.code() == 202) {
                         mProgress?.dismiss()
@@ -906,6 +916,13 @@ class Enterprise : AppCompatActivity() {
                         if (selectedItem == "YES") {
                             createProvider()
                         } else {
+                            pref =
+                                applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                            val editor2: SharedPreferences.Editor = pref!!.edit()
+                            editor2.putString("ads", "0")
+                            editor2.clear()
+                            editor2.apply()
 
                             mProgress?.dismiss()
 

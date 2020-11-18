@@ -1,6 +1,6 @@
 package com.alat.helpers
 object Constants {
-    const val API_BASE_URL = "https://youthsofhope.co.ke/"
+    const val API_BASE_URL = "http://178.32.191.152/alatpres_api/"
 }
 
 

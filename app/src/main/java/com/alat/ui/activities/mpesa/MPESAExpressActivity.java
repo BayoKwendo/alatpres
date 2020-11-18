@@ -26,6 +26,7 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.alat.HomePage;
 import com.alat.R;
 import com.alat.helpers.Constants;
 import com.alat.helpers.PromptPopUpView;
@@ -73,34 +74,20 @@ public class MPESAExpressActivity extends AppCompatActivity {
     Button sendButton;
     String p;
     AlertDialog dialog;
-
     Button send, btn_back, confirmPay;
     EditText phone, mpesa_code;
     ConstraintLayout constraintLayout, constraintLayout2;
-
     //ProgressDialog dialog;
-
     private PromptPopUpView promptPopUpView;
-
-
     private static final String OPTIONAL_ZERO = "(0";
     private static final String OPTIONAL_ZERO_REGEX = Pattern.quote(OPTIONAL_ZERO);
-
-
     private ProgressDialog mProgressDialog, mProgress;
-
-    //Declare Daraja :: Global Variable
+    //Delare Daraja :: Global Variable
     Daraja daraja;
-
-
     String phoneNumber;
-
     String price;
-
-
     String time;
-
-    String userid;
+    String userid, firstname, email, sname, dob, role,gender, mssdn, idNo, county, clients, account_status, responseprovider ;
 
     SharedPreferences pref;
 
@@ -111,22 +98,26 @@ public class MPESAExpressActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_mpesa);
         Objects.requireNonNull(getSupportActionBar()).setDisplayShowHomeEnabled(true);
-
-
         pref =
                 getSharedPreferences("MyPref", 0) ;// 0 - for private mode
-
-
         userid = pref.getString("userid", null);
-
-
-
-
+        firstname = pref.getString("fname", null);
+        sname = pref.getString("lname", null);
+        email = pref.getString("email", null);
+        dob = pref.getString("dob", null);
+        role = pref.getString("role", null);
+        gender = pref.getString("gender", null);
+        mssdn = pref.getString("mssdn", null);
+        idNo = pref.getString("idNo", null);
+        county = pref.getString("county", null);
+        clients = pref.getString("clients", null);
+        account_status = pref.getString("account_status", null);
+        responseprovider = pref.getString("response_provider", null);
         price = getIntent().getStringExtra("price");
         time = getIntent().getStringExtra("time");
 
 
-       // Toast.makeText(this,  price, Toast.LENGTH_SHORT).show();
+       //Toast.makeText(this,  time, Toast.LENGTH_SHORT).show();
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -171,7 +162,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                 network();
             }
             p = phoneNumber.replaceFirst("^0+(?!$)", "");
-            getJSON("https://youthsofhope.co.ke/transactions/read.php?phone=" + 254 + p);
+            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
         });
 
         if (!isNetworkAvailable()) {
@@ -196,11 +187,11 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
         //Init Daraja
         //TODO :: REPLACE WITH YOUR OWN CREDENTIALS  :: THIS IS SANDBOX DEMO
-        daraja = Daraja.with("A6TfG95zr2R8unedQreSwmOAeQogAm3O", "YgApp0EDr3YhA1dh", new DarajaListener<AccessToken>() {
+        daraja = Daraja.with("ATdLu5SiNUEpBTq2MTBCQOJHB9mblqnE", "49WWldD96Qu44MPb", new DarajaListener<AccessToken>() {
             @Override
             public void onResult(@NonNull AccessToken accessToken) {
                 Log.i(MPESAExpressActivity.this.getClass().getSimpleName(), accessToken.getAccess_token());
-                //   Toast.makeText(MPESAExpressActivity.this, "TOKEN : " + accessToken.getAccess_token(), Toast.LENGTH_SHORT).show();
+              //  Toast.makeText(MPESAExpressActivity.this, "TOKEN : " + accessToken.getAccess_token(), Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -229,13 +220,9 @@ public class MPESAExpressActivity extends AppCompatActivity {
             if (!isNetworkAvailable()) {
                 network();
             }
-
             p = phoneNumber.replaceFirst("^0+(?!$)", "");
-
-            getJSON("https://youthsofhope.co.ke/transactions/read.php?phone=" + 254 + p);
-
+            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
             //Toast.makeText(this,  254+p, Toast.LENGTH_SHORT).show();
-
         });
     }
 
@@ -246,7 +233,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
         mProgress.show();
 
         String p = mpesa_code.getText().toString().trim();
-        getJSO("https://youthsofhope.co.ke/transactions/update.php?phone=" + p);
+        getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
     }
 
 
@@ -380,17 +367,17 @@ public class MPESAExpressActivity extends AppCompatActivity {
                 // Toast.makeText(this, "" + price, Toast.LENGTH_SHORT).show();
 
                 //TODO :: REPLACE WITH YOUR OWN CREDENTIALS  :: THIS IS SANDBOX DEMO
-                LNMExpress lnmExpress = new LNMExpress(
-                        "174379",
-                        "bfb279f9aa9bdbcf158e97dd71a467cd2e0c893059b10f78e6b72ada1ed2c919",  //https://developer.safaricom.co.ke/test_credentials
+                LNMExpress lnmExpress = new LNMExpress (
+                        "4036601",
+                        "c3b0702afc4d3133916e1ff36821b9b407a8f4da06e30afbdcd6907d940ef033",  //https://developer.safaricom.co.ke/test_credentials
                         TransactionType.CustomerPayBillOnline,
                          "1",
                         "254717629732",
-                        "174379",
+                        "4036601",
                          phoneNumber,
-                        "https://hivfactsheet.000webhostapp.com/alatpres.php",
-                        "001ABC",
-                        "Goods Payment"
+                        "http://178.32.191.152/alatpres_api/api/transactions/alatpres.php",
+                        "alatpres",
+                        "Pay No"
                 );
 
                 //This is the
@@ -432,7 +419,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
                     JSONObject dataobj = dataArray.getJSONObject(i);
 
-                    Toast.makeText(this, "" + dataobj.getString("TransID"), Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "" + dataobj.getString("TransID"), Toast.LENGTH_SHORT).show();
 
                     String p = mpesa_code.getText().toString().trim();
 
@@ -588,15 +575,27 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         .show();
                 new Handler().postDelayed(new Runnable() {
                     public void run() {
-                        Toast.makeText(MPESAExpressActivity.this,  "You have to Login again", Toast.LENGTH_SHORT).show();
-
+//                        Toast.makeText(MPESAExpressActivity.this,  "You have to Login again", Toast.LENGTH_SHORT).show();
                         SharedPreferences preferences =getSharedPreferences("MyPref",0);
                         SharedPreferences.Editor editor = preferences.edit();
-                        editor.putBoolean("isLogin", false);
+                        editor.putBoolean("isLogin", true);
+                        editor.putString("fname", firstname);
+                        editor.putString("lname", sname);
+                        editor.putString("email", email);
+                        editor.putString("dob", dob);
+                        editor.putString("role", role);
+                        editor.putString("mssdn",mssdn );
+                        editor.putString("gender", gender);
+                        editor.putString("idNo", idNo);
+                        editor.putString("county", county);
+                        editor.putString("userid", userid);
+                        editor.putString("account_status", "1");
+                        editor.putString("clients", clients);
+                        editor.putString("response_provider", responseprovider);
                         editor.clear();
                         editor.apply();
                         finish();
-                        Intent intent = new Intent(MPESAExpressActivity.this, LoginActivity.class);
+                        Intent intent = new Intent(MPESAExpressActivity.this, HomePage.class);
                         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
                         startActivity(intent);
                         dialog.dismiss();

@@ -150,7 +150,7 @@ class AddTopicActivity : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "201"){
                         parseLoginData(remoteResponse)
                     }
                 } else {

@@ -47,7 +47,24 @@ class account : AppCompatActivity() {
     private var promptPopUpView: PromptPopUpView? = null
     private var edtPIN: TextView? = null
     var date2: String? = null
+    var linear:LinearLayout ? = null
+    var firstname:kotlin.String? = null
+    var email:kotlin.String? = null
+    var sname:kotlin.String? = null
+    var dob:kotlin.String? = null
+    var gender:kotlin.String? = null
+    var mssdn:kotlin.String? = null
+    var idNo:kotlin.String? = null
+    var county:kotlin.String? = null
+    var clients:kotlin.String? = null
+    var responseprovider:kotlin.String? = null
 
+    private var backPressedTime: Long = 0
+
+
+    var fname: String? = null
+
+    private var roleID: String? = null
     private val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     private var linear_layout_1: LinearLayout? = null
     private  var linear_layout_2:android.widget.LinearLayout? = null
@@ -78,12 +95,22 @@ class account : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         edtPIN = findViewById<View>(R.id.account) as TextView
         btnBack = findViewById<View>(R.id.btn_disable) as Button
+
         pref =
-            this!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
-        account = pref!!.getString("account_status", null)
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
         userid = pref!!.getString("userid", null)
-
-
+        account = pref!!.getString("account_status", null)
+        roleID = pref!!.getString("role", null)
+        responseprovider = pref!!.getString("response_provider", null)
+        firstname = pref!!.getString("fname", null)
+        sname = pref!!.getString("lname", null)
+        email = pref!!.getString("email", null)
+        dob = pref!!.getString("dob", null)
+        gender = pref!!.getString("gender", null)
+        mssdn = pref!!.getString("mssdn", null)
+        idNo = pref!!.getString("idNo", null)
+        county = pref!!.getString("county", null)
+        clients = pref!!.getString("clients", null)
         linear_layout_1 = findViewById(R.id.linear_layout_1);
 
         linear_layout_2 = findViewById(R.id.linear_layout_2);
@@ -94,6 +121,7 @@ class account : AppCompatActivity() {
         tv_second = findViewById(R.id.tv_second);
 
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
+
 
         when (account) {
             "1" -> {
@@ -114,6 +142,13 @@ class account : AppCompatActivity() {
             if (account == "1") {
                 adsbtn()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
+                pref =
+                    applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                val editor2: SharedPreferences.Editor = pref!!.edit()
+                editor2.putString("ads", "1")
+                editor2.clear()
+                editor2.apply()
 
 
             } else {
@@ -146,15 +181,14 @@ class account : AppCompatActivity() {
                     return
                 } else {
                     selectedItem3 = spinner_3!!.selectedItem.toString()
-
-                    if (selectedItem3 == "Monthly ksh. 100"){
+                    if (selectedItem3 == "Monthly ksh. 80"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 30)
                         date = dateFormat.format(c.time)
                         price = "80"
-                      //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                    } else if(selectedItem3 == "Quarterly Ksh. 250"){
+                       // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
+                    } else if(selectedItem3 == "Quarterly Ksh. 220"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 90)
@@ -162,7 +196,7 @@ class account : AppCompatActivity() {
                         price = "220"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                     }
-                    else if(selectedItem3 == "Yearly Ksh. 900"){
+                    else if(selectedItem3 == "Yearly Ksh. 750"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 355)
@@ -258,11 +292,8 @@ class account : AppCompatActivity() {
                 //Toast.makeText()
                 if (response.isSuccessful) {
                     if (response.body() != null) {
-
                         // val jsonresponse = response.body().toString()
-
                         // Log.d("onSuccessS", response.errorBody()!!.toString())
-
                         try {
 
                             Log.d("SUCCESS", response.body().toString())
@@ -280,6 +311,29 @@ class account : AppCompatActivity() {
                                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                                 val strDate = sdf.parse(dataobj.getString("subscription_date"))
                                 if (System.currentTimeMillis() > strDate.time) {
+                                    val preferences =
+                                        getSharedPreferences("MyPref", 0)
+                                    val editor =
+                                        preferences.edit()
+                                    editor.putBoolean("isLogin", true)
+                                    editor.putString("fname", firstname)
+                                    editor.putString("lname", sname)
+                                    editor.putString("email", email)
+                                    editor.putString("dob", dob)
+                                    editor.putString("role", roleID)
+                                    editor.putString("mssdn", mssdn)
+                                    editor.putString("gender", gender)
+                                    editor.putString("idNo", idNo)
+                                    editor.putString("county", county)
+                                    editor.putString("userid", userid)
+                                    editor.putString("account_status", "0")
+                                    editor.putString("clients", clients)
+                                    editor.putString("response_provider", responseprovider)
+                                    editor.clear()
+                                    editor.apply()
+
+                                    recreate()
+
                                     //Toast.makeText(this@account, "me" + dataobj.getString("subscription_date")  , Toast.LENGTH_LONG).show()
                                    // loginUser()
 

@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
             validation()
         }
        // Picasso.with(this).load().fit().into(image);
-        Picasso.get().load("https://youthsofhope.co.ke/api/logo.png").into(image)
+        Picasso.get().load("http://178.32.191.152/alatpres_api/api/logo.png").into(image)
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 

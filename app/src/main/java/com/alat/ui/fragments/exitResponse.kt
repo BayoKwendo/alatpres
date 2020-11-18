@@ -186,7 +186,7 @@ class exitResponse : Fragment(),
                 //Toast.makeText()
                 if (response.isSuccessful) {
                     if (response.body() != null) {
-                        if (response.code().toString() == "200"){
+                        if (response.code().toString() == "201"){
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }

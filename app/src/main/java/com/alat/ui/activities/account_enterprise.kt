@@ -47,13 +47,26 @@ class account_enterprise : AppCompatActivity() {
     var date2: String? = null
     private val DATE_FORMAT = "yyyy-MM-dd HH:mm:ss"
     private var linear_layout_1: LinearLayout? = null
-    private  var linear_layout_2:android.widget.LinearLayout? = null
+    private var linear_layout_2: android.widget.LinearLayout? = null
     private var tv_days: TextView? = null
-    private  var tv_hour:android.widget.TextView? = null
+    private var tv_hour: android.widget.TextView? = null
+    var firstname: kotlin.String? = null
+    private var roleID: String? = null
+
+    var email: kotlin.String? = null
+    var sname: kotlin.String? = null
+    var dob: kotlin.String? = null
+    var gender: kotlin.String? = null
+
+    var mssdn: kotlin.String? = null
+    var idNo: kotlin.String? = null
+    var county: kotlin.String? = null
+    var clients: kotlin.String? = null
+    var responseprovider: kotlin.String? = null
 
     var spinner_3: MaterialSpinner? = null
-    var tv_minute:android.widget.TextView? = null
-    private  var tv_second:android.widget.TextView? = null
+    var tv_minute: android.widget.TextView? = null
+    private var tv_second: android.widget.TextView? = null
     private val handler: Handler = Handler()
     private var runnable: Runnable? = null
     private var btnConfirm: Button? = null
@@ -66,7 +79,6 @@ class account_enterprise : AppCompatActivity() {
     var pref: SharedPreferences? = null
     private var account: String? = null
     private var userid: String? = null
-    private var response: String? = null
 
     var account_type:TextView? = null
 
@@ -88,17 +100,34 @@ class account_enterprise : AppCompatActivity() {
         btnBack = findViewById<View>(R.id.btn_disable) as Button
         btnBack!!.setText("Disable Ads")
         Mmeesage = findViewById<View>(R.id.accounts) as TextView
-        pref =
-            this!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
-        account = pref!!.getString("account_status", null)
-        userid = pref!!.getString("userid", null)
-        response = pref!!.getString("response_provider", null)
 
-        if (response == "YES") {
-            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 6200", "Yearly Ksh. 22800")
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+        userid = pref!!.getString("userid", null)
+        account = pref!!.getString("account_status", null)
+        roleID = pref!!.getString("role", null)
+        responseprovider = pref!!.getString("response_provider", null)
+        firstname = pref!!.getString("fname", null)
+        sname = pref!!.getString("lname", null)
+        email = pref!!.getString("email", null)
+        dob = pref!!.getString("dob", null)
+        gender = pref!!.getString("gender", null)
+        mssdn = pref!!.getString("mssdn", null)
+        idNo = pref!!.getString("idNo", null)
+        county = pref!!.getString("county", null)
+        clients = pref!!.getString("clients", null)
+//        Toast.makeText(
+//            this,
+//            responseprovider,
+//            Toast.LENGTH_SHORT
+//        ).show()
+        if (responseprovider == "YES") {
+            val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 9000", "Yearly Ksh. 29800")
+
             account_type!!.setText("You're currently subscribe to Enterprise PREMIUM Account:  \n\n Expire in : ")
             TITLE!!.setText("ALATPRES ENTERPRISE PREMIUM ACCOUNT")
-            Mmeesage!!.setText("Kindly subscribe/ renew your subscription to enterprise PREMIUM account")
+            Mmeesage!!.setText("Kindly Renew / Subscribe to your plan of Choice to enjoy all your Premium Account features")
+
 
             val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -116,29 +145,29 @@ class account_enterprise : AppCompatActivity() {
                     } else {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if(selectedItem3 == "Monthly ksh. 100"){
+                        if(selectedItem3 == "Monthly ksh. 3800"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
-                            price = "100"
+                            price = "3800"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }else if(selectedItem3 == "Quarterly Ksh. 400"){
+                        }else if(selectedItem3 == "Quarterly Ksh. 9000"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 120)
                             date = dateFormat.format(c.time)
-
-                            price = "400"
+                            price = "9000"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                         }
-                        else if(selectedItem3 == "Yearly Ksh. 1,100"){
+                        else if(selectedItem3 == "Yearly Ksh. 29800"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 355)
                             date = dateFormat.format(c.time)
-                            price = "1100"
+                            price = "29800"
                         }
+
                     }
                 }
                 // TODO Auto-generated method stub
@@ -147,11 +176,11 @@ class account_enterprise : AppCompatActivity() {
                 }
             }
         } else {
-            val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 9000", "Yearly Ksh. 29800")
+            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 6200", "Yearly Ksh. 22800")
 
             account_type!!.setText("You're currently subscribe to Enterprise PRO Account:  \n\n Expire in : ")
             TITLE!!.setText("ALATPRES ENTERPRISE PRO ACCOUNT")
-            Mmeesage!!.setText("Kindly subscribe/ renew your subscription to enterprise PRO account")
+            Mmeesage!!.setText("Kindly Renew/Subscribe to your plan of Choice to enjoy all your PRO Account features")
 
             val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
             adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -168,30 +197,30 @@ class account_enterprise : AppCompatActivity() {
                         return
                     } else {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
+                        selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if(selectedItem3 == "Monthly ksh. 100"){
+                        if(selectedItem3 == "Monthly ksh. 2600"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
-
-                            price = "100"
+                            price = "2600"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }else if(selectedItem3 == "Quarterly Ksh. 400"){
+                        }else if(selectedItem3 == "Quarterly Ksh. 6200"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 120)
                             date = dateFormat.format(c.time)
 
-                            price = "400"
+                            price = "6200"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                         }
-                        else if(selectedItem3 == "Yearly Ksh. 1,100"){
+                        else if(selectedItem3 == "Yearly Ksh. 22800"){
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 355)
                             date = dateFormat.format(c.time)
-                            price = "1100"
+                            price = "22800"
                         }
                     }
                 }
@@ -237,6 +266,13 @@ class account_enterprise : AppCompatActivity() {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
 
+                pref =
+                    applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                val editor2: SharedPreferences.Editor = pref!!.edit()
+                editor2.putString("ads", "1")
+                editor2.clear()
+                editor2.apply()
 
             } else {
                 dialogue_error()
@@ -312,24 +348,38 @@ class account_enterprise : AppCompatActivity() {
                             val array: JSONArray = o.getJSONArray("records")
                             for (i in 0 until array.length()) {
                                     val dataobj: JSONObject = array.getJSONObject(i)
-
-
-
-                                 date2 = dataobj.getString("subscription_date")
-
+                                date2 = dataobj.getString("subscription_date")
                                 val sdf =
                                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                                 val strDate = sdf.parse(dataobj.getString("subscription_date"))
                                 if (System.currentTimeMillis() > strDate.time) {
-                                    //Toast.makeText(this@account, "me" + dataobj.getString("subscription_date")  , Toast.LENGTH_LONG).show()
+                                    val preferences =
+                                        getSharedPreferences("MyPref", 0)
+                                    val editor =
+                                        preferences.edit()
+                                    editor.putBoolean("isLogin", true)
+                                    editor.putString("fname", firstname)
+                                    editor.putString("lname", sname)
+                                    editor.putString("email", email)
+                                    editor.putString("dob", dob)
+                                    editor.putString("role", roleID)
+                                    editor.putString("mssdn", mssdn)
+                                    editor.putString("gender", gender)
+                                    editor.putString("idNo", idNo)
+                                    editor.putString("county", county)
+                                    editor.putString("userid", userid)
+                                    editor.putString("account_status", "0")
+                                    editor.putString("clients", clients)
+                                    editor.putString("response_provider", responseprovider)
+                                    editor.clear()
+                                    editor.apply()
 
+                                    recreate()
 
                                 } else {
                                     //Toast.makeText(this@account, "you"  , Toast.LENGTH_LONG).show()
+                                    countDownStart()
                                 }
-
-                                countDownStart()
-
 
                             }
 
@@ -443,19 +493,66 @@ class account_enterprise : AppCompatActivity() {
                 if (selectedItem3 == null) {
                     Toast.makeText(this@account_enterprise, "Please select a subscription package", Toast.LENGTH_LONG).show();
                 } else {
-                    val i =
-                        Intent(this@account_enterprise, MPESAExpressActivity::class.java)
-                    i.putExtra("price", price)
+                    if (date2 === null) {
+                        CheckFirst()
+                    } else {
+                        val i =
+                            Intent(this@account_enterprise, MPESAExpressActivity::class.java)
+                        i.putExtra("price", price)
+                        i.putExtra("time", date)
+                        startActivity(i)
+                    }
+                }
+            }
+            .addButton(
+                "PayPal",
+                R.color.pdlg_color_white,
+                R.color.colorAccent) {
+                pDialog.dismiss()
+//                startActivity(Intent(this, Ban_Transfer::class.java))
+
+//                if (selectedItem3 == null) {
+//
+//                }else {
+//                    Toast.makeText(this@account_enterprise, "Coming Soon", Toast.LENGTH_LONG).show();
+//                }
+            }
+            .show()
+    }
+
+
+    fun CheckFirst() {
+        val pDialog = PrettyDialog(this)
+        pDialog
+            .setIconTint(R.color.colorPrimary)
+            .setTitle("ONBOARDING FEE")
+            .setTitleColor(R.color.pdlg_color_blue)
+            .setMessage("ONBOARDING FEE " + 3500 +"\n\n  SUBSCRIPTION FEE "+Integer.parseInt(price!!)+
+                    "\n\n TOTAL  " + (Integer.parseInt(price!!) + 3500) +
+
+                    "\n\nContinue with the payment"  )
+
+            .setMessageColor(R.color.pdlg_color_gray)
+            .addButton(
+                "Mpesa Payment",
+                R.color.pdlg_color_white,
+                R.color.colorAccent
+            ) { pDialog.dismiss()
+                if (selectedItem3 == null) {
+                    Toast.makeText(this@account_enterprise, "Please select a subscription package", Toast.LENGTH_LONG).show();
+                } else {
+                    val i = Intent(this@account_enterprise, MPESAExpressActivity::class.java)
+                    i.putExtra("price", (Integer.parseInt(price!!) + 3500))
                     i.putExtra("time", date)
                     startActivity(i)
                 }
             }
             .addButton(
-                "Direct Bank Transfer",
+                "PayPal",
                 R.color.pdlg_color_white,
                 R.color.colorAccent) {
                 pDialog.dismiss()
-                startActivity(Intent(this, Ban_Transfer::class.java))
+//                startActivity(Intent(this, Ban_Transfer::class.java))
 
 //                if (selectedItem3 == null) {
 //

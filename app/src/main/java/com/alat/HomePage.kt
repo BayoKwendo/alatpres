@@ -25,14 +25,19 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import cn.pedant.SweetAlert.SweetAlertDialog
+import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
+import com.alat.interfaces.FindTime
 import com.alat.interfaces.FriendInivte
 import com.alat.ui.activities.ResponseProviders
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.AddClientActivitity
 import com.alat.ui.activities.enterprise.AddStation
 import com.alat.ui.fragments.*
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.navigation.NavigationView
 import io.karn.notify.Notify
 import libs.mjn.prettydialog.PrettyDialog
@@ -50,6 +55,7 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 
@@ -60,18 +66,32 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
     var navigationView: NavigationView? = null
     var linear2:LinearLayout ? = null
+    var date2: String? = null
 
     var linear:LinearLayout ? = null
+    var firstname:kotlin.String? = null
+    var email:kotlin.String? = null
+    var sname:kotlin.String? = null
+    var dob:kotlin.String? = null
+    var gender:kotlin.String? = null
+    var mssdn:kotlin.String? = null
+    var idNo:kotlin.String? = null
+    var county:kotlin.String? = null
+    var clients:kotlin.String? = null
+    var responseprovider:kotlin.String? = null
 
     private var backPressedTime: Long = 0
     var pref: SharedPreferences? = null
+    var pref2: SharedPreferences? = null
+
     private var userid: String? = null
 
     var fname: String? = null
     private var account: String? = null
-
+    var view: View? = null
+    private var mAdView: AdView? = null
     private var roleID: String? = null
-    private var response: String? = null
+    private var ADS: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,37 +101,50 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         toolbar!!.title = "FRAFF"
         supportActionBar
         setSupportActionBar(toolbar)
-
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
-
         userid = pref!!.getString("userid", null)
-
         account = pref!!.getString("account_status", null)
-
         roleID = pref!!.getString("role", null)
+        responseprovider = pref!!.getString("response_provider", null)
+        firstname = pref!!.getString("fname", null)
+        sname = pref!!.getString("lname", null)
+        email = pref!!.getString("email", null)
+        dob = pref!!.getString("dob", null)
+        gender = pref!!.getString("gender", null)
+        mssdn = pref!!.getString("mssdn", null)
+        idNo = pref!!.getString("idNo", null)
+        county = pref!!.getString("county", null)
+        clients = pref!!.getString("clients", null)
 
-        response = pref!!.getString("response_provider", null)
+
+//        if (roleID == "2") {
+            if (account == "1") {
+                getExpiry()
+            }
 
 
-//                Toast.makeText(
-//            this,
-//            "Selected: " + pref!!.getString("response_provider", null) ,
-//            Toast.LENGTH_LONG
-//        ).show()
+        if(account == "0"){
+            setSupportActionBar(toolbar)
+            pref2 =
+                this.getSharedPreferences("ADS", 0) // 0 - for private mode
+            ADS = pref2!!.getString("ads", null)
+
+            if(ADS == "0") {
+                MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
+                view = window.decorView.rootView;
+
+                Admob.createLoadBanner(applicationContext, view);
+                Admob.createLoadInterstitial(applicationContext, null);
+
+                mAdView = findViewById<View>(R.id.adView) as AdView?
+                val adRequest: AdRequest = AdRequest.Builder().build()
+                mAdView!!.loadAd(adRequest)
+            }
+
 
 //
-//        if (roleID == "2") {
-//            if (account == "0") {
-//                startActivity(Intent(this, account_enterprise::class.java))
-//                Toast.makeText(
-//                    this,
-//                    "Kindly subscribe first!",
-//                    Toast.LENGTH_SHORT
-//                ).show()
-//            }
-//        }
+        }
 //
         getStudent()
         if (!isNetworkAvailable()) {
@@ -123,6 +156,12 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         }
         initDrawer()
+
+//        Toast.makeText(
+//            this,
+//            roleID ,
+//            Toast.LENGTH_LONG
+//        ).show()
 
     }
 
@@ -146,7 +185,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         val alert = navigationView!!.getMenu().findItem(R.id.alert);
         val create_resp = navigationView!!.getMenu().findItem(R.id.create_resp);
         val create_respRG = navigationView!!.getMenu().findItem(R.id.create_respRG);
-
         val join_resp = navigationView!!.getMenu().findItem(R.id.join_resp);
         val exit_resp = navigationView!!.getMenu().findItem(R.id.exit_resp);
         val generate_rep = navigationView!!.getMenu().findItem(R.id.generate_rep);
@@ -163,9 +201,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         val join_resp_ent = navigationView!!.getMenu().findItem(R.id.join_resp_ent);
         val random = navigationView!!.getMenu().findItem(R.id.random_client);
 
-
-
-
         navigationView!!.getMenu().setGroupVisible(R.id.SetupGroup, false);
 
         if (roleID == "1") {
@@ -176,7 +211,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             create_station.isVisible = false
             create_client.isVisible = false
             client_grp.isVisible = false
-            resp_manage.isVisible = true
+            resp_manage.isVisible = false
             join_resp_ent.isVisible = false
             alert.isVisible = true
             station_rg.isVisible = false
@@ -224,10 +259,12 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         }
 
 
-        if (response == "NO") {
-            create_station.isVisible = false
+        if (responseprovider == "NO") {
             create_client.isVisible = false
+            client_grp.isVisible = false
+            random.isVisible = false
         }
+
         val navigationHeaderView = navigationView!!.getHeaderView(0)
         val tvName =
             navigationHeaderView.findViewById<View>(R.id.tvDriverName) as TextView
@@ -261,6 +298,14 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     fragment = Alert_Enterpris()
                     toolbar!!.title = "Local Rgs Alats";
 
+            }
+
+            R.id.intergration -> {
+                subscribe()
+                promptPopUpView?.changeStatus(
+                    2,
+                    "Soon"
+                )
             }
 
             R.id.join_resp_ent -> {
@@ -797,6 +842,122 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
 
+       private fun getExpiry() {
+        // Toast.makeText(this@GroupsRequests, userid  , Toast.LENGTH_LONG).show()
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+
+            .build()
+
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+        params["userid"] = userid!!
+
+
+        val api: FindTime = retrofit.create(FindTime::class.java)
+        val call: Call<ResponseBody> = api.fRGs(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                Log.d("Responsestring", response.body().toString())
+                //Toast.makeText()
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        // val jsonresponse = response.body().toString()
+                        // Log.d("onSuccessS", response.errorBody()!!.toString())
+                        try {
+
+                            Log.d("SUCCESS", response.body().toString())
+                            val o = JSONObject(response.body()!!.string())
+                            val array: JSONArray = o.getJSONArray("records")
+
+                            for (i in 0 until array.length()) {
+                                val dataobj: JSONObject = array.getJSONObject(i)
+                                date2 = dataobj.getString("subscription_date")
+
+                                val sdf =
+                                    SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+                                val strDate = sdf.parse(dataobj.getString("subscription_date"))
+                                if (System.currentTimeMillis() > strDate.time) {
+                                    pref =
+                                        applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                                    val editor2: SharedPreferences.Editor = pref!!.edit()
+                                    editor2.putString("ads", "0")
+                                    editor2.clear()
+                                    editor2.apply()
+
+                                    val preferences =
+                                        getSharedPreferences("MyPref", 0)
+                                    val editor =
+                                        preferences.edit()
+                                    editor.putBoolean("isLogin", true)
+                                    editor.putString("fname", firstname)
+                                    editor.putString("lname", sname)
+                                    editor.putString("email", email)
+                                    editor.putString("dob", dob)
+                                    editor.putString("role", roleID)
+                                    editor.putString("mssdn", mssdn)
+                                    editor.putString("gender", gender)
+                                    editor.putString("idNo", idNo)
+                                    editor.putString("county", county)
+                                    editor.putString("userid", userid)
+                                    editor.putString("account_status", "0")
+                                    editor.putString("clients", clients)
+                                    editor.putString("response_provider", responseprovider)
+                                    editor.clear()
+                                    editor.apply()
+
+                                    recreate()
+
+                                }
+                            }
+                            //Log.d("onSuccess1", firstSport.toString())
+                           } catch (e: JSONException) {
+                            e.printStackTrace()
+                        }
+                    } else {
+
+
+                        Log.i("onEmptyResponse", "Returned empty response") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                    }
+                }else{
+                    Log.d("bayo", response.errorBody()!!.string())
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+
+
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                //   btn.text = "Proceed"
+                Log.i("onEmptyResponse", "" + t) //
+
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                //mProgress?.dismiss()
+            }
+
+        })
+    }
+
+
 //
 //
 //    private fun joinRequest() {
@@ -895,6 +1056,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 //            e.printStackTrace()
 //        }
 //    }
+
 
 
 }

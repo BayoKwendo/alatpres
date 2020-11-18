@@ -253,7 +253,7 @@ class Profile : Fragment() {
 
     fun update() {
         val alertDialog: AlertDialog.Builder = AlertDialog.Builder(activity)
-        alertDialog.setTitle("Update Update")
+        alertDialog.setTitle("Update")
 
         val inflater: LayoutInflater =
             context!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
