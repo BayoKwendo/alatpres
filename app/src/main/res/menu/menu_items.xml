@@ -53,6 +53,7 @@
         android:title="My Account" />
 
     <item android:id="@+id/aboutus"
+        android:visible="false"
         android:title="About Us" />
 
     <item android:id="@+id/logout"

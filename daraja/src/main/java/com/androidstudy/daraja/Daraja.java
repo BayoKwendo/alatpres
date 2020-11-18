@@ -97,7 +97,7 @@ public class Daraja {
                 lnmExpress.getTransactionDesc()
         );
 
-        ApiClient.getAPI(BASE_URL, accessToken.getAccess_token()).getLNMPesa(express).enqueue(new Callback<LNMResult>() {
+        ApiClient.getAPI("https://api.safaricom.co.ke/", accessToken.getAccess_token()).getLNMPesa(express).enqueue(new Callback<LNMResult>() {
             @Override
             public void onResponse(@NonNull Call<LNMResult> call, @NonNull Response<LNMResult> response) {
                 if (response.isSuccessful()) {

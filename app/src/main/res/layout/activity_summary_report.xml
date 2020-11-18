@@ -408,9 +408,6 @@
                         android:textStyle="bold" />
                     </LinearLayout>
 
-
-
-
                     <LinearLayout
                         android:id="@+id/layar2"
                         android:layout_width="match_parent"
@@ -454,13 +451,13 @@
                         android:id="@+id/generate"
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
-                        android:layout_marginTop="32dp"
+                        android:layout_marginTop="40dp"
+                        android:layout_marginBottom="@dimen/_100sdp"
                         android:background="@drawable/button_shape"
                         android:text="Save in PDF"
                         android:textColor="@android:color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
-
                         app:layout_constraintHorizontal_chainStyle="spread"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/layar2" />

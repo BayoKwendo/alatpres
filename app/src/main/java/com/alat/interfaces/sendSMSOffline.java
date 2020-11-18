@@ -12,7 +12,7 @@ public interface sendSMSOffline {
     @Headers("Content-Type: application/json")
 
     // @FormUrlEncoded
-    @POST("/api/alert/sendAlert.php")
+    @POST("api/alert/sendAlert.php")
     Call<ResponseBody> send(@Body Map<String, String> body);
 }
 

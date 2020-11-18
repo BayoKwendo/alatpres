@@ -166,7 +166,7 @@ class JoinRG : Fragment(),
                         val jsonresponse = response.body().toString()
 
 
-                        if (response.code().toString() == "200"){
+                        if (response.code().toString() == "201"){
                             errorNull!!.visibility = View.VISIBLE
                             mProgressLayout!!.visibility = View.GONE
                         }

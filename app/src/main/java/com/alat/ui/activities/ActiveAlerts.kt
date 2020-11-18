@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -111,7 +110,9 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         mAdapter = AlertAdapter(this, contactList!!, this)
 
         mProgressLayout = findViewById(R.id.layout_discussions_progress);
-
+        mProgress = ProgressDialog(this@ActiveAlerts)
+        mProgress!!.setMessage("Processing...")
+        mProgress!!.setCancelable(true)
         val mLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(this)
         recyclerView!!.layoutManager = mLayoutManager
@@ -129,7 +130,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         errorNull!!.visibility = View.GONE
 
         getStudent()
-
     }
 
 
@@ -180,7 +180,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "201"){
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }

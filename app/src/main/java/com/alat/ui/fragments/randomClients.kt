@@ -258,11 +258,8 @@ class randomClients : Fragment(),
 
                     // Toast.makeText(context,"Nothing" +  response.errorBody()!!.string(),Toast.LENGTH_LONG).show();
 
-
                     internet()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-
-
                 }
             }
 
@@ -418,20 +415,15 @@ class randomClients : Fragment(),
     private fun parseLoginData2(jsonresponse: String) {
         try {
             val jsonObject = JSONObject(jsonresponse)
-
             if (jsonObject.getString("status") == "true") {
                 dialogue();
                 promptPopUpView?.changeStatus(2, "SUCCESSFUL")
                 waitingDialog?.dismiss()
-
             } else {
-
                 dialogue_error();
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 //Log.d("BAYO", response.code().toString())
-
                 waitingDialog?.dismiss()
-
             }
         } catch (e: JSONException) {
             e.printStackTrace()

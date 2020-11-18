@@ -286,6 +286,8 @@ class Station_Response : Fragment(),
                 //  activity.onHotlistSelected()
             }
         }
+        val item7 = menu.findItem(R.id.aboutus)
+        item7.isVisible = true
         val item = menu.findItem(R.id.action_share)
         // Fetch and store ShareActionProvider
 

@@ -27,6 +27,7 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
+import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
@@ -36,6 +37,9 @@ import com.alat.model.rgModel
 import com.alat.ui.AboutUs
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.AdView
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -89,14 +93,15 @@ class alerts : Fragment(),
 
     private var roleID: String? = null
     var MYCODE = 1000
-
+    var views: View? = null
+    private var mAdView: AdView? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_home, container, false)
         setHasOptionsMenu(true)
-        preferenceHelper = PreferenceModel(activity!!)
+
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
         contactList = ArrayList()
@@ -127,7 +132,27 @@ class alerts : Fragment(),
 
         roleID = pref!!.getString("role", null)
 
+   if (accounts == "0"){
+       var ADS: String? = null
+       var pref2: SharedPreferences? = null
 
+       pref2 =
+           context!!.getSharedPreferences("ADS", 0) // 0 - for private mode
+       ADS = pref2!!.getString("ads", null)
+
+       if(ADS == "0") {
+
+           MobileAds.initialize(activity, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
+           views = activity!!.window!!.decorView.rootView;
+           Admob.createLoadBanner(activity!!.applicationContext, views);
+           Admob.createLoadInterstitial(activity!!.applicationContext, null);
+           mAdView = view.findViewById<View>(R.id.adView) as AdView?
+           val adRequest: AdRequest = AdRequest.Builder().build()
+           mAdView!!.loadAd(adRequest)
+
+       }
+
+   }
         global =
             view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
 
@@ -354,6 +379,8 @@ class alerts : Fragment(),
         val item6 = menu.findItem(R.id.action_invite)
         item6.isVisible = false
 
+        val item7 = menu.findItem(R.id.aboutus)
+        item7.isVisible = true
         val mShareActionProvider: ShareActionProvider? =
             MenuItemCompat.getActionProvider(item) as ShareActionProvider?
         mShareActionProvider?.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME)

@@ -289,7 +289,8 @@ class Client_Response : Fragment(),
         }
         val item = menu.findItem(R.id.action_share)
         // Fetch and store ShareActionProvider
-
+        val item7 = menu.findItem(R.id.aboutus)
+        item7.isVisible = true
         val item6 = menu.findItem(R.id.action_invite)
         item6.isVisible = false
 

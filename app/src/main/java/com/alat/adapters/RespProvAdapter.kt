@@ -73,10 +73,10 @@ class RespProvAdapter(
 
 
         holder.response_id.text = contact.userid+"(id)"
-        holder.name.text = contact.firstname +"\t"+ contact.lastname
+        holder.name.text ="NAME: " +contact.firstname +"\t"+ contact.lastname
         holder.nature_response.text = contact.nature_response
-        holder.county.text = contact.county
-        holder.town.text = contact.town
+        holder.county.text = "COUNTY: " +contact.county
+        holder.town.text = "TOWN: " +contact.town
 
     }
 

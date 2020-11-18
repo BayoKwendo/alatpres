@@ -35,7 +35,7 @@ import cafe.adriel.androidaudiorecorder.model.AudioSource
 import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
-import com.alat.helpers.FilePath
+import com.alat.helpers.FileUtils
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.AddAlert
@@ -44,6 +44,7 @@ import com.alat.interfaces.MultiInterface
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputLayout
 import com.karumi.dexter.Dexter
@@ -108,6 +109,7 @@ class CreateGlobalAlert : AppCompatActivity() {
 
     var spinner_2: MaterialSpinner? = null
     var selectedItem: String? = null
+    var SEARCHPLACE = 5
 
     var selectedItem2: String? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -259,6 +261,13 @@ class CreateGlobalAlert : AppCompatActivity() {
                 }
             }
         }
+        loc!!.setOnClickListener {
+            searchPlace()
+        }
+//        loc!!.requestFocus()
+        textInputLocation!!.setOnClickListener {
+            searchPlace()
+        }
         getStudent()
     }
 
@@ -363,7 +372,7 @@ class CreateGlobalAlert : AppCompatActivity() {
             AutocompleteActivityMode.OVERLAY, fields
         ).setCountry("KE") //KENYA
             .build(this)
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        startActivityForResult(intent, SEARCHPLACE)
     }
 
 
@@ -823,6 +832,38 @@ class CreateGlobalAlert : AppCompatActivity() {
         I: Intent?
     ) {
         super.onActivityResult(RC, RQC, I)
+        if (RC == SEARCHPLACE) {
+            if (RQC == RESULT_OK)
+            {
+                val place = Autocomplete.getPlaceFromIntent(I!!)
+                if(place != null ) {
+                    loc!!.setText(place.getName())
+//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress())
+//                    Toast.makeText(
+//                        this@CreateAlert,
+//                        "ID: " + place.getId() + "address:" + place.getAddress() + "Name:" + place.getName() + " latlong: " + place.getLatLng(),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    val address = place.getAddress()
+                }
+                else{
+                    Log.d("TEST" , "place is null")
+                }
+                // do query with address
+            }
+            else if (RQC == AutocompleteActivity.RESULT_ERROR)
+            {
+                // TODO: Handle the error.
+                val status = Autocomplete.getStatusFromIntent(I!!)
+                Toast.makeText(this@CreateGlobalAlert, "Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show()
+//                Log.i(TAG, status.getStatusMessage())
+            }
+            else if (RQC == RESULT_CANCELED)
+            {
+                // The user canceled the operation.
+            }
+        }
+
         if (RC == GALLERY) {
             if (RQC == RESULT_OK) {
                 val contentURI = I!!.data
@@ -868,10 +909,14 @@ class CreateGlobalAlert : AppCompatActivity() {
         if (RC == DOCUMENTS) {
             if (RQC == RESULT_OK) {
                 mattach!!.text = "Document is attached successfully!! You now can submit your alert"
+
+//                mattach!!.text = "Document is attached successfully!! You now can submit your alert"
                 val uri: Uri = I!!.getData()!!
-                val filePathFromUri = FilePath.getPath(this, uri)
+                val filePathFromUri = FileUtils.getRealPath(this, uri)
                 val file = File(filePathFromUri)
                 path = file.absolutePath
+
+//                path = pickiT!!.getPath(I!!.data, Build.VERSION.SDK_INT).toString();
 //                Toast.makeText(
 //                    this, path,
 //                    Toast.LENGTH_SHORT
@@ -884,7 +929,9 @@ class CreateGlobalAlert : AppCompatActivity() {
                 ).show()
             }
         }
+
     }
+
     fun subm(){
 
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }

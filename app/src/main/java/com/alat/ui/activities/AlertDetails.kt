@@ -155,6 +155,10 @@ class AlertDetails : AppCompatActivity() {
         mfullname = findViewById(R.id.name)
         mname = findViewById(R.id.fname)
 
+
+//        Toast.makeText(this@AlertDetails, "Success"  + , Toast.LENGTH_LONG).show()
+
+
         saveImage = findViewById(R.id.save)
 
         location = findViewById(R.id.textView15)
@@ -558,13 +562,6 @@ class AlertDetails : AppCompatActivity() {
                 share_count = jsonObject.getString("share_counts")
                 mshare!!.setText("SHARE (" + share_count +" )")
 
-                Vmfullname = jsonObject.getString("fullname")
-                mfullname!!.setText(Vmfullname)
-
-                Vmname = jsonObject.getString("fullname")
-                mname!!.setText(Vmname)
-
-
                 neutral_count = jsonObject.getString("neutralized_counts")
                 nutralize!!.setText("NEUTRALIZED (" + neutral_count +" )")
 
@@ -679,6 +676,8 @@ class AlertDetails : AppCompatActivity() {
 
         params["alert_id"] = mid!!
         params["rg"] = rg!!
+        params["fullname"] = fname!!
+        params["userid"] = user!!
 
         val api: AlertSafwe = retrofit.create(AlertSafwe::class.java)
         val call: Call<ResponseBody> = api.Mark(params)

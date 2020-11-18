@@ -1,13 +1,11 @@
 package com.alat.ui.activities
 
 import adil.dev.lib.materialnumberpicker.dialog.LevelDialog
-import android.Manifest
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.media.MediaScannerConnection
@@ -42,13 +40,10 @@ import com.alat.interfaces.*
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputLayout
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import com.hbisoft.pickit.PickiT
 import com.rengwuxian.materialedittext.MaterialEditText
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
@@ -113,6 +108,7 @@ class CreateAlert : AppCompatActivity() {
 
     var spinner_2: MaterialSpinner? = null
     var selectedItem: String? = null
+    var pickiT: PickiT? = null
 
     var selectedItem2: String? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -138,19 +134,13 @@ class CreateAlert : AppCompatActivity() {
     var ImageName = "image_name"
 
     var ImagePath = "image_path"
-
     var ServerUploadPath = "https://youthsofhope.co.ke/api/upLoad.php"
-
-
-    var AUTOCOMPLETE_REQUEST_CODE = 1
+    var SEARCHPLACE = 5
 //    private var mProgressfetch: ProgressDialog? = null
 //    var PICK_FILE_REQUEST = 100;
-
     private var textInputLocation: TextInputLayout? = null
-
     private var textInputAlert: TextInputLayout? = null
     private var alert: EditText? = null
-
     var rg: String? = null
     private var destinationAddress: String? = null
     private var mfile: ImageView? = null
@@ -158,35 +148,21 @@ class CreateAlert : AppCompatActivity() {
     private var level: EditText? = null
     private var loc: EditText? = null
     private var notes: EditText? = null
-
     var btnLogin: Button? = null
     private var setLevel: String? = null
-
-
     private var selecteditem3: String? = null
     private var mattach: TextView? = null
-
     private var alert_namess: String? = null
-
     private var setLoc: String? = null
-
     private var fullname: String? = null
     private var mssidn: String? = null
     private var userid: String? = null
     var updateFNamee: MaterialEditText? = null
-
     var waitingDialog: android.app.AlertDialog? = null
-
     private var addnotes: String? = null
-
-
     var alertsss: android.app.AlertDialog? = null
-
-
     var pref: SharedPreferences? = null
-    private var GALLERY = 1
-
-
+    private var GALLERY2 = 1
     private var DOCUMENTS = 1
     val catList: ArrayList<String> = ArrayList()
     var fname: String? = null
@@ -210,6 +186,8 @@ class CreateAlert : AppCompatActivity() {
         if (!Places.isInitialized()) {
             Places.initialize(this, application.getString(R.string.google_maps_key))
         }
+
+
         pref =
             getSharedPreferences("MyPref", 0) // 0 - for private mode
         account = pref!!.getString("account_status", null)
@@ -239,13 +217,13 @@ class CreateAlert : AppCompatActivity() {
         imageView!!.visibility = View.GONE
         loc = findViewById(R.id.loc)
 
-//        loc!!.setOnClickListener {
-//            searchPlace()
-//        }
+        loc!!.setOnClickListener {
+            searchPlace()
+        }
 //        loc!!.requestFocus()
-//        textInputLocation!!.setOnClickListener {
-//            searchPlace()
-//        }
+        textInputLocation!!.setOnClickListener {
+            searchPlace()
+        }
 
         textInputlevel = findViewById(R.id.level_layout)
         level = findViewById(R.id.level)
@@ -451,7 +429,7 @@ class CreateAlert : AppCompatActivity() {
                 R.color.colorPrimary ) {   val galleryIntent = Intent(
                     Intent.ACTION_PICK,
                     MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                   startActivityForResult(galleryIntent, GALLERY)
+                   startActivityForResult(galleryIntent, GALLERY2)
                 pDialog.dismiss()
             }
             .addButton(
@@ -533,11 +511,11 @@ class CreateAlert : AppCompatActivity() {
             Place.Field.LAT_LNG
         )
         // Start the autocomplete intent.
-        val intent = Autocomplete.IntentBuilder(
+        val intent2 = Autocomplete.IntentBuilder(
             AutocompleteActivityMode.OVERLAY, fields
         ).setCountry("KE") //KENYA
             .build(this)
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+        startActivityForResult(intent2, SEARCHPLACE)
     }
 
 
@@ -768,14 +746,11 @@ class CreateAlert : AppCompatActivity() {
 
 
         if (Utils.checkIfEmptyString(alert_namess)) {
-
             textInputAlert!!.error = "Setting an alert name is compulsory"
             textInputAlert!!.requestFocus()
             showKeyBoard()
-
             //showKeyBoard()
             return false
-
         } else textInputAlert!!.error = null
         if (Utils.checkIfEmptyString(setLevel)) {
 
@@ -815,6 +790,8 @@ class CreateAlert : AppCompatActivity() {
             if (jsonObject.getString("status") == "true") {
 
                 if (response_provider == null) {
+
+
                     // ImageUploadToServerFunction()
                     mProgress?.dismiss()
                     //waitingDialog!!.dismiss()
@@ -945,7 +922,39 @@ class CreateAlert : AppCompatActivity() {
         I: Intent?
     ) {
         super.onActivityResult(RC, RQC, I)
-        if (RC == GALLERY) {
+        if (RC == SEARCHPLACE) {
+            if (RQC == RESULT_OK)
+            {
+                val place = Autocomplete.getPlaceFromIntent(I!!)
+                if(place != null ) {
+                    loc!!.setText(place.getName())
+//                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress())
+//                    Toast.makeText(
+//                        this@CreateAlert,
+//                        "ID: " + place.getId() + "address:" + place.getAddress() + "Name:" + place.getName() + " latlong: " + place.getLatLng(),
+//                        Toast.LENGTH_LONG
+//                    ).show()
+//                    val address = place.getAddress()
+                }
+                else{
+                    Log.d("TEST" , "place is null")
+                }
+                // do query with address
+            }
+            else if (RQC == AutocompleteActivity.RESULT_ERROR)
+            {
+                // TODO: Handle the error.
+                val status = Autocomplete.getStatusFromIntent(I!!)
+                Toast.makeText(this@CreateAlert, "Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show()
+//                Log.i(TAG, status.getStatusMessage())
+            }
+            else if (RQC == RESULT_CANCELED)
+            {
+                // The user canceled the operation.
+            }
+        }
+
+        if (RC == GALLERY2) {
             if (RQC == RESULT_OK) {
                 val contentURI = I!!.data
                 try {
@@ -990,10 +999,14 @@ class CreateAlert : AppCompatActivity() {
         if (RC == DOCUMENTS) {
             if (RQC == RESULT_OK) {
                 mattach!!.text = "Document is attached successfully!! You now can submit your alert"
+
+//                mattach!!.text = "Document is attached successfully!! You now can submit your alert"
                 val uri: Uri = I!!.getData()!!
-                val filePathFromUri = FilePath.getPath(this, uri)
+                val filePathFromUri = FileUtils.getRealPath(this, uri)
                 val file = File(filePathFromUri)
                 path = file.absolutePath
+
+//                path = pickiT!!.getPath(I!!.data, Build.VERSION.SDK_INT).toString();
 //                Toast.makeText(
 //                    this, path,
 //                    Toast.LENGTH_SHORT
@@ -1006,7 +1019,12 @@ class CreateAlert : AppCompatActivity() {
                 ).show()
             }
         }
+
     }
+
+
+
+
 
     fun subm(){
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
@@ -1176,7 +1194,8 @@ class CreateAlert : AppCompatActivity() {
                     return chain.proceed(request)
                 }
             }).build()
-        val retrofit: Retrofit = Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()
@@ -1351,7 +1370,7 @@ class CreateAlert : AppCompatActivity() {
             } else {
 
                 dialogue_error();
-                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                promptPopUpView?.changeStatus(1, "Something went wrongssssssssss. Try again")
                 //Log.d("BAYO", response.code().toString())
                 btnLogin!!.text = "Submit"
                 level  !!.setText("")
@@ -1432,7 +1451,7 @@ class CreateAlert : AppCompatActivity() {
                 } else {
                     mProgress?.dismiss()
                     dialogue_error();
-                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    promptPopUpView?.changeStatus(1, "Something went wrondddddddddddg. Try again")
                     Log.d("BAYO", response.code().toString())
                     btnLogin!!.text = "Submit"
                     mProgress?.dismiss()

@@ -10,8 +10,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:weightSum="3"
+        android:paddingStart="@dimen/_10sdp"
         android:layout_marginBottom="@dimen/_10sdp"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
         <TextView
             android:layout_width="wrap_content"
@@ -28,17 +29,13 @@
             android:layout_marginTop="10dp"
             />
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@android:color/black"
             android:textSize="15sp"
             android:id="@+id/fullname"
-            android:paddingStart="@dimen/_10sdp"
             android:textStyle="bold"
-            android:gravity="center"
-
             tools:text="Brian Kwendo"
-            android:layout_weight="1"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="10dp"
             />
@@ -50,34 +47,19 @@
             android:textSize="15sp"
             android:id="@+id/nature_response"
             android:textStyle="bold"
-            android:gravity="center"
 
             tools:text="Security"
-            android:layout_weight="1"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="10dp"
             />
 
 
 
-    </LinearLayout>
-
-
-    <LinearLayout
-        android:id="@+id/tv_topic_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/linear"
-        android:layout_marginBottom="@dimen/_5ssp"
-        android:weightSum="2"
-        android:orientation="horizontal">
-
         <TextView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:textColor="@android:color/black"
             android:textSize="15sp"
-            android:layout_weight="1"
             android:textStyle="bold"
             android:gravity="center"
             tools:text="County"

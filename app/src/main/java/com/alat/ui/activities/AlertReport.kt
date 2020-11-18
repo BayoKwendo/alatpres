@@ -51,6 +51,7 @@ import java.util.concurrent.TimeUnit
 
 class AlertReport : AppCompatActivity() {
 
+
     var mid: String? = null
     var mToolbar: Toolbar? = null
 
@@ -475,29 +476,44 @@ class AlertReport : AppCompatActivity() {
                 val jsonObject: JSONObject = array.getJSONObject(i)
 
 
-                ignore_count = jsonObject.getString("ignore_counts")
-                ignore!!.setText("IGNORE (" + ignore_count +" )")
+//                Toast.makeText(this@AlertReport, array.getJSONObject(i) , Toast.LENGTH_LONG).show()
 
+                ignore_count = jsonObject.getString("ignore_counts")
+                if (jsonObject.getString("ignore_counts") > "0") {
+                    ignore!!.setText("IGNORE (" + ignore_count + " )\n" + jsonObject.getString("fullname"))
+                }
 
                 shout_count = jsonObject.getString("shout_counts")
-                shout!!.setText("SHOUT (" + shout_count +" )")
-
+                if (jsonObject.getString("shout_counts") > "0") {
+                    shout!!.setText("SHOUT (" + shout_count + " )\n" + jsonObject.getString("fullname"))
+                }
 
                 safe_count = jsonObject.getString("safe_counts")
-                safe!!.setText("SAFE (" + safe_count +" )")
+
+                if (jsonObject.getString("safe_counts") > "0") {
+                    safe!!.setText("SAFE (" + safe_count + ")\n" + jsonObject.getString("fullname"))
+                }
 
 
                 elevate_count = jsonObject.getString("elevate_counts")
-                elevates!!.setText("ELEVATE (" + elevate_count +" )")
-
+                if (jsonObject.getString("elevate_counts") > "0") {
+                    elevates!!.setText("ELEVATE (" + elevate_count + " )\n" + jsonObject.getString("fullname"))
+                }
 
                 share_count = jsonObject.getString("share_counts")
-                mshare!!.setText("SHARE (" + share_count +" )")
+                if (jsonObject.getString("share_counts") > "0") {
 
+                    mshare!!.setText("SHARE (" + share_count + " )\n" + jsonObject.getString("fullname"))
+                }
 
                 neutral_count = jsonObject.getString("neutralized_counts")
-                nutralize!!.setText("NEUTRALIZED (" + neutral_count +" )")
-
+                if (jsonObject.getString("neutralized_counts") > "0") {
+                    nutralize!!.setText(
+                        "NEUTRALIZED (" + neutral_count + " )\n" + jsonObject.getString(
+                            "fullname"
+                        )
+                    )
+                }
             }
 
         } catch (e: JSONException) {
