@@ -141,15 +141,20 @@
 
                     <TextView
                         android:id="@+id/textView9"
-                        android:layout_width="wrap_content"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="AndroUI"
+                        android:layout_marginStart="30dp"
+                        android:layout_marginLeft="30dp"
+                        android:singleLine="false"
+                        android:text="AndroUI fffjf fjfjfj jfjfj fhhffhfh fjjfj "
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/textView8"
-                        app:layout_constraintStart_toEndOf="@+id/textView8" />
+                        android:maxLines="1000"
+                        app:layout_constraintStart_toStartOf="@+id/guideline"
+                        android:scrollHorizontally="false"
+                        android:ellipsize="none"
+                        app:layout_constraintTop_toBottomOf="@+id/textView8"
+                        />
 
                     <TextView
                         android:id="@+id/textView20"
@@ -162,7 +167,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/textView8" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView9" />
 
                     <TextView
                         android:id="@+id/textView21"

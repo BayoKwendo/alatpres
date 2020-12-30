@@ -72,9 +72,8 @@ class GenerateReport : Fragment() ,
 
     private var mProgress: ProgressDialog? = null
     var pref: SharedPreferences? = null
-
     private var account: String? = null
-
+    var mstatus: String? = null
     private var userid: String? = null
     private var promptPopUpView: PromptPopUpView? = null
     var MYCODE = 1000
@@ -127,13 +126,14 @@ class GenerateReport : Fragment() ,
         account = pref!!.getString("account_status", null)
         userid = pref!!.getString("userid", null)
 
+        mstatus = pref!!.getString("mstatus", null)
 
         if (account == "0"){
             dialogue_error()
             promptPopUpView?.changeStatus(1, "You not allow to generate reports! \n kindly upgrade to Pro Account")
 
 
-        }else if (account =="1") {
+        }else if (account =="1" || mstatus == "0") {
             getStudent()
         }
 

@@ -1,9 +1,12 @@
 package com.alat.ui.activities
 
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -13,12 +16,13 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
-import com.alat.ui.activities.mpesa.Ban_Transfer
+import com.alat.interfaces.paypal
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
 import libs.mjn.prettydialog.PrettyDialog
@@ -52,6 +56,7 @@ class account_enterprise : AppCompatActivity() {
     private var tv_hour: android.widget.TextView? = null
     var firstname: kotlin.String? = null
     private var roleID: String? = null
+    var check_first: kotlin.String? = null
 
     var email: kotlin.String? = null
     var sname: kotlin.String? = null
@@ -63,6 +68,7 @@ class account_enterprise : AppCompatActivity() {
     var county: kotlin.String? = null
     var clients: kotlin.String? = null
     var responseprovider: kotlin.String? = null
+    var Calling_URL: String? = null
 
     var spinner_3: MaterialSpinner? = null
     var tv_minute: android.widget.TextView? = null
@@ -79,7 +85,8 @@ class account_enterprise : AppCompatActivity() {
     var pref: SharedPreferences? = null
     private var account: String? = null
     private var userid: String? = null
-
+    var TAB_REQUEST_CODE = 465
+  var mstatus: String? = null
     var account_type:TextView? = null
 
     var Mmeesage:TextView? = null
@@ -100,7 +107,9 @@ class account_enterprise : AppCompatActivity() {
         btnBack = findViewById<View>(R.id.btn_disable) as Button
         btnBack!!.setText("Disable Ads")
         Mmeesage = findViewById<View>(R.id.accounts) as TextView
-
+        mProgress = ProgressDialog(this);
+        mProgress!!.setMessage("Redirecting..");
+        mProgress!!.setCancelable(false);
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
         userid = pref!!.getString("userid", null)
@@ -115,6 +124,9 @@ class account_enterprise : AppCompatActivity() {
         mssdn = pref!!.getString("mssdn", null)
         idNo = pref!!.getString("idNo", null)
         county = pref!!.getString("county", null)
+        mstatus = pref!!.getString("mstatus", null)
+        check_first = pref!!.getString("first_check", null)
+
         clients = pref!!.getString("clients", null)
 //        Toast.makeText(
 //            this,
@@ -122,9 +134,9 @@ class account_enterprise : AppCompatActivity() {
 //            Toast.LENGTH_SHORT
 //        ).show()
         if (responseprovider == "YES") {
-            val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 9000", "Yearly Ksh. 29800")
+            val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 12500", "Yearly Ksh. 29500")
 
-            account_type!!.setText("You're currently subscribe to Enterprise PREMIUM Account:  \n\n Expire in : ")
+            account_type!!.setText("You're currently subscribed to Enterprise PREMIUM Account:  \n\n Expire in... ")
             TITLE!!.setText("ALATPRES ENTERPRISE PREMIUM ACCOUNT")
             Mmeesage!!.setText("Kindly Renew / Subscribe to your plan of Choice to enjoy all your Premium Account features")
 
@@ -145,27 +157,26 @@ class account_enterprise : AppCompatActivity() {
                     } else {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if(selectedItem3 == "Monthly ksh. 3800"){
+                        if (selectedItem3 == "Monthly ksh. 3800") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
                             price = "3800"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }else if(selectedItem3 == "Quarterly Ksh. 9000"){
+                        } else if (selectedItem3 == "Quarterly Ksh. 12500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 120)
                             date = dateFormat.format(c.time)
-                            price = "9000"
+                            price = "12500"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }
-                        else if(selectedItem3 == "Yearly Ksh. 29800"){
+                        } else if (selectedItem3 == "Yearly Ksh. 29500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 355)
                             date = dateFormat.format(c.time)
-                            price = "29800"
+                            price = "29500"
                         }
 
                     }
@@ -176,9 +187,9 @@ class account_enterprise : AppCompatActivity() {
                 }
             }
         } else {
-            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 6200", "Yearly Ksh. 22800")
+            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 3500", "Yearly Ksh. 7500")
 
-            account_type!!.setText("You're currently subscribe to Enterprise PRO Account:  \n\n Expire in : ")
+            account_type!!.setText("You're currently subscribed to Enterprise PRO Account:  \n\n Expire in... ")
             TITLE!!.setText("ALATPRES ENTERPRISE PRO ACCOUNT")
             Mmeesage!!.setText("Kindly Renew/Subscribe to your plan of Choice to enjoy all your PRO Account features")
 
@@ -199,28 +210,27 @@ class account_enterprise : AppCompatActivity() {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
                         selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if(selectedItem3 == "Monthly ksh. 2600"){
+                        if (selectedItem3 == "Monthly ksh. 2600") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
                             price = "2600"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }else if(selectedItem3 == "Quarterly Ksh. 6200"){
+                        } else if (selectedItem3 == "Quarterly Ksh. 3500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 120)
                             date = dateFormat.format(c.time)
 
-                            price = "6200"
+                            price = "3500"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        }
-                        else if(selectedItem3 == "Yearly Ksh. 22800"){
+                        } else if (selectedItem3 == "Yearly Ksh. 7500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 355)
                             date = dateFormat.format(c.time)
-                            price = "22800"
+                            price = "7500"
                         }
                     }
                 }
@@ -230,6 +240,9 @@ class account_enterprise : AppCompatActivity() {
                 }
             }
         }
+
+
+
         linear_layout_1 = findViewById(R.id.linear_layout_1);
         linear_layout_2 = findViewById(R.id.linear_layout_2);
         tv_days = findViewById(R.id.tv_days);
@@ -238,16 +251,30 @@ class account_enterprise : AppCompatActivity() {
         tv_second = findViewById(R.id.tv_second);
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
 
+
+
+
         when (account) {
             "1" -> {
-                linear_layout_1!!.setVisibility(View.GONE)
-                linear_layout_2!!.setVisibility(View.VISIBLE)
-                getStudent()
+                if(mstatus == "0"){
+                    account_type!!.setText("You're currently using trial Account:  \n\n Expire in... ")
+                    TITLE!!.setText("ALATPRES ENTERPRISE TRIAL ACCOUNT")
+                    linear_layout_1!!.setVisibility(View.GONE)
+                    linear_layout_2!!.setVisibility(View.VISIBLE)
+                    getStudent()
+                }else {
+                    linear_layout_1!!.setVisibility(View.GONE)
+                    linear_layout_2!!.setVisibility(View.VISIBLE)
+                    getStudent()
+                }
+
             }
             "0"-> {
                 linear_layout_1!!.setVisibility(View.VISIBLE)
                 linear_layout_2!!.setVisibility(View.GONE)
             }
+
+
 
 
             //  Toast.makeText(getApplicationContext(), date, Toast.LENGTH_SHORT).show();
@@ -262,7 +289,7 @@ class account_enterprise : AppCompatActivity() {
         })
 
         btnBack!!.setOnClickListener {
-            if (account == "1") {
+            if (account == "1" || mstatus == "0") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
 
@@ -303,9 +330,100 @@ class account_enterprise : AppCompatActivity() {
             .show()
     }
 
+    fun paypal_demo(price: String) {
+
+        try {
+            mProgress!!.show()
+
+            val price2: Int? = price.toInt()
+
+            val price4: Double? = price2!! * 0.0092
+
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                .addNetworkInterceptor(object : Interceptor {
+                    @Throws(IOException::class)
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val request: Request =
+                            chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                                .build()
+                        return chain.proceed(request)
+                    }
+                }).build()
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(Constants.PAYPAL)
+                .client(client) // This line is important
+                .addConverterFactory(GsonConverterFactory.create())
+
+                .build()
+            val params: HashMap<String, String> = HashMap()
+
+            params["price"] = price4.toString()
+            val api: paypal = retrofit.create(paypal::class.java)
+            val call: Call<ResponseBody>? = api.paypal(params)
+
+            call?.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    //Toast.makeText()
+                    if (response.isSuccessful) {
+                        val remoteResponse = response.body()!!.string()
+                        try {
+                            mProgress!!.dismiss()
+
+                            Log.i("response", remoteResponse)
+
+                            val o = JSONObject(remoteResponse)
+                            val links: JSONArray = o.getJSONArray("links")
+
+                            for (i in 0 until links.length()) {
+                                val elements = links.getJSONObject(i)
+                                val keys: Iterator<*> = elements.keys()
+                                while (keys.hasNext()) {
+                                    val key = keys.next() as String
+                                    if (elements[key].toString() == "REDIRECT") {
+                                        Calling_URL = elements["href"].toString()
+                                    }
+                                }
+                            }
+                            open_cct()
+                        } catch (e: JSONException) {
+                            mProgress!!.dismiss()
+                            e.printStackTrace()
+                        }
+                    } else {
+                        mProgress!!.dismiss()
+                        Log.d("bayo", response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                    //   btn.text = "Proceed"
+                    mProgress!!.dismiss()
+                    Log.i("onEmptyResponse", "" + t) //
+                }
+            })
+        } catch (a: ActivityNotFoundException) {
+            Toast.makeText(
+                getApplicationContext(),
+                "Chrome Browser Not Installed",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+    }
+
+
     private fun getStudent() {
 
-        // Toast.makeText(this@GroupsRequests, userid  , Toast.LENGTH_LONG).show()
+         Toast.makeText(this@account_enterprise, userid  , Toast.LENGTH_LONG).show()
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -343,12 +461,14 @@ class account_enterprise : AppCompatActivity() {
                 if (response.isSuccessful) {
                     if (response.body() != null) {
                         try {
-                            Log.d("SUCCESS", response.body().toString())
+                            Log.d("ALATPRES", response.body().toString())
                             val o = JSONObject(response.body()!!.string())
                             val array: JSONArray = o.getJSONArray("records")
                             for (i in 0 until array.length()) {
-                                    val dataobj: JSONObject = array.getJSONObject(i)
+
+                                val dataobj: JSONObject = array.getJSONObject(i)
                                 date2 = dataobj.getString("subscription_date")
+//                                Toast.makeText(this@account_enterprise, dataobj.getString("subscription_date")  , Toast.LENGTH_LONG).show()
                                 val sdf =
                                     SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                                 val strDate = sdf.parse(dataobj.getString("subscription_date"))
@@ -369,21 +489,17 @@ class account_enterprise : AppCompatActivity() {
                                     editor.putString("county", county)
                                     editor.putString("userid", userid)
                                     editor.putString("account_status", "0")
+                                    editor.putString("mstatus", "1")
                                     editor.putString("clients", clients)
                                     editor.putString("response_provider", responseprovider)
                                     editor.clear()
                                     editor.apply()
-
                                     recreate()
-
                                 } else {
                                     //Toast.makeText(this@account, "you"  , Toast.LENGTH_LONG).show()
                                     countDownStart()
                                 }
-
                             }
-
-
                                 //Log.d("onSuccess1", firstSport.toString())
 
                         } catch (e: JSONException) {
@@ -493,7 +609,9 @@ class account_enterprise : AppCompatActivity() {
                 if (selectedItem3 == null) {
                     Toast.makeText(this@account_enterprise, "Please select a subscription package", Toast.LENGTH_LONG).show();
                 } else {
-                    if (date2 === null) {
+//                    Toast.makeText(this@account_enterprise, date2, Toast.LENGTH_LONG).show();
+
+                    if (check_first === "0" ) {
                         CheckFirst()
                     } else {
                         val i =
@@ -503,19 +621,18 @@ class account_enterprise : AppCompatActivity() {
                         startActivity(i)
                     }
                 }
-            }
+              }
             .addButton(
                 "PayPal",
                 R.color.pdlg_color_white,
                 R.color.colorAccent) {
                 pDialog.dismiss()
-//                startActivity(Intent(this, Ban_Transfer::class.java))
-
-//                if (selectedItem3 == null) {
-//
-//                }else {
-//                    Toast.makeText(this@account_enterprise, "Coming Soon", Toast.LENGTH_LONG).show();
-//                }
+                if (check_first === "0") {
+                    CheckFirst23()
+                } else {
+                    Toast.makeText(this@account_enterprise, price, Toast.LENGTH_LONG).show();
+                    paypal_demo(price!!)
+                }
             }
             .show()
     }
@@ -534,7 +651,7 @@ class account_enterprise : AppCompatActivity() {
 
             .setMessageColor(R.color.pdlg_color_gray)
             .addButton(
-                "Mpesa Payment",
+                "Continue",
                 R.color.pdlg_color_white,
                 R.color.colorAccent
             ) { pDialog.dismiss()
@@ -547,11 +664,35 @@ class account_enterprise : AppCompatActivity() {
                     startActivity(i)
                 }
             }
+
+            .show()
+    }
+
+
+    fun CheckFirst23() {
+        val pDialog = PrettyDialog(this)
+        pDialog
+            .setIconTint(R.color.colorPrimary)
+            .setTitle("ONBOARDING FEE")
+            .setTitleColor(R.color.pdlg_color_blue)
+            .setMessage(
+                "ONBOARDING FEE " + 3500 + "\n\n  SUBSCRIPTION FEE " + Integer.parseInt(price!!) +
+                        "\n\n TOTAL  " + (Integer.parseInt(price!!) + 3500) +
+
+                        "\n\nContinue with the payment"
+            )
+
+            .setMessageColor(R.color.pdlg_color_gray)
+
             .addButton(
-                "PayPal",
+                "Continue",
                 R.color.pdlg_color_white,
-                R.color.colorAccent) {
+                R.color.colorAccent
+            ) {
                 pDialog.dismiss()
+
+                paypal_demo((Integer.parseInt(price!!) + 3500).toString()) // Paypal Demo
+
 //                startActivity(Intent(this, Ban_Transfer::class.java))
 
 //                if (selectedItem3 == null) {
@@ -574,13 +715,37 @@ class account_enterprise : AppCompatActivity() {
         //Force the default buttons to center
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
-            LinearLayout.LayoutParams.WRAP_CONTENT)
+            LinearLayout.LayoutParams.WRAP_CONTENT
+        )
         layoutParams.weight = 1f
         layoutParams.gravity = Gravity.CENTER
         positive.layoutParams = layoutParams
         negative.layoutParams = layoutParams
     }
 
+
+    fun isPackageInstalled(packageName: String?): Boolean {
+        return try {
+            applicationContext.packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    fun open_cct() {
+        val packageName = "com.android.chrome"
+        val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder().build()
+
+        // check if chrome is installed if installed always open in chrome so we can have OneTouch Feature !
+        if (isPackageInstalled(packageName)) {
+            customTabsIntent.intent.setPackage(packageName)
+        }
+        customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        customTabsIntent.intent.setData(Uri.parse(Calling_URL))
+        startActivityForResult(customTabsIntent.intent, TAB_REQUEST_CODE)
+    }
 
 
 }

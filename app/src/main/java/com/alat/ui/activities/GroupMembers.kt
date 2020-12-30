@@ -94,6 +94,7 @@ class GroupMembers : AppCompatActivity(), MembersAdapter.ContactsAdapterListener
     private var usersid: String? = null
     private var muserid: String? = null
 
+    private var mstatus_user: String? = null
 
     private var mstatus: String? = null
     private var mrg_id: String? = null
@@ -112,6 +113,7 @@ class GroupMembers : AppCompatActivity(), MembersAdapter.ContactsAdapterListener
             this!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
         muserid = pref!!.getString("userid", null)
         account = pref!!.getString("account_status", null)
+        mstatus_user = pref!!.getString("mstatus", null)
 
 
         rg = intent.getStringExtra("groupID")
@@ -995,7 +997,7 @@ class GroupMembers : AppCompatActivity(), MembersAdapter.ContactsAdapterListener
                     dialogue_error()
                     promptPopUpView?.changeStatus(1, "Upgrade to Pro to add more members")
                     waitingDialog!!.dismiss()
-                } else if (account == "1") {
+                } else if (account == "1"|| mstatus_user == "0") {
                     inviteMember()
                 }
             } else if (jsonObject.getString("status") == "false")  {
