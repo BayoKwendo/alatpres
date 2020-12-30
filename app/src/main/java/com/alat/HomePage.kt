@@ -92,7 +92,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private var mAdView: AdView? = null
     private var roleID: String? = null
     private var ADS: String? = null
-
+    var mstatus: String? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawer_home)
@@ -116,12 +116,20 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         idNo = pref!!.getString("idNo", null)
         county = pref!!.getString("county", null)
         clients = pref!!.getString("clients", null)
+        mstatus = pref!!.getString("mstatus", null)
+
+        Toast.makeText(
+            this,
+            mstatus ,
+            Toast.LENGTH_LONG
+        ).show()
 
 
 //        if (roleID == "2") {
-            if (account == "1") {
+            if (account == "1" || mstatus == "0") {
                 getExpiry()
             }
+
 
 
         if(account == "0"){
@@ -230,9 +238,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             if (account == "0") {
                 navigationView!!.menu.performIdentifierAction(R.id.alert_entr, 0);
 
-            }else if (account == "1") {
+            }else if (account == "1" || mstatus == "0") {
                 navigationView!!.menu.performIdentifierAction(R.id.alert_entr, 0);
             }
+
             navigationView!!.menu.getItem(0).isChecked = true;
             alert.isVisible = false
             create_resp.isVisible = false
@@ -489,10 +498,14 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             }
 
             R.id.faqs -> {
-                fragment = FAQ()
-                toolbar!!.title = "FAQs";
+                if (roleID == "1") {
+                    fragment = basicFAQ()
+                    toolbar!!.title = "FAQs";
+                } else {
+                    fragment = enterpriseFAQs()
+                    toolbar!!.title = "FAQs";
+                }
             }
-
 
             R.id.support -> {
                 fragment = Support()
@@ -916,6 +929,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                     editor.putString("role", roleID)
                                     editor.putString("mssdn", mssdn)
                                     editor.putString("gender", gender)
+                                    editor.putString("mstatus", "1")
                                     editor.putString("idNo", idNo)
                                     editor.putString("county", county)
                                     editor.putString("userid", userid)

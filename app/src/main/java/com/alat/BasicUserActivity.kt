@@ -55,7 +55,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.io.InputStream
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 @Suppress("DEPRECATION")
 class BasicUserActivity : AppCompatActivity() {
@@ -460,6 +465,12 @@ class BasicUserActivity : AppCompatActivity() {
 
         registerVar()
 
+        var date: String? = null
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val c = Calendar.getInstance()
+        c.add(Calendar.DATE, 30)
+        date = dateFormat.format(c.time)
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -494,7 +505,8 @@ class BasicUserActivity : AppCompatActivity() {
         params["mssdn"] = mssidn!!
         params["country"] = countries!!
         params["county"] = county!!
-            params["userid"] = user_id!!
+        params["userid"] = user_id!!
+        params["date_now"] = date!!
         params["password"] = password!!
 
         val api: CreateUser = retrofit.create(CreateUser::class.java)
