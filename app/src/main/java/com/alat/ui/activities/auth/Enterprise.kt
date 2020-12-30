@@ -58,7 +58,12 @@ import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.io.InputStream
+import java.text.DateFormat
+import java.text.SimpleDateFormat
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class Enterprise : AppCompatActivity() {
     var btn_next: Button? = null
@@ -818,7 +823,11 @@ class Enterprise : AppCompatActivity() {
 
     private fun createUser() {
         registerVar()
-
+        var date: String? = null
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val c = Calendar.getInstance()
+        c.add(Calendar.DATE, 30)
+        date = dateFormat.format(c.time)
        // Toast.makeText(this@Enterprise, "VALUE" + selectedItem2, Toast.LENGTH_LONG).show();
 
         val interceptor = HttpLoggingInterceptor()
@@ -867,6 +876,7 @@ class Enterprise : AppCompatActivity() {
         params["nature_response"] = mySpinner!!.buildSelectedItemString()!!
         params["county"] = county!!
         params["userid"] = user_id!!
+        params["date_now"] = date!!
         params["password"] = password!!
 
 

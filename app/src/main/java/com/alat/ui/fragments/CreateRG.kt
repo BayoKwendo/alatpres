@@ -101,7 +101,7 @@ class CreateRG : Fragment() {
     private var mssidns: String? = null
     private var rg_id: String? = null
 
-
+  var mstatus: String? = null
 
     private var fullnames: String? = null
 
@@ -168,6 +168,7 @@ class CreateRG : Fragment() {
 
 
         account = pref!!.getString("account_status", null)
+        mstatus = pref!!.getString("mstatus", null)
 
         roleID = pref!!.getString("role", null)
 
@@ -604,7 +605,7 @@ class CreateRG : Fragment() {
                     btnLogin!!.text = "Submit"
 
 
-                } else if (account == "1") {
+                } else if (account == "1" || mstatus == "0") {
                     bayo()
                 }
             } else if (jsonObject.getString("status") == "false")  {

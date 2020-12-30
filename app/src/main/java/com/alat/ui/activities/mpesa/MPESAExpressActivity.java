@@ -1,8 +1,10 @@
 package com.alat.ui.activities.mpesa;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Context;
+import android.content.ContextWrapper;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -31,7 +33,6 @@ import com.alat.R;
 import com.alat.helpers.Constants;
 import com.alat.helpers.PromptPopUpView;
 import com.alat.interfaces.UpdateSubscription;
-import com.alat.ui.activities.auth.LoginActivity;
 import com.androidstudy.daraja.Daraja;
 import com.androidstudy.daraja.DarajaListener;
 import com.androidstudy.daraja.model.AccessToken;
@@ -44,7 +45,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -54,9 +54,7 @@ import java.util.regex.Pattern;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
-import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
-import okhttp3.Request;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -87,7 +85,9 @@ public class MPESAExpressActivity extends AppCompatActivity {
     String phoneNumber;
     String price;
     String time;
-    String userid, firstname, email, sname, dob, role,gender, mssdn, idNo, county, clients, account_status, responseprovider ;
+    Thread thread;
+    String userid, firstname, email, sname, dob, role,gender, mssdn, idNo, county, clients, account_status, responseprovider;
+    private volatile boolean running = true;
 
     SharedPreferences pref;
 
@@ -118,8 +118,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
 
        //Toast.makeText(this,  time, Toast.LENGTH_SHORT).show();
-
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         ButterKnife.bind(this);
 
@@ -140,12 +138,15 @@ public class MPESAExpressActivity extends AppCompatActivity {
         mProgress.setMessage("Please wait...");
         mProgress.setCancelable(true);
 
-
+        mProgressDialog = new ProgressDialog(MPESAExpressActivity.this);
+        mProgressDialog.setMessage("Checking...please wait");
+        mProgressDialog.setCancelable(false);
         btn_back.setOnClickListener(view -> {
             constraintLayout.setVisibility(View.VISIBLE);
             constraintLayout2.setVisibility(View.GONE);
 
         });
+
 
         confirmPay.setOnClickListener(view -> {
             if (!isNetworkAvailable()) {
@@ -161,8 +162,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
             if (!isNetworkAvailable()) {
                 network();
             }
-            p = phoneNumber.replaceFirst("^0+(?!$)", "");
-            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
+
         });
 
         if (!isNetworkAvailable()) {
@@ -202,36 +202,28 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
         //TODO :: THIS IS A SIMPLE WAY TO DO ALL THINGS AT ONCE!!! DON'T DO THIS :)
         sendButton.setOnClickListener(v -> {
-
             //Get Phone Number from User Input
             phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
             if (TextUtils.isEmpty(phoneNumber)) {
-
                 editTextPhoneNumber.requestFocus();
                 editTextPhoneNumber.setError("Please Provide a Your Number");
                 return;
             }
 
+            p = phoneNumber.replaceFirst("^0+(?!$)", "");
+            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
 
             mProgress.show();
-
-
             if (!isNetworkAvailable()) {
                 network();
             }
-            p = phoneNumber.replaceFirst("^0+(?!$)", "");
-            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
+
             //Toast.makeText(this,  254+p, Toast.LENGTH_SHORT).show();
         });
     }
 
     void enterTransaction() {
-        if (!isNetworkAvailable()) {
-            network();
-        }
         mProgress.show();
-
         String p = mpesa_code.getText().toString().trim();
         getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
     }
@@ -249,7 +241,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
     private void getJSO(final String urlWebService) {
 
         class GetJSON extends AsyncTask<Void, Void, String> {
-
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -258,9 +249,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
             @Override
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
-                // Toast.makeText(getApplicationContext(), s, Toast.LENGTH_SHORT).show();
-                //
-                //
                 try {
                     loadIntoListVie(s);
                 } catch (JSONException e) {
@@ -289,11 +277,10 @@ public class MPESAExpressActivity extends AppCompatActivity {
         getJSON.execute();
     }
 
+    private void getpayments(final String urlWebService) {
 
-    private void getJSON(final String urlWebService) {
-
-        @SuppressLint("StaticFieldLeak")
         class GetJSON extends AsyncTask<Void, Void, String> {
+
             @Override
             protected void onPreExecute() {
                 super.onPreExecute();
@@ -303,7 +290,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
             protected void onPostExecute(String s) {
                 super.onPostExecute(s);
                 try {
-                    loadIntoListView(s);
+                    checkpayment(s);
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
@@ -331,33 +318,123 @@ public class MPESAExpressActivity extends AppCompatActivity {
     }
 
 
+    private void checkpayment(String json) throws JSONException {
+        try {
+            JSONObject jsonObject = new JSONObject(json);
+            if (jsonObject.getString("status").equals("true")) {
+//                mProgressDialog.show();
+                if (!mProgressDialog.isShowing()) {
+                    mProgressDialog.show();
+                }
+                    JSONArray dataArray = jsonObject.getJSONArray("postData");
+                    for (int i = 0; i < dataArray.length(); i++) {
+                        if (dataArray.length() == 1) {
+                            editTextPhoneNumber.setEnabled(false);
+                            JSONObject dataobj = dataArray.getJSONObject(i);
+                            constraintLayout.setVisibility(View.GONE);
+                            constraintLayout2.setVisibility(View.VISIBLE);
+                            mpesa_code.setText(dataobj.getString("TransID"));
+//                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
+                            mProgress.dismiss();
+                            String p = dataobj.getString("TransID");
+                            getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
+                            constraintLayout.setVisibility(View.VISIBLE);
+                            constraintLayout2.setVisibility(View.GONE);
+                            phoneNumber = editTextPhoneNumber.getText().toString().trim();
+                            editTextPhoneNumber.setEnabled(true);
+                        }
+                    }
+                } else {
+                mProgressDialog.dismiss();
+
+//                if(mProgressDialog != null) {
+//                    if(mProgressDialog.isShowing()) { //check if dialog is showing.
+//
+//                        //get the Context object that was used to great the dialog
+//                        Context context = ((ContextWrapper)mProgressDialog.getContext()).getBaseContext();
+//
+//                        //if the Context used here was an activity AND it hasn't been finished or destroyed
+//                        //then dismiss it
+//                        if(context instanceof Activity) {
+//                            if(!((Activity)context).isFinishing() && !((Activity)context).isDestroyed())
+//                                mProgressDialog.dismiss();
+//                        } else //if the Context used wasnt an Activity, then dismiss it too
+//                    }
+//                    mProgressDialog = null;
+//                }
+//
+//                }
+            }
+        } catch (JSONException e) {
+
+
+            e.printStackTrace();
+        }
+    }
+
+    private void getJSON(final String urlWebService) {
+
+        @SuppressLint("StaticFieldLeak")
+        class GetJSON extends AsyncTask<Void, Void, String> {
+            @Override
+            protected void onPreExecute() {
+                super.onPreExecute();
+            }
+
+            @Override
+            protected void onPostExecute(String s) {
+                super.onPostExecute(s);
+                try {
+                    loadIntoListView(s);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+            @Override
+            protected String doInBackground(Void... voids) {
+                try {
+                    URL url = new URL(urlWebService);
+                    HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                    StringBuilder sb = new StringBuilder();
+                    BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(con.getInputStream()));
+                    String json;
+                    while ((json = bufferedReader.readLine()) != null) {
+                        sb.append(json + "\n");
+                    }
+                    return sb.toString().trim();
+                } catch (Exception e) {
+                    return null;
+                }
+            }
+        }
+        GetJSON getJSON = new GetJSON();
+        getJSON.execute();
+    }
+
+
     private void loadIntoListView(String json) throws JSONException {
 
         try {
+            running = false;
             JSONObject jsonObject = new JSONObject(json);
             if (jsonObject.getString("status").equals("true")) {
                 JSONArray dataArray = jsonObject.getJSONArray("postData");
                 for (int i = 0; i < dataArray.length(); i++) {
 
                     if (dataArray.length() == 1) {
-
+                        mProgressDialog.show();
                         editTextPhoneNumber.setEnabled(false);
-                        mProgress.dismiss();
                         JSONObject dataobj = dataArray.getJSONObject(i);
-
-
                         constraintLayout.setVisibility(View.GONE);
                         constraintLayout2.setVisibility(View.VISIBLE);
                         mpesa_code.setText(dataobj.getString("TransID"));
-                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
-
-                    } else {
+//                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
                         mProgress.dismiss();
-
+                        String p = dataobj.getString("TransID");
+                        getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
                         constraintLayout.setVisibility(View.VISIBLE);
                         constraintLayout2.setVisibility(View.GONE);
                         phoneNumber = editTextPhoneNumber.getText().toString().trim();
-
                         editTextPhoneNumber.setEnabled(true);
 
                     }
@@ -428,7 +505,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
                     } else {
 
-                        mProgress.dismiss();
                         promptPopUpView = new PromptPopUpView(this);
                         promptPopUpView.changeStatus(1, "WRONG CODE");
 
@@ -492,6 +568,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
     private boolean isNetworkAvailable() {
         // Using ConnectivityManager to check for Network Connection
+        // Using ConnectivityManager to check for Network Connection
         ConnectivityManager connectivityManager = (ConnectivityManager) getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
         assert connectivityManager != null;
         NetworkInfo activeNetworkInfo = connectivityManager
@@ -503,12 +580,61 @@ public class MPESAExpressActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+        mProgressDialog.show();
+        phoneNumber = editTextPhoneNumber.getText().toString().trim();
+        p = phoneNumber.replaceFirst("^0+(?!$)", "");
+        if (p != null) {
+//            mProgressDialog.dismiss();
+            thread = new Thread() {
+                @Override
+                public void run() {
+                    try {
+                        while (running) {
+                            synchronized (this) {
+                                wait(3000);
+                                MPESAExpressActivity.this.runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        getpayments("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
+
+                                    }
+                                });
+                            }
+                        }
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            };
+            thread.start();
+
+        } else {
+            mProgressDialog.dismiss();
+        }
+
         if (Execute) {
             recreate();
         } else {
             Execute = true;
         }
+
+        ;
         // recreate();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        running = false;
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if ((mProgressDialog != null) && mProgressDialog.isShowing()) {
+            mProgressDialog.dismiss();
+            mProgressDialog = null;
+        }
     }
 
     @Override
@@ -565,7 +691,8 @@ public class MPESAExpressActivity extends AppCompatActivity {
         try {
             JSONObject jsonObject = new JSONObject(response);
             if (jsonObject.getString("status").equals("true")) {
-                mProgress.dismiss();
+                mProgressDialog.dismiss();
+
                 PromptPopUpView promptPopUpView = new PromptPopUpView(MPESAExpressActivity.this);
                 promptPopUpView.changeStatus(2, "Account Upgraded successfully");
                 androidx.appcompat.app.AlertDialog dialog = new androidx.appcompat.app.AlertDialog.Builder(MPESAExpressActivity.this)
@@ -589,6 +716,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         editor.putString("idNo", idNo);
                         editor.putString("county", county);
                         editor.putString("userid", userid);
+                        editor.putString("mstatus", "1");
                         editor.putString("account_status", "1");
                         editor.putString("clients", clients);
                         editor.putString("response_provider", responseprovider);

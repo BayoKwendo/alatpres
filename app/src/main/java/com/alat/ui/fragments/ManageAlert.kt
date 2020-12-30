@@ -4,8 +4,9 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.*
-import android.widget.Toast
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.Toolbar
 import androidx.cardview.widget.CardView
@@ -13,7 +14,10 @@ import androidx.fragment.app.Fragment
 import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.PromptPopUpView
-import com.alat.ui.activities.*
+import com.alat.ui.activities.ActiveAlerts
+import com.alat.ui.activities.DangerAlerts
+import com.alat.ui.activities.ElevateAlert
+import com.alat.ui.activities.NeutralizeAlerts
 
 class ManageAlert : Fragment() {
 
@@ -26,6 +30,7 @@ class ManageAlert : Fragment() {
     var pref: SharedPreferences? = null
 
     private var account: String? = null
+    private var mstatus: String? = null
 
     private var userid: String? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -54,6 +59,7 @@ class ManageAlert : Fragment() {
 
 
         account = pref!!.getString("account_status", null)
+        mstatus = pref!!.getString("mstatus", null)
         userid = pref!!.getString("userid", null)
 
         if (account == "0"){
@@ -61,7 +67,7 @@ class ManageAlert : Fragment() {
             promptPopUpView?.changeStatus(1, "You're not allowed to manage alerts! \n kindly upgrade to Pro Account")
 
 
-        }else if (account =="1") {
+        }else if (account =="1" || mstatus == "0") {
             card!!.setOnClickListener {
                 startActivity(Intent(activity!!, ActiveAlerts::class.java))
             }
@@ -75,7 +81,6 @@ class ManageAlert : Fragment() {
                 startActivity(Intent(activity!!, ElevateAlert::class.java))
             }
         }
-
         //you can set the title for your toolbar here for different fragments different title
     }
 

@@ -208,7 +208,7 @@ class LoginActivity : AppCompatActivity() {
     private fun parseLoginData(jsonresponse: String) {
         try {
             val jsonObject = JSONObject(jsonresponse)
-            if (jsonObject.getString("status") == "true") {
+            if (jsonObject.getBoolean("login")) {
                 saveInfo(jsonresponse)
                 dialogue();
                 promptPopUpView?.changeStatus(2, "SUCCESSFUL")
@@ -251,10 +251,13 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("idNo", jsonObject.getString("idNo"))
             editor.putString("county", jsonObject.getString("county"))
             editor.putString("userid", jsonObject.getString("userid"))
+            editor.putString("mstatus", jsonObject.getString("status"))
             editor.putString("account_status", jsonObject.getString("account_status"))
             editor.putString("clients", jsonObject.getString("clients"))
             editor.putString("response_provider", jsonObject.getString("response_provider"))
-          //  editor.putString("nature_response", jsonObject.getString("nature_response"))
+            editor.putString("first_check", jsonObject.getString("first_check"))
+
+            //  editor.putString("nature_response", jsonObject.getString("nature_response"))
 
 //            editor.putString("tax", jsonObject.getString("taxid"))
 //            editor.putString("nature_org", jsonObject.getString("nature_org"))

@@ -6,6 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/relation"
     android:gravity="center_vertical"
+
     android:visibility="visible"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
@@ -21,6 +22,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/_20sdp"
+                    android:layout_marginBottom="@dimen/_320sdp"
+                    android:paddingBottom="@dimen/_50sdp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintTop_toTopOf="parent"
@@ -243,13 +246,13 @@
                         android:id="@+id/textView23"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_marginStart="8dp"
-                        android:layout_marginLeft="8dp"
-                        android:text="null"
+                        android:layout_marginStart="15dp"
+                        android:layout_marginLeft="15dp"
+                        android:text="nuddll"
                         android:textColor="@android:color/black"
                         android:textSize="16sp"
-                        app:layout_constraintBaseline_toBaselineOf="@+id/textView22"
-                        app:layout_constraintStart_toEndOf="@+id/textView22" />
+                        app:layout_constraintStart_toStartOf="@+id/guideline"
+                        app:layout_constraintTop_toBottomOf="@+id/textView22" />
 
 
                     <TextView
@@ -264,7 +267,7 @@
                         android:textSize="18sp"
                         android:textStyle="bold"
                         app:layout_constraintStart_toStartOf="@+id/guideline"
-                        app:layout_constraintTop_toBottomOf="@+id/textView22" />
+                        app:layout_constraintTop_toBottomOf="@+id/textView23" />
 
                     <TextView
                         android:id="@+id/textView26"
@@ -342,7 +345,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_20sdp"
-
+                        android:layout_marginLeft="@dimen/_10sdp"
                         android:orientation="horizontal"
                         android:weightSum="1"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -355,7 +358,6 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
                             android:layout_weight=".5"
-                            android:gravity="center"
                             android:text="SAFE(0)"
                             android:textColor="@color/safe"
                             android:textSize="18sp"
@@ -366,7 +368,6 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_weight=".5"
-                            android:gravity="center"
                             android:text="SHOUT(0)"
                             android:textColor="@color/error"
                             android:textSize="18sp"
@@ -379,7 +380,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="@dimen/_20sdp"
-
+                        android:layout_marginLeft="@dimen/_10sdp"
                         android:orientation="horizontal"
                         android:weightSum="1"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -390,7 +391,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
-                        android:gravity="center"
                         android:text="ELEVATE(0)"
                         android:textColor="@color/elevate"
                         android:textSize="18sp"
@@ -401,7 +401,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_weight=".5"
-                        android:gravity="center"
                         android:text="IGNORE(0)"
                         android:textColor="@android:color/black"
                         android:textSize="18sp"
@@ -415,6 +414,7 @@
                         android:layout_marginTop="@dimen/_20sdp"
                         android:orientation="horizontal"
                         android:weightSum="1"
+                        android:layout_marginLeft="@dimen/_10sdp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintHorizontal_chainStyle="spread"
@@ -426,8 +426,7 @@
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:layout_weight=".5"
-                            android:gravity="center"
+                            android:layout_weight=".2"
                             android:text="Shared(0)"
                             android:textColor="@color/success"
                             android:textSize="18sp"
@@ -436,11 +435,11 @@
                         <TextView
                             android:id="@+id/neutralized"
                             android:layout_width="53dp"
-                            android:layout_height="27dp"
-                            android:layout_weight=".5"
-                            android:gravity="center"
+                            android:layout_height="50dp"
+                            android:layout_weight=".7"
                             android:text="NEUTRALIZED(0)"
                             android:textColor="@color/safe"
+                            android:layout_marginBottom="@dimen/_20sdp"
                             android:textSize="18sp"
                             android:textStyle="bold"
                             app:layout_constraintStart_toStartOf="@+id/guideline"
@@ -452,9 +451,11 @@
                         android:layout_width="150dp"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="40dp"
-                        android:layout_marginBottom="@dimen/_100sdp"
+                        android:layout_marginBottom="@dimen/_300sdp"
                         android:background="@drawable/button_shape"
                         android:text="Save in PDF"
+
+                        android:paddingBottom="@dimen/_2sdp"
                         android:textColor="@android:color/white"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"

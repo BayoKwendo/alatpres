@@ -2,9 +2,12 @@ package com.alat.ui.activities
 
 import android.annotation.SuppressLint
 import android.app.ProgressDialog
+import android.content.ActivityNotFoundException
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.util.Log
@@ -14,11 +17,13 @@ import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.browser.customtabs.CustomTabsIntent
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.UpdateSubscription
+import com.alat.interfaces.paypal
 import com.alat.ui.activities.mpesa.Ban_Transfer
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
@@ -58,6 +63,8 @@ class account : AppCompatActivity() {
     var county:kotlin.String? = null
     var clients:kotlin.String? = null
     var responseprovider:kotlin.String? = null
+    var TAB_REQUEST_CODE = 465
+    var Calling_URL: String? = null
 
     private var backPressedTime: Long = 0
 
@@ -70,7 +77,7 @@ class account : AppCompatActivity() {
     private  var linear_layout_2:android.widget.LinearLayout? = null
     private var tv_days: TextView? = null
     private  var tv_hour:android.widget.TextView? = null
-    private val ITEMS3= arrayOf("Monthly ksh. 80", "Quarterly Ksh. 220", "Yearly Ksh. 750")
+    private val ITEMS3= arrayOf("Monthly ksh. 80", "Quarterly Ksh. 1200", "Yearly Ksh. 2600")
     var spinner_3: MaterialSpinner? = null
     var tv_minute:android.widget.TextView? = null
     private  var tv_second:android.widget.TextView? = null
@@ -83,10 +90,13 @@ class account : AppCompatActivity() {
     var account_status: String? = null
     var date: String? = null
     var price: String? = null
+    var mstatus: String? = null
     var pref: SharedPreferences? = null
     private var account: String? = null
     private var userid: String? = null
     private var mProgress: ProgressDialog? = null
+    private var account_title: TextView? = null
+    private var account_msg: TextView? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -95,6 +105,8 @@ class account : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         edtPIN = findViewById<View>(R.id.account) as TextView
         btnBack = findViewById<View>(R.id.btn_disable) as Button
+        account_title = findViewById<View>(R.id.acccount_title) as TextView
+        account_msg = findViewById<View>(R.id.account_msg) as TextView
 
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -110,11 +122,14 @@ class account : AppCompatActivity() {
         mssdn = pref!!.getString("mssdn", null)
         idNo = pref!!.getString("idNo", null)
         county = pref!!.getString("county", null)
+        mstatus = pref!!.getString("mstatus", null)
         clients = pref!!.getString("clients", null)
         linear_layout_1 = findViewById(R.id.linear_layout_1);
 
         linear_layout_2 = findViewById(R.id.linear_layout_2);
-
+        mProgress = ProgressDialog(this);
+        mProgress!!.setMessage("Redirecting..");
+        mProgress!!.setCancelable(false);
         tv_days = findViewById(R.id.tv_days);
         tv_hour = findViewById(R.id.tv_hour);
         tv_minute = findViewById(R.id.tv_minute);
@@ -123,11 +138,24 @@ class account : AppCompatActivity() {
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
 
 
+
         when (account) {
             "1" -> {
-                linear_layout_1!!.setVisibility(View.GONE)
-                linear_layout_2!!.setVisibility(View.VISIBLE)
-                getStudent()
+                if(mstatus == "0"){
+                    account_title!!.setText("ALATPRES TRIAL ACCOUNT")
+                    account_msg!!.setText("You're currently on free trial.  \n\n Expire....")
+
+                    linear_layout_1!!.setVisibility(View.GONE)
+                    linear_layout_2!!.setVisibility(View.VISIBLE)
+                    getStudent()
+                }else {
+                    account_title!!.setText("ALATPRES PRO ACCOUNT")
+                    account_msg!!.setText("You're currently subscribed to Pro account.  \n\n Expire in....")
+
+                    linear_layout_1!!.setVisibility(View.GONE)
+                    linear_layout_2!!.setVisibility(View.VISIBLE)
+                    getStudent()
+                }
             }
             "0" -> {
 
@@ -139,7 +167,7 @@ class account : AppCompatActivity() {
 
 
         btnBack!!.setOnClickListener {
-            if (account == "1") {
+            if (account == "1" || mstatus == "0") {
                 adsbtn()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
                 pref =
@@ -156,16 +184,7 @@ class account : AppCompatActivity() {
                 promptPopUpView?.changeStatus(1, "Please upgrade to Pro account for you to disable ads")
             }
         }
-        when (account) {
-            "1" -> {
-                linear_layout_1!!.setVisibility(View.GONE)
-                linear_layout_2!!.setVisibility(View.VISIBLE)
-            }
-            "0" -> {
-                linear_layout_1!!.setVisibility(View.VISIBLE)
-                linear_layout_2!!.setVisibility(View.GONE)
-            }
-        }
+
         val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         spinner_3 = findViewById<View>(R.id.package_sub) as MaterialSpinner
@@ -188,20 +207,20 @@ class account : AppCompatActivity() {
                         date = dateFormat.format(c.time)
                         price = "80"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                    } else if(selectedItem3 == "Quarterly Ksh. 220"){
+                    } else if(selectedItem3 == "Quarterly Ksh. 1200"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 90)
                         date = dateFormat.format(c.time)
-                        price = "220"
+                        price = "1200"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                     }
-                    else if(selectedItem3 == "Yearly Ksh. 750"){
+                    else if(selectedItem3 == "Yearly Ksh. 2600"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 355)
                         date = dateFormat.format(c.time)
-                        price = "750"
+                        price = "2600"
                     }
                 }
             }
@@ -327,6 +346,7 @@ class account : AppCompatActivity() {
                                     editor.putString("county", county)
                                     editor.putString("userid", userid)
                                     editor.putString("account_status", "0")
+                                    editor.putString("mstatus", "1")
                                     editor.putString("clients", clients)
                                     editor.putString("response_provider", responseprovider)
                                     editor.clear()
@@ -464,16 +484,19 @@ class account : AppCompatActivity() {
                 }
             }
             .addButton(
-                "Direct Bank Transfer",
+                "PayPal",
                 R.color.pdlg_color_white,
                 R.color.colorAccent
             ) {
                 pDialog.dismiss()
-                val i =
-                    Intent(this@account, Ban_Transfer::class.java)
-                i.putExtra("price", price)
-                i.putExtra("time", date)
-                startActivity(i)
+                mProgress!!.show()
+                paypal_demo(price!!) // Paypal Demo
+
+//                val i =
+//                    Intent(this@account, Ban_Transfer::class.java)
+//                i.putExtra("price", price)
+//                i.putExtra("time", date)
+//                startActivity(i)
 
             }
             .show()
@@ -554,6 +577,119 @@ class account : AppCompatActivity() {
         } catch (e: JSONException) {
             e.printStackTrace()
         }
+    }
+
+
+
+    fun isPackageInstalled(packageName: String?): Boolean {
+        return try {
+            applicationContext.packageManager.getPackageInfo(packageName, 0)
+            true
+        } catch (e: PackageManager.NameNotFoundException) {
+            false
+        }
+    }
+
+    fun paypal_demo(price: String) {
+        try {
+            val price2: Int? = price.toInt()
+
+            val price4: Double? = price2!! * 0.0092
+
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                .addNetworkInterceptor(object : Interceptor {
+                    @Throws(IOException::class)
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val request: Request =
+                            chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                                .build()
+                        return chain.proceed(request)
+                    }
+                }).build()
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(Constants.PAYPAL)
+                .client(client) // This line is important
+                .addConverterFactory(GsonConverterFactory.create())
+
+                .build()
+            val params: HashMap<String, String> = HashMap()
+
+            params["price"] = price4.toString()
+            val api: paypal = retrofit.create(paypal::class.java)
+            val call: Call<ResponseBody>? = api.paypal(params)
+
+            call?.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    //Toast.makeText()
+                    if (response.isSuccessful) {
+                        val remoteResponse = response.body()!!.string()
+                        try {
+                            mProgress!!.dismiss()
+
+                            Log.i("response", remoteResponse)
+
+                            val o = JSONObject(remoteResponse)
+                            val links: JSONArray = o.getJSONArray("links")
+
+                            for (i in 0 until links.length()) {
+                                val elements = links.getJSONObject(i)
+                                val keys: Iterator<*> = elements.keys()
+                                while (keys.hasNext()) {
+                                    val key = keys.next() as String
+                                    if (elements[key].toString() == "REDIRECT") {
+                                        Calling_URL = elements["href"].toString()
+                                    }
+                                }
+                            }
+                            open_cct()
+                        } catch (e: JSONException) {
+                            mProgress!!.dismiss()
+                            e.printStackTrace()
+                        }
+                    } else {
+                        mProgress!!.dismiss()
+                        Log.d("bayo", response.errorBody()!!.string())
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                    //   btn.text = "Proceed"
+                    mProgress!!.dismiss()
+                    Log.i("onEmptyResponse", "" + t) //
+                }
+            })
+        } catch (a: ActivityNotFoundException) {
+            Toast.makeText(
+                getApplicationContext(),
+                "Chrome Browser Not Installed",
+                Toast.LENGTH_LONG
+            ).show()
+        }
+
+    }
+
+
+    fun open_cct() {
+        val packageName = "com.android.chrome"
+        val customTabsIntent: CustomTabsIntent = CustomTabsIntent.Builder().build()
+
+        // check if chrome is installed if installed always open in chrome so we can have OneTouch Feature !
+        if (isPackageInstalled(packageName)) {
+            customTabsIntent.intent.setPackage(packageName)
+        }
+        customTabsIntent.intent.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        customTabsIntent.intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
+        customTabsIntent.intent.setData(Uri.parse(Calling_URL))
+        startActivityForResult(customTabsIntent.intent, TAB_REQUEST_CODE)
     }
 
 

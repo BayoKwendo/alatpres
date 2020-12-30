@@ -738,7 +738,7 @@ class AlertDetails : AppCompatActivity() {
 
                 dialogue();
                 promptPopUpView?.changeStatus(2, "Feedback Successfully received!")
-                mfullname!!.visibility=View.VISIBLE
+//                mfullname!!.visibility=View.VISIBLE
                 mProgress!!.dismiss()
 
             } else {
@@ -953,7 +953,7 @@ class AlertDetails : AppCompatActivity() {
 
                 mProgress!!.dismiss()
 
-                mname!!.visibility=View.VISIBLE
+//                mname!!.visibility=View.VISIBLE
 
 
             } else {

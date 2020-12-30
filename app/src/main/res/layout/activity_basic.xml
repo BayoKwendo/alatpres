@@ -119,6 +119,7 @@
             android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center"
             android:padding="@dimen/_10sdp"
+            android:id="@+id/acccount_title"
             android:text="ALATPRES PRO ACCOUNT"
             android:textColor="@color/colorAccent"
             android:textSize="@dimen/_20sdp" />
@@ -129,8 +130,9 @@
             android:layout_gravity="center_horizontal"
             android:layout_marginTop="@dimen/_10sdp"
             android:gravity="center"
+            android:id="@+id/account_msg"
             android:padding="@dimen/_10sdp"
-            android:text="You're currently subscribe to Pro account:  \n\n Expire in : "
+            android:text="You're currently subscribed to Pro account:  \n\n Expire...."
             android:textSize="@dimen/_20sdp" />
 
         <LinearLayout

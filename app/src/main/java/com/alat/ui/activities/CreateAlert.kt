@@ -174,7 +174,7 @@ class CreateAlert : AppCompatActivity() {
     private val mID: ArrayList<String> = ArrayList()
     private var mSimpleListAdapter7: IDListAdapter? = null
 
-
+ var mstatus: String? = null
     private var mProgress: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -193,6 +193,7 @@ class CreateAlert : AppCompatActivity() {
         account = pref!!.getString("account_status", null)
         roleID = pref!!.getString("role", null)
         user = pref!!.getString("userid", null)
+        mstatus = pref!!.getString("mstatus", null)
 
         getStudents()
         //Adapters
@@ -209,7 +210,7 @@ class CreateAlert : AppCompatActivity() {
        if (account == "0") {
             notes!!.visibility = View.GONE
 
-        } else if (account == "1") {
+        } else if (account == "1" || mstatus == "0") {
             notes!!.visibility = View.VISIBLE
         }
 
@@ -282,7 +283,7 @@ class CreateAlert : AppCompatActivity() {
                 dialogue_error()
                 promptPopUpView?.changeStatus(1, "Upgrade to Pro to add attachments and audios")
 //                waitingDialog!!.dismiss()
-            } else if (account == "1") {
+            } else if (account == "1" || mstatus == "0") {
                 attachemts()
             }
 
