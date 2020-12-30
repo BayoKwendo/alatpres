@@ -23,7 +23,7 @@ import com.alat.R
 import com.alat.helpers.LoadingUtil.enableDisableView
 import com.wang.avi.AVLoadingIndicatorView
 
-class FAQ : Fragment() {
+class enterpriseFAQs : Fragment() {
     var fader: FrameLayout? = null
     var mainFrame: FrameLayout? = null
     var isPageError = false
@@ -113,7 +113,7 @@ class FAQ : Fragment() {
             webSettings.loadWithOverviewMode = true
             webSettings.setSupportMultipleWindows(true)
             webSettings.setGeolocationEnabled(true)
-            myWebView!!.loadUrl("file:///android_asset/faq/index.html") //URL input
+            myWebView!!.loadUrl("file:///android_asset/faq/enterprise.html") //URL input
         } else {
             Toast.makeText(activity, "No internet connection", Toast.LENGTH_SHORT).show()
         }
