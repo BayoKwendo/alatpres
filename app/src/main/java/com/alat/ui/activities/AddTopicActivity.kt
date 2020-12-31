@@ -150,9 +150,7 @@ class AddTopicActivity : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "201"){
                         parseLoginData(remoteResponse)
-                    }
                 } else {
                     mProgress?.dismiss()
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
@@ -266,5 +264,4 @@ class AddTopicActivity : AppCompatActivity() {
 
         return true
     }
-
 }

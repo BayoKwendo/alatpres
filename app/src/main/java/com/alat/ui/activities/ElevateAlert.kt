@@ -307,7 +307,7 @@ class ElevateAlert : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
             .setMessage("Are you sure want to go back?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@ElevateAlert, HomePage::class.java))
+                finish()
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()

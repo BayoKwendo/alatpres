@@ -77,7 +77,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 
     var pref: SharedPreferences? = null
 
-
   //  var fname: String? = null
     var user: String? = null
 
@@ -311,7 +310,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
            .setMessage("Are you sure want to go back?")
            .setCancelable(false)
            .setPositiveButton("Yes") { _, id ->
-               startActivity(Intent(this@ActiveAlerts, HomePage::class.java))
+               finish();
            }
            .setNegativeButton("No", null)
            .show().withCenteredButtons()

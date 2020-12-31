@@ -532,7 +532,8 @@ class AlertReport : AppCompatActivity() {
                 true
             }
             android.R.id.home -> {
-                startActivity(Intent(this@AlertReport, HomePage::class.java))
+                finish()
+//                startActivity(Intent(this@AlertReport, HomePage::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -546,8 +547,7 @@ class AlertReport : AppCompatActivity() {
     override fun onBackPressed() {
         // close search view on back button pressed
 
-        startActivity(Intent(this@AlertReport, HomePage::class.java))
-
+       finish()
     }
 
 }

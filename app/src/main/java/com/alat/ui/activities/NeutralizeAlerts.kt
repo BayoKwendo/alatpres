@@ -3,7 +3,6 @@ package com.alat.ui.activities
 import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
-import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
@@ -19,18 +18,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.AlertAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
-import com.alat.interfaces.*
+import com.alat.interfaces.GetNeutralizeAlerts
 import com.alat.model.rgModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -47,7 +44,6 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -304,7 +300,7 @@ class NeutralizeAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
             .setMessage("Are you sure want to go back?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@NeutralizeAlerts, HomePage::class.java))
+                finish()
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()

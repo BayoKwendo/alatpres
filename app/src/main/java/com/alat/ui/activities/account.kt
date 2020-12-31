@@ -143,7 +143,7 @@ class account : AppCompatActivity() {
             "1" -> {
                 if(mstatus == "0"){
                     account_title!!.setText("ALATPRES TRIAL ACCOUNT")
-                    account_msg!!.setText("You're currently on free trial.  \n\n Expire....")
+                    account_msg!!.setText("You're currently on free trial.  \n\n Expire  in....")
 
                     linear_layout_1!!.setVisibility(View.GONE)
                     linear_layout_2!!.setVisibility(View.VISIBLE)
