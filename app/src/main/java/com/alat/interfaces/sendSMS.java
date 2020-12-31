@@ -12,7 +12,7 @@ public interface sendSMS {
     @Headers("Content-Type: application/json")
 
     // @FormUrlEncoded
-    @POST("/api/alert/search.php")
+    @POST("search.php")
     Call<ResponseBody> send(@Body Map<String, String> body);
 }
 

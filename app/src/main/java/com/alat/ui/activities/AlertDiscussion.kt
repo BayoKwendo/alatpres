@@ -12,11 +12,13 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.ContactsContract
 import android.util.Log
-import android.view.*
+import android.view.Gravity
+import android.view.Menu
+import android.view.MenuItem
+import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -26,13 +28,11 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.ResponseAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
-import com.alat.interfaces.GetAlerts
 import com.alat.interfaces.RespDiscussion
 import com.alat.interfaces.sendSMS
 import com.alat.model.rgModel
@@ -52,13 +52,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.scalars.ScalarsConverterFactory
 import java.io.IOException
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.HashMap
-import kotlin.collections.List
-import kotlin.collections.MutableList
 import kotlin.collections.set
 
 @Suppress("UNREACHABLE_CODE")
@@ -111,7 +108,9 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
             getSharedPreferences("MyPref", 0) // 0 - for private mode
         fname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
-
+        mProgress = ProgressDialog(this@AlertDiscussion)
+        mProgress!!.setMessage("Processing...")
+        mProgress!!.setCancelable(true)
 
         addMessage!!.setOnClickListener {
             val i =
@@ -188,7 +187,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
         val api: RespDiscussion = retrofit.create(RespDiscussion::class.java)
         val call: Call<ResponseBody> = api.Discussion(params)
 
-        call.enqueue( object : Callback<ResponseBody?> {
+        call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
 
@@ -204,12 +203,11 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
                     Log.d("test", remoteResponse)
 
 
-                    if (response.code().toString() == "201"){
+                    if (response.code().toString() == "201") {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }
                     parseLoginData(remoteResponse)
-
 
 
                 } else {
@@ -443,7 +441,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
     fun Confirm() {
         AlertDialog.Builder(this)
             .setTitle("Confirmation")
-            .setMessage("Send Invitation to "+ contactName)
+            .setMessage("Send Invitation to " + contactName)
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
                 checkMmeber()
@@ -502,10 +500,12 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
                     return chain.proceed(request)
                 }
             }).build()
-        val retrofit: Retrofit = Retrofit.Builder().baseUrl(Constants.API_BASE_URL)
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl("http://178.32.191.152/alatpres_api/api/alert/")
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()
+
 
         val params: HashMap<String, String> = HashMap()
         //  response_id = intent.getStringExtra("groupSelect")
@@ -538,7 +538,10 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
 
                         mProgress?.dismiss()
                         dialogue();
-                        promptPopUpView?.changeStatus(2, "Invitation to " + contactName+ " was send successfuly")
+                        promptPopUpView?.changeStatus(
+                            2,
+                            "Invitation to " + contactName + " was send successfuly"
+                        )
 
                     } else {
                         dialogue_error()

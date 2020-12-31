@@ -300,7 +300,7 @@ class DangerAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
             .setMessage("Are you sure want to go back?")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(this@DangerAlerts, HomePage::class.java))
+               finish()
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()
