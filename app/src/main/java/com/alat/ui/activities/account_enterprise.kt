@@ -87,6 +87,8 @@ class account_enterprise : AppCompatActivity() {
     private var userid: String? = null
     var TAB_REQUEST_CODE = 465
   var mstatus: String? = null
+    var adsstatus: String? = null
+
     var account_type:TextView? = null
 
     var Mmeesage:TextView? = null
@@ -110,6 +112,19 @@ class account_enterprise : AppCompatActivity() {
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Redirecting..");
         mProgress!!.setCancelable(false);
+
+
+
+        pref =
+            this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+        adsstatus = pref!!.getString("ads_enter", null)
+
+        if (adsstatus == "1"){
+            btnBack!!.setText("Enable Ads")
+
+        }else{
+            btnBack!!.setText("Disable Ads")
+        }
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
         userid = pref!!.getString("userid", null)
@@ -289,7 +304,7 @@ class account_enterprise : AppCompatActivity() {
         })
 
         btnBack!!.setOnClickListener {
-            if (account == "1" || mstatus == "0") {
+            if (account == "1" && adsstatus == "0") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
 
@@ -301,7 +316,37 @@ class account_enterprise : AppCompatActivity() {
                 editor2.clear()
                 editor2.apply()
 
-            } else {
+
+                pref =
+                    applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+
+                val editor4: SharedPreferences.Editor = pref!!.edit()
+                editor4.putString("ads_enter", "1")
+                editor4.clear()
+                editor4.apply()
+            }
+           else if (account == "1" && adsstatus == "1") {
+                dialogue()
+                promptPopUpView?.changeStatus(2, "Ads were enabled successfully")
+
+                pref =
+                    applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+
+                val editor4: SharedPreferences.Editor = pref!!.edit()
+                editor4.putString("ads_enter", "0")
+                editor4.clear()
+                editor4.apply()
+
+
+                pref =
+                    applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                val editor2: SharedPreferences.Editor = pref!!.edit()
+                editor2.putString("ads", "0")
+                editor2.clear()
+                editor2.apply()
+
+            }else {
                 dialogue_error()
                 promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
             }
@@ -313,8 +358,21 @@ class account_enterprise : AppCompatActivity() {
         promptPopUpView = PromptPopUpView(this)
         AlertDialog.Builder(this)
             .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
-                btnBack!!.isEnabled = false;
-                btnBack!!.setBackgroundColor(R.color.quantum_grey)
+
+
+                    pref =
+                        this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+                    adsstatus = pref!!.getString("ads_enter", null)
+
+                    if (adsstatus == "1") {
+                        btnBack!!.setText("Enable Ads")
+
+                    } else {
+                        btnBack!!.setText("Disable Ads")
+
+
+                    }
+
             }
             .setCancelable(false)
             .setView(promptPopUpView)
@@ -423,7 +481,7 @@ class account_enterprise : AppCompatActivity() {
 
     private fun getStudent() {
 
-         Toast.makeText(this@account_enterprise, userid  , Toast.LENGTH_LONG).show()
+//         Toast.makeText(this@account_enterprise, userid  , Toast.LENGTH_LONG).show()
 
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)

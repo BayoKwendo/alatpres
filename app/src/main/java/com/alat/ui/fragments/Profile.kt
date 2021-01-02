@@ -222,6 +222,7 @@ class Profile : Fragment() {
         // as you specify a parent activity in AndroidManifest.xml.
 
         val id = item.itemId
+
         when (id) {
             R.id.edit -> {
                 if (!isNetworkAvailable()) {

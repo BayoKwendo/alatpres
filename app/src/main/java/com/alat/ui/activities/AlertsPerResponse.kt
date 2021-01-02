@@ -314,7 +314,8 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
            .setMessage("Are you sure want to go back?")
            .setCancelable(false)
            .setPositiveButton("Yes") { _, id ->
-               startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
+               finish()
+//               startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
            }
            .setNegativeButton("No", null)
            .show().withCenteredButtons()

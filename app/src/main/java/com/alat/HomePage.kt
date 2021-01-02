@@ -93,6 +93,9 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     private var roleID: String? = null
     private var ADS: String? = null
     var mstatus: String? = null
+    var adsstatus: String? = null
+    var adsstatus2: String? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_drawer_home)
@@ -118,27 +121,27 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         clients = pref!!.getString("clients", null)
         mstatus = pref!!.getString("mstatus", null)
 
-        Toast.makeText(
-            this,
-            mstatus ,
-            Toast.LENGTH_LONG
-        ).show()
-
 
 //        if (roleID == "2") {
-            if (account == "1" || mstatus == "0") {
-                getExpiry()
-            }
+        if (account == "1" || mstatus == "0") {
+            getExpiry()
+        }
 
+        pref =
+            this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+        adsstatus = pref!!.getString("ads_enter", null)
 
+        pref =
+            this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+        adsstatus2 = pref!!.getString("ads_basic", null)
 
-        if(account == "0"){
-            setSupportActionBar(toolbar)
+        if (adsstatus == "0" || adsstatus2 == "0") {
+
             pref2 =
                 this.getSharedPreferences("ADS", 0) // 0 - for private mode
             ADS = pref2!!.getString("ads", null)
 
-            if(ADS == "0") {
+            if (ADS == "0") {
                 MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
                 view = window.decorView.rootView;
 
@@ -148,7 +151,13 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 mAdView = findViewById<View>(R.id.adView) as AdView?
                 val adRequest: AdRequest = AdRequest.Builder().build()
                 mAdView!!.loadAd(adRequest)
+
             }
+        }
+
+
+        if (account == "0") {
+            setSupportActionBar(toolbar)
 
 
 //
@@ -313,7 +322,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 subscribe()
                 promptPopUpView?.changeStatus(
                     2,
-                    "Soon"
+                    "NO DATA"
                 )
             }
 
@@ -517,17 +526,18 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 toolbar!!.title = "Response Providers Database";
             }
 
-            R.id.invite_friend-> {
+            R.id.invite_friend -> {
                 val sharingIntent =
                     Intent(Intent.ACTION_SEND)
                 sharingIntent.type = "text/plain"
                 val shareBody =
                     """
-                     ALATPRES APP
-                     
-                     Get AlatPres.
-                     
-                     Download the app via https://play.google.com/store/apps/details?id=com.alatpres  
+                    Hi Friend,                     
+                    
+                    I just discovered a Reliable and Amazing way to share Emergency Alerts, Access Emergency services, 
+                    receive safety updates, manage my business and personal safety as well as that of my loved ones and thought of sharing with you.
+ 
+                    Click https://play.google.com/store/apps/details?id=com.alatpres to download Alatpres App and enjoy managing your safety.
                     """.trimIndent()
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
                 startActivity(Intent.createChooser(sharingIntent, "Share Via"))
