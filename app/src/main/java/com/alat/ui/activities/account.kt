@@ -18,13 +18,13 @@ import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.browser.customtabs.CustomTabsIntent
+import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.UpdateSubscription
 import com.alat.interfaces.paypal
-import com.alat.ui.activities.mpesa.Ban_Transfer
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
 import libs.mjn.prettydialog.PrettyDialog
@@ -136,19 +136,18 @@ class account : AppCompatActivity() {
         tv_minute = findViewById(R.id.tv_minute);
         tv_second = findViewById(R.id.tv_second);
 
+
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
 
-   pref =
+        pref =
             this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
         adsstatus = pref!!.getString("ads_basic", null)
 
-        if (adsstatus == "1"){
+        if (adsstatus == "1") {
             btnBack!!.setText("Enable Ads")
 
-        }else{
+        } else {
             btnBack!!.setText("Disable Ads")
-
-
         }
 
         when (account) {
@@ -178,10 +177,11 @@ class account : AppCompatActivity() {
         }
 
 btnBack!!.setOnClickListener {
-            if (account == "1" && adsstatus == "0") {
+//      Toast.makeText(this@account, adsstatus, Toast.LENGTH_LONG).show();
+
+    if (account == "1" && adsstatus == "0") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
-
                 pref =
                     applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
 
@@ -190,10 +190,8 @@ btnBack!!.setOnClickListener {
                 editor2.clear()
                 editor2.apply()
 
-
                 pref =
                     applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
-
                 val editor4: SharedPreferences.Editor = pref!!.edit()
                 editor4.putString("ads_basic", "1")
                 editor4.clear()
@@ -202,7 +200,6 @@ btnBack!!.setOnClickListener {
            else if (account == "1" && adsstatus == "1") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were enabled successfully")
-
                 pref =
                     applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
 
@@ -210,7 +207,6 @@ btnBack!!.setOnClickListener {
                 editor4.putString("ads_basic", "0")
                 editor4.clear()
                 editor4.apply()
-
 
                 pref =
                     applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
@@ -277,21 +273,21 @@ btnBack!!.setOnClickListener {
         })
     }
 
-    @SuppressLint("ResourceAsColor")
-    private fun adsbtn() {
-
-        promptPopUpView = PromptPopUpView(this)
-
-        AlertDialog.Builder(this)
-            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
-                btnBack!!.isEnabled = false;
-                btnBack!!.setText("Enabele Ads")
-                btnBack!!.setBackgroundColor(R.color.quantum_grey)
-            }
-            .setCancelable(false)
-            .setView(promptPopUpView)
-            .show()
-    }
+//    @SuppressLint("ResourceAsColor")
+//    private fun adsbtn() {
+//
+//        promptPopUpView = PromptPopUpView(this)
+//
+//        AlertDialog.Builder(this)
+//            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+//                btnBack!!.isEnabled = false;
+//                btnBack!!.setText("Enabele Ads")
+//                btnBack!!.setBackgroundColor(R.color.quantum_grey)
+//            }
+//            .setCancelable(false)
+//            .setView(promptPopUpView)
+//            .show()
+//    }
 
 private fun dialogue() {
     promptPopUpView = PromptPopUpView(this)
@@ -300,8 +296,8 @@ private fun dialogue() {
 
 
             pref =
-                this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
-            adsstatus = pref!!.getString("ads_enter", null)
+                this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+            adsstatus = pref!!.getString("ads_basic", null)
 
             if (adsstatus == "1") {
                 btnBack!!.setText("Enable Ads")
@@ -497,7 +493,7 @@ private fun dialogue() {
         // as you specify a parent activity in AndroidManifest.xml.
         when (item.itemId) {
             android.R.id.home -> {
-                finish()
+                startActivity(Intent(this, HomePage::class.java))
                 true
             }
             else -> super.onOptionsItemSelected(item)
@@ -506,6 +502,10 @@ private fun dialogue() {
         return true
     }
 
+    override fun onBackPressed() {
+        super.onBackPressed()
+        startActivity(Intent(this, HomePage::class.java))
+    }
 
     fun BackAlert() {
 

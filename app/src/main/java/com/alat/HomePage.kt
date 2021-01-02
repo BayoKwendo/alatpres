@@ -643,6 +643,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 editor.putBoolean("isLogin", false)
                 editor.clear()
                 editor.apply(); // commit changes
+
                 startActivity(Intent(this, LoginActivity::class.java))
             }
             .show()

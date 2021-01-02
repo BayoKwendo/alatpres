@@ -76,7 +76,7 @@ class RandomAdapter(
 //            1 -> {
                 val contact = contactListFiltered[position]
                 holder.name.text = contact.group_name +"\tRG"
-                holder.ale.text = "[\t RG\t" + contact.id.toString() + "\t]"
+                holder.ale.text = "[\t RG\t" + contact.rg_id.toString() + "\t]"
             //}  2 -> {
 //            }
 
