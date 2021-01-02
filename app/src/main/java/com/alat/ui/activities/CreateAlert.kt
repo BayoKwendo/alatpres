@@ -377,7 +377,7 @@ class CreateAlert : AppCompatActivity() {
                         parseLogiDatas(remoteResponse)
                     } else {
 //                        mProgressLayout!!.visibility = View.GONE
-                        dialogue_error();
+                        dialogue_error1();
                         promptPopUpView?.changeStatus(1, "No data in response provider database")
                     }
                 } else {
@@ -904,7 +904,17 @@ class CreateAlert : AppCompatActivity() {
         negative.layoutParams = layoutParams
     }
 
+    private fun dialogue_error1() {
+        promptPopUpView = PromptPopUpView(this)
 
+        AlertDialog.Builder(this)
+            .setPositiveButton("Please continue...") { _: DialogInterface?, _: Int ->
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
     private fun dialogue_error() {
         promptPopUpView = PromptPopUpView(this)
 
@@ -1495,7 +1505,7 @@ class CreateAlert : AppCompatActivity() {
         params["alert_name"] = alert_namess!!
         params["alert_type"] = selectedItem!!
         params["rl"] = setLevel!!
-        params["groupPhone"] = orgphone!!
+//        params["groupPhone"] = orgphone!!
         params["location"] = setLoc!!
         params["notes"] = addnotes!!
         params["name"] = fullname!!
