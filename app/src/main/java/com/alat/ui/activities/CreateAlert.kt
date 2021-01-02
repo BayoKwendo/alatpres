@@ -90,7 +90,6 @@ class CreateAlert : AppCompatActivity() {
         "Poaching & Wildlife[PW]",
         "Domestic Violence/Homicide [DV]",
         "Sex Crime/Rape [RAPE]",
-
         "Murder Case [MDR]",
         "General Violence [GV]",
         "Bribery [BR]",
@@ -468,6 +467,8 @@ class CreateAlert : AppCompatActivity() {
             .show()
 
     }
+
+
 
 
     private fun browseDocuments() {
@@ -869,7 +870,7 @@ class CreateAlert : AppCompatActivity() {
             .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
                 //      finish()
                // updates()
-
+                sendOfflineAlert()
                 startActivity(Intent(this@CreateAlert, HomePage::class.java))
 
             }
@@ -1468,7 +1469,59 @@ class CreateAlert : AppCompatActivity() {
         })
     }
 
+    private fun sendOfflineAlert() {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
+        val params: HashMap<String, String> = HashMap()
+        params["rg"] = selectedItem2!!
+        params["user_id"] = user!!
+        params["alert_name"] = alert_namess!!
+        params["alert_type"] = selectedItem!!
+        params["rl"] = setLevel!!
+        params["groupPhone"] = orgphone!!
+        params["location"] = setLoc!!
+        params["notes"] = addnotes!!
+        params["name"] = fullname!!
+        val api: SendOfflineAlert = retrofit.create(SendOfflineAlert::class.java)
+        val call: Call<ResponseBody> = api.sendofflineAlert(params)
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+//                if (response.isSuccessful) {
+//                    val remoteResponse = response.body()!!.string()
+//                    Log.d("test", remoteResponse)
+//
+//                } else {
+//                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                btnLogin!!.text = "Submit"
+
+                dialogue_error()
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
 
 
     private fun uploadImages2() {
@@ -1597,6 +1650,7 @@ class CreateAlert : AppCompatActivity() {
         }
         return ""
     }
+
 
 
 
