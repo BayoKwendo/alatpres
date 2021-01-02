@@ -711,8 +711,8 @@ class randomClients : Fragment(),
 
 
       groupname = contact!!.group_name
-        groupid = contact.id
-        AlertStatus()
+        groupid = contact.rg_id
+       AlertStatus()
 
 
     }
@@ -741,6 +741,7 @@ class randomClients : Fragment(),
 
                 startActivity(i)
             }
+
             .setNegativeButton("Delete Client") { _, id ->
                 // reject()
                 exit()
@@ -828,7 +829,9 @@ class randomClients : Fragment(),
         try {
             val jsonObject = JSONObject(jsonresponse)
             if (jsonObject.getString("status") == "true") {
-                getStudent()
+
+                startActivity(Intent(activity!!, HomePage::class.java))
+
                 Toast.makeText(activity, "Successfully removed", Toast.LENGTH_LONG).show()
 
                 mProgress!!.dismiss()

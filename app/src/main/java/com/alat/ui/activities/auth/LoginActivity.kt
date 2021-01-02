@@ -236,10 +236,7 @@ class LoginActivity : AppCompatActivity() {
             val jsonObject = JSONObject(response)
             pref =
                 applicationContext.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
             val editor: SharedPreferences.Editor = pref!!.edit()
-
-
             editor.putBoolean("isLogin", true)
             editor.putString("fname", jsonObject.getString("firstname"))
             editor.putString("lname", jsonObject.getString("lastname"))
@@ -257,6 +254,20 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("response_provider", jsonObject.getString("response_provider"))
             editor.putString("first_check", jsonObject.getString("first_check"))
 
+
+            pref =
+                applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+            val editor4: SharedPreferences.Editor = pref!!.edit()
+            editor4.putString("ads_basic", "1")
+            editor4.clear()
+            editor4.apply()
+
+            pref =
+                applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+            val editor5: SharedPreferences.Editor = pref!!.edit()
+            editor5.putString("ads_enter", "1")
+            editor5.clear()
+            editor5.apply()
             //  editor.putString("nature_response", jsonObject.getString("nature_response"))
 
 //            editor.putString("tax", jsonObject.getString("taxid"))
