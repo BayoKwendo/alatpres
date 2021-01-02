@@ -97,6 +97,7 @@ class account : AppCompatActivity() {
     private var mProgress: ProgressDialog? = null
     private var account_title: TextView? = null
     private var account_msg: TextView? = null
+    var adsstatus: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -137,7 +138,18 @@ class account : AppCompatActivity() {
 
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
 
+   pref =
+            this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+        adsstatus = pref!!.getString("ads_basic", null)
 
+        if (adsstatus == "1"){
+            btnBack!!.setText("Enable Ads")
+
+        }else{
+            btnBack!!.setText("Disable Ads")
+
+
+        }
 
         when (account) {
             "1" -> {
@@ -165,11 +177,11 @@ class account : AppCompatActivity() {
             }
         }
 
-
-        btnBack!!.setOnClickListener {
-            if (account == "1" || mstatus == "0") {
-                adsbtn()
+btnBack!!.setOnClickListener {
+            if (account == "1" && adsstatus == "0") {
+                dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
+
                 pref =
                     applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
 
@@ -179,11 +191,41 @@ class account : AppCompatActivity() {
                 editor2.apply()
 
 
-            } else {
+                pref =
+                    applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+
+                val editor4: SharedPreferences.Editor = pref!!.edit()
+                editor4.putString("ads_basic", "1")
+                editor4.clear()
+                editor4.apply()
+            }
+           else if (account == "1" && adsstatus == "1") {
+                dialogue()
+                promptPopUpView?.changeStatus(2, "Ads were enabled successfully")
+
+                pref =
+                    applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+
+                val editor4: SharedPreferences.Editor = pref!!.edit()
+                editor4.putString("ads_basic", "0")
+                editor4.clear()
+                editor4.apply()
+
+
+                pref =
+                    applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                val editor2: SharedPreferences.Editor = pref!!.edit()
+                editor2.putString("ads", "0")
+                editor2.clear()
+                editor2.apply()
+
+            }else {
                 dialogue_error()
-                promptPopUpView?.changeStatus(1, "Please upgrade to Pro account for you to disable ads")
+                promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
             }
         }
+
 
         val adapter2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS3)
         adapter2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -243,26 +285,38 @@ class account : AppCompatActivity() {
         AlertDialog.Builder(this)
             .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
                 btnBack!!.isEnabled = false;
-               btnBack!!.setBackgroundColor(R.color.quantum_grey)
+                btnBack!!.setText("Enabele Ads")
+                btnBack!!.setBackgroundColor(R.color.quantum_grey)
             }
             .setCancelable(false)
             .setView(promptPopUpView)
             .show()
     }
 
-    private fun dialogue() {
+private fun dialogue() {
+    promptPopUpView = PromptPopUpView(this)
+    AlertDialog.Builder(this)
+        .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
 
-        promptPopUpView = PromptPopUpView(this)
 
-        AlertDialog.Builder(this)
-            .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
+            pref =
+                this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+            adsstatus = pref!!.getString("ads_enter", null)
+
+            if (adsstatus == "1") {
+                btnBack!!.setText("Enable Ads")
+
+            } else {
+                btnBack!!.setText("Disable Ads")
+
 
             }
-            .setCancelable(false)
-            .setView(promptPopUpView)
-            .show()
-    }
 
+        }
+        .setCancelable(false)
+        .setView(promptPopUpView)
+        .show()
+}
     private fun dialogue_error() {
         promptPopUpView = PromptPopUpView(this)
         AlertDialog.Builder(this)

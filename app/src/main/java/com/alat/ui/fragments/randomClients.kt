@@ -210,7 +210,7 @@ class randomClients : Fragment(),
             .build()
         val params: HashMap<String, String> = HashMap()
 
-//        params["userid"] = userid!!
+        //params["userid"] = userid!!
         val api: ViewRandom = retrofit.create(ViewRandom::class.java)
         val call: Call<ResponseBody>? = api.viewRG(params)
 
@@ -398,8 +398,6 @@ class randomClients : Fragment(),
             layout_pwd.findViewById<View>(R.id.cancel) as Button
         dismissButton.setOnClickListener(View.OnClickListener {
             alert!!.dismiss()
-            hideKeyboardFrom()
-            startActivity(Intent(activity, HomePage::class.java))
 
         })
         alertDialog.setView(layout_pwd)
@@ -448,8 +446,9 @@ class randomClients : Fragment(),
 
         AlertDialog.Builder(activity!!)
             .setPositiveButton("OK") { _: DialogInterface?, _: Int ->
-                //      finish()
                 alert!!.dismiss()
+
+//                alert!!.dismiss()
             }
             .setCancelable(false)
             .setView(promptPopUpView)
@@ -829,8 +828,8 @@ class randomClients : Fragment(),
         try {
             val jsonObject = JSONObject(jsonresponse)
             if (jsonObject.getString("status") == "true") {
-                dialogue();
-                promptPopUpView?.changeStatus(2, "Done!")
+                getStudent()
+                Toast.makeText(activity, "Successfully removed", Toast.LENGTH_LONG).show()
 
                 mProgress!!.dismiss()
 
@@ -841,6 +840,7 @@ class randomClients : Fragment(),
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
 
                 mProgress!!.dismiss()
+                Toast.makeText(activity, groupid!!, Toast.LENGTH_LONG).show()
 
                 // Toast.makeText(this@AddTopicActivity, "Please Something went wrong", Toast.LENGTH_LONG).show()
 

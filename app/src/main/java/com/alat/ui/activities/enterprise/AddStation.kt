@@ -407,6 +407,7 @@ class AddStation : Fragment() {
                 "ok"
             ) { dialog, _ ->
                 dialog.dismiss()
+
                 val i = Intent(activity, HomePage::class.java)
                 startActivity(i)
             }

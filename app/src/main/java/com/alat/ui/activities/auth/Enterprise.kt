@@ -871,7 +871,7 @@ class Enterprise : AppCompatActivity() {
         params["date_of_incooperation"] = dob!!
         params["mssdn2"] = mssidn2!!
         params["mssdn"] = mssidn!!
-        params["account_status"] = "0"
+        params["account_status"] = "1"
         params["response_provider"] = selectedItem!!
         params["nature_response"] = mySpinner!!.buildSelectedItemString()!!
         params["county"] = county!!

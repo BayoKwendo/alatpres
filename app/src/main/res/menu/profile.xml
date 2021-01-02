@@ -10,6 +10,7 @@
         android:id="@+id/edit"
         android:icon="@drawable/edit"
         android:title="sh"
+        android:visible="false"
         app:showAsAction = "always"/>
 
 </menu>

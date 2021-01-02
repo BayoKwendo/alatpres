@@ -69,7 +69,7 @@
                                     android:gravity="center_horizontal"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:singleLine="true"
-                                    android:text="RG JOINING REQUESTS"
+                                    android:text="Process Join Requests"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />
@@ -105,7 +105,7 @@
                                     android:gravity="center_horizontal"
                                     android:marqueeRepeatLimit="marquee_forever"
                                     android:singleLine="true"
-                                    android:text="CHECK INVITATIONS THAT YOU HAVE"
+                                    android:text="Check your Invitations"
                                     android:textColor="@color/colorBlack"
                                     android:textSize="14sp"
                                     android:textStyle="bold" />

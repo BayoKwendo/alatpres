@@ -500,7 +500,7 @@ class BasicUserActivity : AppCompatActivity() {
         params["lastname"] = lastName!!
         params["email"] = email!!
         params["gender"] = gender!!
-        params["idNo"] = "0000"
+        params["idNo"] = id!!
         params["DoB"] = dob!!
         params["mssdn"] = mssidn!!
         params["country"] = countries!!
