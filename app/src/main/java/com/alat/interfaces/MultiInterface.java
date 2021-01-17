@@ -9,7 +9,7 @@ import retrofit2.http.Part;
 
 public interface MultiInterface {
 
-    String IMAGEURL = "https://youthsofhope.co.ke/api/";
+//    String IMAGEURL = "https://youthsofhope.co.ke/api/";
     @Multipart
 
     @POST("api/alert/upLoad.php")

@@ -7,7 +7,7 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
-    <string name="google_maps_key">AIzaSyDJnDn_O0nybXXsBypZ_5wTu1lVXOgHIjU</string>
+    <string name="google_maps_key">AIzaSyDd8lqDYOnCyUYfb-zwTpgHmutpSG66y0Y</string>
     <string name="no_alert_currently">No Alert Currently</string>
 
     <string name="create_pdf">Create PDF</string>
@@ -26,10 +26,21 @@
     <string name="admob_showIntersitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
     <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
+<!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="lastname">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="gender">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="datebirt">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="mobile">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="county">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="user_id">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="user_id">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
+<!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
 
     <string name="bt_descriptor_diners">Diners</string>
     <string name="bt_descriptor_maestro">Maestro</string>
-    <string name="bt_descriptor_paypal">PayPal</string>
+    <string name="bt_descriptor_paypal">PayPal</string>f
     <string name="bt_descriptor_pay_with_venmo">Venmo</string>
     <string name="bt_descriptor_google_pay">Google Pay</string>
     <string name="bt_descriptor_unionpay">UnionPay</string>

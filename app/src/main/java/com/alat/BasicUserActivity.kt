@@ -392,12 +392,6 @@ class BasicUserActivity : AppCompatActivity() {
             showKeyBoard()
             return false
         } else textInputdob!!.error = null
-        if (Utils.checkIfEmptyString(email)) {
-            textInputemail!!.error = "Email is mandatory"
-            textInputemail!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputemail!!.error = null
 
         if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email!!).matches()) {
             textInputemail!!.error = "Enter a valid email!"

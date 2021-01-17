@@ -716,12 +716,6 @@ class Enterprise : AppCompatActivity() {
             showKeyBoard()
             return false
         } else textInputmssidn!!.error = null
-        if (Utils.checkIfEmptyString(email)) {
-            textInputemail!!.error = "email is mandatory"
-            textInputemail!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputemail!!.error = null
 
         if (selectedItem == null) {
             Toast.makeText(

@@ -76,7 +76,7 @@ import kotlin.collections.HashMap
 class CreateAlert : AppCompatActivity() {
     private val ITEMS = arrayOf(
         "Suspicious Activity [SA]",
-        "Suspicious Person(s) [SP]", "Burglary/Robbery [BG]","CyberCrime[CC]",
+        "Suspicious Person(s) [SP]", "Burglary/Robbery [BG]", "CyberCrime[CC]",
         "Fraud/Vandalism[FRAUD]", "Disturbing of Peace[DOF]",
         "Riot/Demonstrations [RT]",
         "Terrorism [TM]", "Industrial Accident [ACC]", "Traffic Incidence [TI]",
@@ -98,7 +98,8 @@ class CreateAlert : AppCompatActivity() {
         "Female Genital Mutilation [FGM]",
         "Prostitution/Pornography [PHY]",
         "Kidnapping [KID]",
-        "Gambling [GAME]")
+        "Gambling [GAME]"
+    )
 
     var spinner: MaterialSpinner? = null
     private var mSearchableSpinner1: SearchableSpinner? = null
@@ -119,7 +120,7 @@ class CreateAlert : AppCompatActivity() {
     var orgphone: String? = null
 
     var SelectImageGallery: Button? = null
-    var UploadImageServer:Button? = null
+    var UploadImageServer: Button? = null
 
     var imageView: ImageView? = null
     private var mSimpleArrayListAdapter: SimpleArrayListAdapter? = null
@@ -135,7 +136,8 @@ class CreateAlert : AppCompatActivity() {
     var ImagePath = "image_path"
     var ServerUploadPath = "https://youthsofhope.co.ke/api/upLoad.php"
     var SEARCHPLACE = 5
-//    private var mProgressfetch: ProgressDialog? = null
+
+    //    private var mProgressfetch: ProgressDialog? = null
 //    var PICK_FILE_REQUEST = 100;
     private var textInputLocation: TextInputLayout? = null
     private var textInputAlert: TextInputLayout? = null
@@ -173,7 +175,7 @@ class CreateAlert : AppCompatActivity() {
     private val mID: ArrayList<String> = ArrayList()
     private var mSimpleListAdapter7: IDListAdapter? = null
 
- var mstatus: String? = null
+    var mstatus: String? = null
     private var mProgress: ProgressDialog? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -199,14 +201,14 @@ class CreateAlert : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        textInputLocation = findViewById(R.id.alertname)
+        textInputLocation = findViewById(R.id.location)
         alert = findViewById(R.id.alert)
 
-        textInputAlert = findViewById(R.id.location)
+        textInputAlert = findViewById(R.id.alertname)
         notes = findViewById(R.id.notes)
         mattach = findViewById(R.id.attach)
 
-       if (account == "0") {
+        if (account == "0") {
             notes!!.visibility = View.GONE
 
         } else if (account == "1" || mstatus == "0") {
@@ -308,17 +310,15 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
-
-
     private val mOnItemSelectedListener1: OnItemSelectedListener = object : OnItemSelectedListener {
         override fun onItemSelected(view: View?, position: Int, id: Long) {
-                if (position > 0) {
-                    response_provider = mSimpleListAdapter!!.getItem(position).toString()
-                    orgphone = mSimpleListAdapter7!!.getItem(position).toString()
+            if (position > 0) {
+                response_provider = mSimpleListAdapter!!.getItem(position).toString()
+                orgphone = mSimpleListAdapter7!!.getItem(position).toString()
 
-                   // Toast.makeText(this@CreateAlert, "VALUE" + orgphone, Toast.LENGTH_LONG).show();
+                // Toast.makeText(this@CreateAlert, "VALUE" + orgphone, Toast.LENGTH_LONG).show();
 
-                }
+            }
 
 
         }
@@ -327,7 +327,6 @@ class CreateAlert : AppCompatActivity() {
             Toast.makeText(this@CreateAlert, "Nothing Selected", Toast.LENGTH_SHORT).show()
         }
     }
-
 
 
     private fun getStudents() {
@@ -373,12 +372,12 @@ class CreateAlert : AppCompatActivity() {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200"){
+                    if (response.code().toString() == "200") {
                         parseLogiDatas(remoteResponse)
                     } else {
 //                        mProgressLayout!!.visibility = View.GONE
                         dialogue_error1();
-                        promptPopUpView?.changeStatus(1, "No data in response provider database")
+                        promptPopUpView?.changeStatus(3, "No data in response provider database.")
                     }
                 } else {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
@@ -404,9 +403,13 @@ class CreateAlert : AppCompatActivity() {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
 
 
-                mStrings.add(jsonobject.getString("firstname") + ", "+ jsonobject.getString("county") + ", " + jsonobject.getString("town")
-                        + "town, " + jsonobject.getString("nature_response"))
-                 mID.add(jsonobject.getString("mssdn"))
+                mStrings.add(
+                    jsonobject.getString("firstname") + ", " + jsonobject.getString("county") + ", " + jsonobject.getString(
+                        "town"
+                    )
+                            + "town, " + jsonobject.getString("nature_response")
+                )
+                mID.add(jsonobject.getString("mssdn"))
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -426,18 +429,23 @@ class CreateAlert : AppCompatActivity() {
             .addButton(
                 "Images",
                 R.color.pdlg_color_white,
-                R.color.colorPrimary ) {   val galleryIntent = Intent(
+                R.color.colorPrimary
+            ) {
+                val galleryIntent = Intent(
                     Intent.ACTION_PICK,
-                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
-                   startActivityForResult(galleryIntent, GALLERY2)
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
+                startActivityForResult(galleryIntent, GALLERY2)
                 pDialog.dismiss()
             }
             .addButton(
                 "PDF Documents",
                 R.color.pdlg_color_white,
                 R.color.colorPrimary
-            ) {browseDocuments()
-                pDialog.dismiss()}
+            ) {
+                browseDocuments()
+                pDialog.dismiss()
+            }
             .addButton(
                 "Record an Audio",
                 R.color.pdlg_color_white,
@@ -467,8 +475,6 @@ class CreateAlert : AppCompatActivity() {
             .show()
 
     }
-
-
 
 
     private fun browseDocuments() {
@@ -563,6 +569,7 @@ class CreateAlert : AppCompatActivity() {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 }
             }
+
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 //   btn.text = "Proceed"
                 Log.i("onEmptyResponse", "" + t) //
@@ -577,7 +584,7 @@ class CreateAlert : AppCompatActivity() {
         try {
             val o = JSONObject(jsonresponse)
             val array: JSONArray = o.getJSONArray("records")
-           //  val array: JSONArray = JSONArray(jsonresponse)
+            //  val array: JSONArray = JSONArray(jsonresponse)
             val jsonarray = JSONArray(array.toString())
             for (i in 0 until jsonarray.length()) {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
@@ -603,6 +610,7 @@ class CreateAlert : AppCompatActivity() {
                     }
                     // TODO Auto-generated method stub
                 }
+
                 override fun onNothingSelected(arg0: AdapterView<*>?) {
                     // TODO Auto-generated method stub
                 }
@@ -634,8 +642,7 @@ class CreateAlert : AppCompatActivity() {
 
 
             val adapter_4 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
-            adapter_4 .setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-
+            adapter_4.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
 
         } catch (e: JSONException) {
@@ -698,14 +705,12 @@ class CreateAlert : AppCompatActivity() {
             if (spinner3!!.selectedItem == null) {
                 Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
 
-            }
-             else {
+            } else {
                 alertsss!!.dismiss()
 
                 mProgress!!.show()
 
                 subm()
-
 
 
             }
@@ -737,6 +742,7 @@ class CreateAlert : AppCompatActivity() {
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
+
     private fun checkError(): Boolean {
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
 
@@ -755,12 +761,10 @@ class CreateAlert : AppCompatActivity() {
             return false
         } else textInputAlert!!.error = null
         if (Utils.checkIfEmptyString(setLevel)) {
-
             textInputlevel!!.error = "Setting Level Is Mandatory"
             textInputlevel!!.requestFocus()
             showKeyBoard()
-
-          //showKeyBoard()
+            //showKeyBoard()
             return false
 
         } else textInputlevel!!.error = null
@@ -770,15 +774,19 @@ class CreateAlert : AppCompatActivity() {
 //            return false
 //        }
 
-        if(selectedItem2 == null){
-            Toast.makeText(this@CreateAlert, "Select Response Group!! Please select", Toast.LENGTH_LONG).show()
+        if (selectedItem2 == null) {
+            Toast.makeText(
+                this@CreateAlert,
+                "Select Response Group!! Please select",
+                Toast.LENGTH_LONG
+            ).show()
             return false
         }
 
         if (Utils.checkIfEmptyString(setLoc)) {
             textInputLocation!!.error = "Location is Mandatory"
             textInputLocation!!.requestFocus()
-          //showKeyBoard()
+            //showKeyBoard()
             return false
         } else textInputLocation!!.error = null
         return true
@@ -788,34 +796,27 @@ class CreateAlert : AppCompatActivity() {
     private fun parseLoginData(jsonresponse: String) {
         try {
             val jsonObject = JSONObject(jsonresponse)
-
             if (jsonObject.getString("status") == "true") {
-
-                if (response_provider == null) {
-
-
-                    // ImageUploadToServerFunction()
-                    mProgress?.dismiss()
-                    //waitingDialog!!.dismiss()
-                    btnLogin!!.text = "Submit"
-                    imageView!!.visibility = View.GONE
-                    dialogue();
-                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
-                } else{
-                    if (selecteditem3 == null) {
+                if (selecteditem3 == null) {
+                    if (response_provider == null) {
+                        // ImageUploadToServerFunction()
+                        mProgress?.dismiss()
+                        //waitingDialog!!.dismiss()
+                        btnLogin!!.text = "Submit"
+                        imageView!!.visibility = View.GONE
+                        dialogue();
+                        promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                    } else {
                         sendAlert()
-                     }
-                    else{
+                    }
+                } else {
+                    if (path == null) {
+                        uploadImages2()
+                    } else {
 
-
-                        if(path == null){
-                            uploadImages2()
-                        }else {
-                            uploadImage2(path!!)
-                        }
+                        uploadImage2(path!!)
                     }
                 }
-
 
 
             } else {
@@ -824,7 +825,7 @@ class CreateAlert : AppCompatActivity() {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 //Log.d("BAYO", response.code().toString())
                 btnLogin!!.text = "Submit"
-                level  !!.setText("")
+                level!!.setText("")
                 loc!!.setText("")
 
                 mProgress?.dismiss()
@@ -836,9 +837,6 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
-
-
-
     private fun internet() {
         promptPopUpView = PromptPopUpView(this)
 
@@ -846,7 +844,8 @@ class CreateAlert : AppCompatActivity() {
 
             .setPositiveButton(
                 "Retry"
-            ) { dialog, _ -> dialog.dismiss()
+            ) { dialog, _ ->
+                dialog.dismiss()
                 recreate()
             }
 
@@ -866,10 +865,10 @@ class CreateAlert : AppCompatActivity() {
 
         promptPopUpView = PromptPopUpView(this)
 
-            AlertDialog.Builder(this)
+        AlertDialog.Builder(this)
             .setPositiveButton("Exit") { _: DialogInterface?, _: Int ->
                 //      finish()
-               // updates()
+                // updates()
                 sendOfflineAlert()
                 startActivity(Intent(this@CreateAlert, HomePage::class.java))
 
@@ -877,7 +876,7 @@ class CreateAlert : AppCompatActivity() {
 
             .setCancelable(false)
             .setView(promptPopUpView)
-                .show().withCenteredButtons()
+            .show().withCenteredButtons()
     }
 
 
@@ -915,6 +914,7 @@ class CreateAlert : AppCompatActivity() {
             .setView(promptPopUpView)
             .show()
     }
+
     private fun dialogue_error() {
         promptPopUpView = PromptPopUpView(this)
 
@@ -935,10 +935,9 @@ class CreateAlert : AppCompatActivity() {
     ) {
         super.onActivityResult(RC, RQC, I)
         if (RC == SEARCHPLACE) {
-            if (RQC == RESULT_OK)
-            {
+            if (RQC == RESULT_OK) {
                 val place = Autocomplete.getPlaceFromIntent(I!!)
-                if(place != null ) {
+                if (place != null) {
                     loc!!.setText(place.getName())
 //                Log.i(TAG, "Place: " + place.getName() + ", " + place.getId() + ", " + place.getAddress())
 //                    Toast.makeText(
@@ -947,21 +946,20 @@ class CreateAlert : AppCompatActivity() {
 //                        Toast.LENGTH_LONG
 //                    ).show()
 //                    val address = place.getAddress()
-                }
-                else{
-                    Log.d("TEST" , "place is null")
+                } else {
+                    Log.d("TEST", "place is null")
                 }
                 // do query with address
-            }
-            else if (RQC == AutocompleteActivity.RESULT_ERROR)
-            {
+            } else if (RQC == AutocompleteActivity.RESULT_ERROR) {
                 // TODO: Handle the error.
                 val status = Autocomplete.getStatusFromIntent(I!!)
-                Toast.makeText(this@CreateAlert, "Error: " + status.getStatusMessage(), Toast.LENGTH_LONG).show()
+                Toast.makeText(
+                    this@CreateAlert,
+                    "Error: " + status.getStatusMessage(),
+                    Toast.LENGTH_LONG
+                ).show()
 //                Log.i(TAG, status.getStatusMessage())
-            }
-            else if (RQC == RESULT_CANCELED)
-            {
+            } else if (RQC == RESULT_CANCELED) {
                 // The user canceled the operation.
             }
         }
@@ -971,9 +969,10 @@ class CreateAlert : AppCompatActivity() {
                 val contentURI = I!!.data
                 try {
                     bitmap =
-                        MediaStore.Images.Media.getBitmap( this.contentResolver, contentURI)
-                    if(bitmap != null){
-                        mattach!!.text = "Image is attached successfully!! You now can submit your alert"
+                        MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+                    if (bitmap != null) {
+                        mattach!!.text =
+                            "Image is attached successfully!! You now can submit your alert"
 //                        Toast.makeText(
 //                            this, "Document recorded successfully!", Toast.LENGTH_SHORT).show()
                         imageView!!.setImageBitmap(bitmap)
@@ -993,7 +992,8 @@ class CreateAlert : AppCompatActivity() {
 
         if (RC == REQUEST_RECORD_AUDIO) {
             if (RQC == RESULT_OK) {
-                mattach!!.text = "Audio record is attached successfully!! You can now submit your alert"
+                mattach!!.text =
+                    "Audio record is attached successfully!! You can now submit your alert"
                 Toast.makeText(
                     this,
                     "Audio recorded successfully!",
@@ -1035,36 +1035,20 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
-
-
-
-    fun subm(){
+    fun subm() {
         setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
-        if (setLevel == "Level 1"){
+        if (setLevel == "Level 1") {
             mProgress?.show()
-            if(path == null){
+            if (path == null) {
                 uploadImages()
-            }else {
+            } else {
                 uploadImage(path!!)
             }
-        }else {
+        } else {
             done()
         }
     }
 
-    fun subm2(){
-        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
-        if (setLevel == "Level 1"){
-            mProgress?.show()
-            if(path == null){
-                uploadImages2()
-            }else {
-                uploadImage2(path!!)
-            }
-        }else {
-            done()
-        }
-    }
 
     fun done() {
         AlertDialog.Builder(this)
@@ -1084,7 +1068,6 @@ class CreateAlert : AppCompatActivity() {
             }
             .show().withCenteredButtons()
     }
-
 
 
     private fun uploadImage(path: String) {
@@ -1140,31 +1123,45 @@ class CreateAlert : AppCompatActivity() {
         val filename =
             RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
         val getResponse: MultiInterface = retrofit.create(MultiInterface::class.java)
-        val call: Call<String> = getResponse.uploadImage(fileToUpload, alert_namess,fullname,selectedItem,selectedItem2,setLevel,mssidn,user,setLoc,addnotes, filename)
+        val call: Call<String> = getResponse.uploadImage(
+            fileToUpload,
+            alert_namess,
+            fullname,
+            selectedItem,
+            selectedItem2,
+            setLevel,
+            mssidn,
+            user,
+            setLoc,
+            addnotes,
+            filename
+        )
         Log.d("assss", imgname)
         call.enqueue(object : Callback<String?> {
-           override fun onResponse(
+            override fun onResponse(
                 @NonNull call: Call<String?>,
-                @NonNull response: Response<String?>) {
-               if (response.isSuccessful) {
-                   val remoteResponse = response.body()!!
-                   Log.d("test", remoteResponse)
-                  // Log.d("TAG", "File Saved::--->" + t.toString())
-                 parseLoginData(remoteResponse)
+                @NonNull response: Response<String?>
+            ) {
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!
+                     Log.d("test", remoteResponse)
+                    // Log.d("TAG", "File Saved::--->" + t.toString())
+                    parseLoginData(remoteResponse)
+//
 
 
-                   dialogue();
-                   promptPopUpView?.changeStatus(2, "SUCCESSFUL")
-                   mProgress?.dismiss()
+//                    dialogue();
+//                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+//                    mProgress?.dismiss()
 
-               } else {
-                   mProgress?.dismiss()
-                   dialogue_error();
-                   promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                   Log.d("BAYO", response.code().toString())
-                   btnLogin!!.text = "Submit"
-                   mProgress?.dismiss()
-               }
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    btnLogin!!.text = "Submit"
+                    mProgress?.dismiss()
+                }
             }
 
             override fun onFailure(call: Call<String?>, t: Throwable) {
@@ -1175,7 +1172,6 @@ class CreateAlert : AppCompatActivity() {
 
         })
     }
-
 
 
     private fun sendAlert() {
@@ -1275,8 +1271,6 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
-
-
     private fun uploadImages() {
 
         pref =
@@ -1371,21 +1365,30 @@ class CreateAlert : AppCompatActivity() {
     }
 
 
-
     private fun parseLoginData2(jsonresponse: String) {
         try {
             val jsonObject = JSONObject(jsonresponse)
+            Log.d("tesTIMAGE3", jsonObject.toString())
 
             if (jsonObject.getString("status") == "true") {
-                sendAlert()
-
+                if (response_provider == null) {
+                    // ImageUploadToServerFunction()
+                    mProgress?.dismiss()
+                    //waitingDialog!!.dismiss()
+                    btnLogin!!.text = "Submit"
+                    imageView!!.visibility = View.GONE
+                    dialogue();
+                    promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                } else {
+                    sendAlert()
+                }
             } else {
 
                 dialogue_error();
                 promptPopUpView?.changeStatus(1, "Something went wrongssssssssss. Try again")
                 //Log.d("BAYO", response.code().toString())
                 btnLogin!!.text = "Submit"
-                level  !!.setText("")
+                level!!.setText("")
                 loc!!.setText("")
 
                 mProgress?.dismiss()
@@ -1397,6 +1400,9 @@ class CreateAlert : AppCompatActivity() {
     }
 
     private fun uploadImage2(path: String) {
+
+
+
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
@@ -1433,7 +1439,7 @@ class CreateAlert : AppCompatActivity() {
 
         val imgname = Calendar.getInstance().timeInMillis.toString()
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(MultiInterface.IMAGEURL)
+            .baseUrl(API_BASE_URL)
             .client(client)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
@@ -1448,17 +1454,35 @@ class CreateAlert : AppCompatActivity() {
         val filename =
             RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
         val getResponse: MultiInterface = retrofit.create(MultiInterface::class.java)
-        val call: Call<String> = getResponse.uploadImage(fileToUpload, alert_namess,fullname,selectedItem,selecteditem3,setLevel,mssidn,user,setLoc,addnotes, filename)
+        val call: Call<String> = getResponse.uploadImage(
+            fileToUpload,
+            alert_namess,
+            fullname,
+            selectedItem,
+            selecteditem3,
+            setLevel,
+            mssidn,
+            user,
+            setLoc,
+            addnotes,
+            filename
+        )
         Log.d("assss", imgname)
         call.enqueue(object : Callback<String?> {
             override fun onResponse(
                 @NonNull call: Call<String?>,
-                @NonNull response: Response<String?>) {
+                @NonNull response: Response<String?>
+            ) {
+                Log.d("parseLoginData2", response.toString())
+
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!
-                    Log.d("test", remoteResponse)
-
-                    sendAlert()
+//                    Toast.makeText(
+//                        this@CreateAlert,
+//                        "Error: " + remoteResponse,
+//                        Toast.LENGTH_LONG
+//                    ).show()
+                    parseLoginData2(remoteResponse)
 
                 } else {
                     mProgress?.dismiss()
@@ -1471,7 +1495,7 @@ class CreateAlert : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<String?>, t: Throwable) {
-                Log.d("TAG", "File Saved::--->" + t.toString())
+                Log.d("TAGSS", "File Saved::--->" + t.toString())
 
             }
 
@@ -1480,6 +1504,17 @@ class CreateAlert : AppCompatActivity() {
     }
 
     private fun sendOfflineAlert() {
+
+        mProgress!!.show()
+        pref =
+            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
+
+        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
+
+        mssidn = pref!!.getString("mssdn", null)
+
+        user = pref!!.getString("userid", null)
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -1505,7 +1540,7 @@ class CreateAlert : AppCompatActivity() {
         params["alert_name"] = alert_namess!!
         params["alert_type"] = selectedItem!!
         params["rl"] = setLevel!!
-//        params["groupPhone"] = orgphone!!
+        params["groupPhone"] = mssidn!!
         params["location"] = setLoc!!
         params["notes"] = addnotes!!
         params["name"] = fullname!!
@@ -1513,6 +1548,11 @@ class CreateAlert : AppCompatActivity() {
         val call: Call<ResponseBody> = api.sendofflineAlert(params)
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
                 //Toast.makeText()
 //                if (response.isSuccessful) {
 //                    val remoteResponse = response.body()!!.string()
@@ -1604,7 +1644,6 @@ class CreateAlert : AppCompatActivity() {
 
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!.string()
-                    Log.d("test", remoteResponse)
                     parseLoginData2(remoteResponse)
                 } else {
                     mProgress?.dismiss()
@@ -1627,7 +1666,7 @@ class CreateAlert : AppCompatActivity() {
         })
     }
 
-   fun saveImage(myBitmap: Bitmap): String? {
+    fun saveImage(myBitmap: Bitmap): String? {
         val bytes = ByteArrayOutputStream()
         myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
         val wallpaperDirectory = File(
@@ -1660,8 +1699,6 @@ class CreateAlert : AppCompatActivity() {
         }
         return ""
     }
-
-
 
 
 }

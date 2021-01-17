@@ -148,15 +148,13 @@ class Alert_Enterpris : Fragment(),
             ADS = pref2!!.getString("ads", null)
 
             if(ADS == "0") {
-
-                MobileAds.initialize(activity, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
+                MobileAds.initialize(activity, "ca-app-pub-8641077171287971/4788863450"); //TEST KEY
                 views = activity!!.window!!.decorView.rootView;
                 Admob.createLoadBanner(activity!!.applicationContext, views);
                 Admob.createLoadInterstitial(activity!!.applicationContext, null);
                 mAdView = view.findViewById<View>(R.id.adView) as AdView?
                 val adRequest: AdRequest = AdRequest.Builder().build()
                 mAdView!!.loadAd(adRequest)
-
             }
         }
 
