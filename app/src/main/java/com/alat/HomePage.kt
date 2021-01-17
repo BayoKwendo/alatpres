@@ -142,7 +142,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             ADS = pref2!!.getString("ads", null)
 
             if (ADS == "0") {
-                MobileAds.initialize(this, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
+                MobileAds.initialize(this, "ca-app-pub-8641077171287971/4006264825"); //TEST KEY
                 view = window.decorView.rootView;
 
                 Admob.createLoadBanner(applicationContext, view);

@@ -27,9 +27,11 @@
         android:screenOrientation="locked"
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
+
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-3940256099942544~3347511713"/>
+            android:value="ca-app-pub-8641077171287971~6663399514"/>
 
         <activity android:name=".BasicUserActivity"
             android:screenOrientation="locked"
@@ -44,7 +46,6 @@
 
         <activity android:name=".ui.activities.level_1"
             android:screenOrientation="locked"
-
             android:theme="@style/AppTheme.NoActionBar">
 
         </activity>

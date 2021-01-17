@@ -63,9 +63,9 @@ constructor(context: Context?, attrs: AttributeSet? = null,
        else if (color == 1) {
             v.setBackgroundColor(ContextCompat.getColor(context, R.color.error))
         }
-//        else {
-//            v.setBackgroundColor(ContextCompat.getColor(context, R.color.lender_colorAccent))
-//        }
+        else if (color == 3) {
+            v.setBackgroundColor(ContextCompat.getColor(context, R.color.main))
+        }
 //        else {
 //            v.setBackgroundColor(ContextCompat.getColor(context, R.color.lender_colorAccent))
 //        }

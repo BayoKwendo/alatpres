@@ -29,11 +29,11 @@
 29
 30    <uses-sdk
 31        android:minSdkVersion="19"
-31-->/home/bayo/Downloads/Alat/library/src/main/AndroidManifest.xml
+31-->/home/bayo/work/alatpres/library/src/main/AndroidManifest.xml
 32        android:targetSdkVersion="29" />
-32-->/home/bayo/Downloads/Alat/library/src/main/AndroidManifest.xml
+32-->/home/bayo/work/alatpres/library/src/main/AndroidManifest.xml
 33
 34    <application />
-34-->/home/bayo/Downloads/Alat/library/src/main/AndroidManifest.xml:28:5-20
+34-->/home/bayo/work/alatpres/library/src/main/AndroidManifest.xml:28:5-20
 35
 36</manifest>

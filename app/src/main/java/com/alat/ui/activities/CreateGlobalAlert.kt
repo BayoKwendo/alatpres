@@ -1247,7 +1247,7 @@ class CreateGlobalAlert : AppCompatActivity() {
 
         val imgname = Calendar.getInstance().timeInMillis.toString()
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(MultiInterface.IMAGEURL)
+            .baseUrl(Constants.API_BASE_URL)
             .addConverterFactory(ScalarsConverterFactory.create())
             .build()
 
