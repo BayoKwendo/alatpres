@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
@@ -211,8 +212,6 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
 
-            Collections.reverse(items);
-
             contactList!!.clear()
 
             contactList!!.addAll(items)
@@ -337,6 +336,7 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 //        ).show()
 
         alert_rlss = contact!!.rl.toString()
+
         alert_id = contact!!.id.toString()
 
 
@@ -349,12 +349,12 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         AlertDialog.Builder(this)
             .setMessage("Change status of this Alat??")
             .setCancelable(true)
-            .setPositiveButton("Neutralized") { _, id ->
-                //  accept()
-                getRGNAMES()
-                mProgress!!.show()
-                // startActivity(Intent(this@FriendRequests, HomePage::class.java))
-            }
+//            .setPositiveButton("Neutralized") { _, id ->
+//                //  accept()
+//                getRGNAMES()
+//                mProgress!!.show()
+//                // startActivity(Intent(this@FriendRequests, HomePage::class.java))
+//            }
             .setNeutralButton("View Details") { _, id ->
                 val i =
                     Intent(this, AlertReport::class.java)
@@ -365,6 +365,8 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
             .setNegativeButton("Withdraw") { _, id ->
                 // reject()
                 getRGNAME()
+//                Toast.makeText(this@ActiveAlerts,alert_id ,Toast.LENGTH_LONG).show();
+
                 mProgress!!.show()
             }
             .show().withCenteredButtonss()

@@ -30,7 +30,7 @@
                 android:inputType="text"
                 android:textColor="@color/colorAccent"
                 android:textColorHint="@color/accentColor"
-                android:textSize="20sp"
+                android:textSize="@dimen/_13ssp"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 app:met_singleLineEllipsis="true"

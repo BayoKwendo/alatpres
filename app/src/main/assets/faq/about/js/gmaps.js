@@ -480,7 +480,6 @@ GMaps.prototype.createControl = function(options) {
   var control = document.createElement('div');
 
   control.style.cursor = 'pointer';
-  control.style.fontFamily = 'Arial, sans-serif';
   control.style.fontSize = '13px';
   control.style.boxShadow = 'rgba(0, 0, 0, 0.398438) 0px 2px 4px';
 

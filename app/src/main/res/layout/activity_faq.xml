@@ -14,6 +14,7 @@
             android:id="@+id/toolbar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
+            app:titleTextAppearance="@style/Toolbar.TitleText"
             android:background="@color/colorPrimaryDark"
             android:minHeight="?android:attr/actionBarSize"
             app:titleTextColor="@android:color/white">
@@ -27,7 +28,6 @@
                 android:marqueeRepeatLimit="1"
                 android:singleLine="true"
                 android:textColor="@android:color/white"
-                android:textSize="20sp"
                 android:textStyle="bold" />
         </androidx.appcompat.widget.Toolbar>
     </com.google.android.material.appbar.AppBarLayout>

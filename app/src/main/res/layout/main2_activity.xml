@@ -83,7 +83,6 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:textSize="12sp"
                         android:textColor="@color/bt_black_54"
                         android:layout_toRightOf="@id/payment_method_icon"
                         android:layout_below="@id/payment_method_title"/>

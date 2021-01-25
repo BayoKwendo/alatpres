@@ -200,7 +200,6 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
 
-            Collections.reverse(items);
 
             contactList!!.clear()
 

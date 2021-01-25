@@ -126,7 +126,6 @@ class account : AppCompatActivity() {
         mstatus = pref!!.getString("mstatus", null)
         clients = pref!!.getString("clients", null)
         linear_layout_1 = findViewById(R.id.linear_layout_1);
-
         linear_layout_2 = findViewById(R.id.linear_layout_2);
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Redirecting..");
@@ -135,9 +134,8 @@ class account : AppCompatActivity() {
         tv_hour = findViewById(R.id.tv_hour);
         tv_minute = findViewById(R.id.tv_minute);
         tv_second = findViewById(R.id.tv_second);
-
-
         btnConfirm = findViewById<View>(R.id.btn_upgrade) as Button
+        btnBack!!.setVisibility(View.VISIBLE)
 
         pref =
             this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
@@ -153,6 +151,17 @@ class account : AppCompatActivity() {
         when (account) {
             "1" -> {
                 if(mstatus == "0"){
+                    btnBack!!.setText("Disable Ads")
+                    btnBack!!.isEnabled = false
+                    btnBack!!.setVisibility(View.GONE)
+
+                    pref =
+                        applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+                    val editor2: SharedPreferences.Editor = pref!!.edit()
+                    editor2.putString("ads", "0")
+                    editor2.clear()
+                    editor2.apply()
+
                     account_title!!.setText("ALATPRES TRIAL ACCOUNT")
                     account_msg!!.setText("You're currently on free trial.  \n\n Expire  in....")
 
@@ -169,6 +178,7 @@ class account : AppCompatActivity() {
                 }
             }
             "0" -> {
+                btnBack!!.setText("Disable Ads")
 
 
                 linear_layout_1!!.setVisibility(View.VISIBLE)
@@ -178,7 +188,6 @@ class account : AppCompatActivity() {
 
 btnBack!!.setOnClickListener {
 //      Toast.makeText(this@account, adsstatus, Toast.LENGTH_LONG).show();
-
     if (account == "1" && adsstatus == "0") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
@@ -402,6 +411,12 @@ private fun dialogue() {
                                     editor.clear()
                                     editor.apply()
 
+                                    pref =
+                                        applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+                                    val editor4: SharedPreferences.Editor = pref!!.edit()
+                                    editor4.putString("ads_basic", "0")
+                                    editor4.clear()
+                                    editor4.apply()
                                     recreate()
 
                                     //Toast.makeText(this@account, "me" + dataobj.getString("subscription_date")  , Toast.LENGTH_LONG).show()

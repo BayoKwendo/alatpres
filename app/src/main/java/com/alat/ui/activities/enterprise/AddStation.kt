@@ -3,11 +3,15 @@ package com.alat.ui.activities.enterprise
 import adil.dev.lib.materialnumberpicker.dialog.CountyDialog
 import adil.dev.lib.materialnumberpicker.dialog.EmployDialogue
 import adil.dev.lib.materialnumberpicker.dialog.OrgDialogue
+import android.app.Activity
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import android.database.Cursor
+import android.net.Uri
 import android.os.Bundle
+import android.provider.ContactsContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -18,6 +22,7 @@ import android.widget.ArrayAdapter
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.alat.BasicUserActivity
 import com.alat.HomePage
@@ -33,6 +38,12 @@ import com.alat.interfaces.GetClients
 import com.alat.interfaces.ViewGPsEnteClient
 import com.alat.model.TextViewDatePicke
 import com.alat.model.rgModel
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
+import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -89,6 +100,9 @@ class AddStation : Fragment() {
     private var description: String? = null
     private var nameRG: String? = null
     private var nature_RG: String? = null
+    var AUTOCOMPLETE_REQUEST_CODE = 1
+    private var destinationAddress: String? = null
+
     private val ITEMS1 = arrayOf("Open", "Private")
     var selectedItem: String? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -96,10 +110,15 @@ class AddStation : Fragment() {
     private var selecteditem3: String? = null
     var pref: SharedPreferences? = null
     private var fullname: String? = null
+    private var edit: TextInputEditText? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view: View = inflater.inflate(R.layout.activity_add_station, container, false)
+        if (!Places.isInitialized()) {
+            Places.initialize(activity!!, getString(R.string.google_maps_key))
+        }
         pref =
             activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
         userid = pref!!.getString("userid", null)
@@ -110,11 +129,15 @@ class AddStation : Fragment() {
         mssidn = pref!!.getString("mssdn", null)
 
 
+
+
 //       Toast.makeText(activity, "WOW"  +   userid, Toast.LENGTH_SHORT).show()
 
         textInputlocation  = view.findViewById(R.id.mlocation)
 
         textInputname  = view.findViewById(R.id.rg_name)
+
+        edit = view.findViewById((R.id.loc2))
 
         mProgress = ProgressDialog(activity)
         mProgress!!.setMessage("Creating Station....")
@@ -155,7 +178,15 @@ class AddStation : Fragment() {
 
             }
         }
-        getStudent()
+
+        textInputlocation!!.setOnClickListener {
+            searchPlace()
+        }
+        textInputlocation!!.requestFocus()
+        edit!!.setOnClickListener {
+            searchPlace()
+        }
+//        getStudent()
 
         return view
     }
@@ -163,7 +194,22 @@ class AddStation : Fragment() {
 
 
 
+    private fun searchPlace() {
 
+        // Set the fields to specify which types of place data to return.
+        val fields = listOf(
+            Place.Field.ID,
+            Place.Field.NAME,
+            Place.Field.ADDRESS,
+            Place.Field.LAT_LNG
+        )
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.OVERLAY, fields
+        ).setCountry("KE") //KENYA
+            .build(activity!!)
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
+    }
 
     private val mOnItemSelectedListener1: OnItemSelectedListener = object : OnItemSelectedListener {
         override fun onItemSelected(view: View?, position: Int, id: Long) {
@@ -198,14 +244,14 @@ class AddStation : Fragment() {
     private fun checkContactError(): Boolean {
 
         registerVar()
-       if (selecteditem3 == null) {
-            Toast.makeText(
-                activity,
-                "Please  name of the client",
-                Toast.LENGTH_LONG
-            ).show()
-            return false
-        }
+//       if (selecteditem3 == null) {
+//            Toast.makeText(
+//                activity,
+//                "Please  name of the client",
+//                Toast.LENGTH_LONG
+//            ).show()
+//            return false
+//        }
         if (Utils.checkIfEmptyString(name)) {
             textInputname!!.error = "Station Name is required"
             textInputname!!.requestFocus()
@@ -330,7 +376,7 @@ class AddStation : Fragment() {
 
         val params: HashMap<String, String> = HashMap()
 
-        params["client_name"] = selecteditem3!!
+//        params["client_name"] = selecteditem3!!
         params["location"] = location!!
         params["userid"] = userid!!
         params["station_name"] = name!!
@@ -433,6 +479,27 @@ class AddStation : Fragment() {
             .show()
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (resultCode == AppCompatActivity.RESULT_OK) {
+                val place = Autocomplete.getPlaceFromIntent(data!!)
+                destinationAddress = place.name
+
+                textInputlocation!!.editText?.setText(destinationAddress.toString())
+
+                // Toast.makeText(this@CreateAlert, "" + destinationAddress.toString() , Toast.LENGTH_LONG).show();
+
+                // lblAddress
+            } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                // TODO: Handle the error.
+                val status = Autocomplete.getStatusFromIntent(data!!)
+//                Toast.makeText(this@CreateRG, "Some went wrong. Search again", Toast.LENGTH_SHORT)
+//                    .show()
+                // Log.i(TAG, status.getStatusMessage())
+            }
+        }
+    }
     fun onBackPressed() {
 //        val intent = Intent(this@AddClientActivitity, BasicUserActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

@@ -31,7 +31,7 @@
 
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-8641077171287971~6663399514"/>
+            android:value="ca-app-pub-1439472385814796~7922691664"/>
 
         <activity android:name=".BasicUserActivity"
             android:screenOrientation="locked"
@@ -85,7 +85,7 @@
         </activity>
         <activity android:name=".ui.activities.enterprise.CreateAlerteNT"
             android:screenOrientation="locked"
-            android:label="Create Update Alert"/>
+            android:label="Create Update Alat"/>
 
         <activity android:name=".ui.activities.CreateGlobalAlert"
             android:screenOrientation="locked"

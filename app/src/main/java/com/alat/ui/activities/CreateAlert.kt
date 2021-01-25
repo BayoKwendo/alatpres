@@ -603,7 +603,7 @@ class CreateAlert : AppCompatActivity() {
                 ) {
                     if (spinner_2!!.selectedItem == null) {
                         // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
-                        return
+                        selectedItem2 = null
                     } else {
                         selectedItem2 = spinner_2!!.selectedItem.toString()
                         // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
@@ -631,6 +631,9 @@ class CreateAlert : AppCompatActivity() {
                         // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
                         selecteditem3 = spinner3!!.selectedItem.toString()
                     }   // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
+                    else{
+                        selecteditem3 = null
+                    }
 
                     // TODO Auto-generated method stub
                 }

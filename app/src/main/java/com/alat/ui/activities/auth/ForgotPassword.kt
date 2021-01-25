@@ -125,23 +125,18 @@ class ForgotPassword : AppCompatActivity() {
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "email not found")
                     }
-                    if (response.code() == 400) {
-                        mProgress?.dismiss()
-                        dialogue_error()
-                        promptPopUpView?.changeStatus(1, "User ID already taken!!")
-                    }
+
                 } else {
                     mProgress?.dismiss()
-                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                    Log.d("BAYO", response.code().toString())
-                    mProgress?.dismiss()
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "email not found")
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                Log.i("onEmptyResponse", "" + t) //
                 mProgress?.dismiss()
+                dialogue_error()
+                promptPopUpView?.changeStatus(1, "email not found")
             }
         })
     }

@@ -12,7 +12,7 @@ public interface paypal {
     @Headers("Content-Type: application/json")
 
     // @FormUrlEncoded
-    @POST("src/request.php")
+    @POST("paypal/src/request.php")
     Call<ResponseBody> paypal(@Body Map<String, String> body);
 }
 

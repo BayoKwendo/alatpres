@@ -1,5 +1,6 @@
 package com.alat.ui.activities
 
+import adil.dev.lib.materialnumberpicker.dialog.LevelDialog
 import android.app.DownloadManager
 import android.app.ProgressDialog
 import android.content.Context
@@ -19,10 +20,12 @@ import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
+import com.alat.helpers.Utils
 import com.alat.interfaces.*
 import com.alat.model.rgModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import com.rengwuxian.materialedittext.MaterialEditText
 import com.squareup.picasso.Picasso
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
@@ -55,6 +58,8 @@ class AlertDetails : AppCompatActivity() {
 
     var rl: String? = null
     val catList: ArrayList<String> = ArrayList()
+    var updateFNamee: MaterialEditText? = null
+    var alert: android.app.AlertDialog? = null
 
 
     var response_group: TextView? = null
@@ -65,6 +70,7 @@ class AlertDetails : AppCompatActivity() {
     var createdOn: TextView? = null
 
     var addNotes: TextView? = null
+    var updateFName: String? = null
 
     var saveImage: Button? = null
     var spinner3: MaterialSpinner? = null
@@ -106,6 +112,7 @@ class AlertDetails : AppCompatActivity() {
     var mssdn: String? = null
     var userid: String? = null
 
+    var alert_level: String? = null
 
     var ignore_count: String? = null
     var shout_count: String? = null
@@ -258,7 +265,7 @@ class AlertDetails : AppCompatActivity() {
     fun AlertIgnore() {
 
         AlertDialog.Builder(this)
-            .setMessage(" I am not affected in anyway by the Alert \n\n")
+            .setMessage(" I am not affected in anyway by the Alat \n\n")
             .setCancelable(true)
             .setPositiveButton("Ignore") { _, id ->
                 //  accept()
@@ -1019,8 +1026,7 @@ class AlertDetails : AppCompatActivity() {
                         val remoteResponse = response.body()!!.string()
 
                         Log.d("test", remoteResponse)
-                        parseLoginDataaassss(remoteResponse)
-
+                        neutralizedalert()
                         //Toast.makeText(this@ActiveAlerts,"Nothing "  + remoteResponse,Toast.LENGTH_LONG).show();
 
                     } else {
@@ -1040,6 +1046,68 @@ class AlertDetails : AppCompatActivity() {
                 }
             }
 
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+            }
+        })
+    }
+    private fun neutralizedalert() {
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+        val params: java.util.HashMap<String, String> = java.util.HashMap()
+        params["id"] = mid!!
+        params["rg"] = rg!!
+        val api: UpdateAlertStatus = retrofit.create(UpdateAlertStatus::class.java)
+        val call: Call<ResponseBody> = api.Update(params)
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+
+                    if (response.body() != null) {
+                        val remoteResponse = response.body()!!.string()
+                        parseLoginDataaassss(remoteResponse)
+                        //   parseLoginDatas(remoteResponse)
+                    } else {
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        )
+                    }
+                } else {
+                    dialogue_error();
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                }
+            }
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                 Log.i("onEmptyResponse", "" + t) //
@@ -1124,14 +1192,10 @@ class AlertDetails : AppCompatActivity() {
 
                     if (response.body() != null) {
                         val remoteResponse = response.body()!!.string()
-
                         Log.d("test", remoteResponse)
                         parseLoginDataaasss(remoteResponse)
-
                         //Toast.makeText(this@ActiveAlerts,"Nothing "  + remoteResponse,Toast.LENGTH_LONG).show();
-
                     } else {
-
                         Log.i(
                             "onEmptyResponse",
                             "Returned empty response"
@@ -1139,11 +1203,9 @@ class AlertDetails : AppCompatActivity() {
                     }
 
                 } else {
-
                     dialogue_error();
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                     Log.d("BAYO", response.code().toString())
-
                 }
             }
 
@@ -1163,10 +1225,7 @@ class AlertDetails : AppCompatActivity() {
 
 
             if (jsonObject.getString("status") == "true") {
-                dialogue();
-                promptPopUpView?.changeStatus(2, "Successfully reported!!")
-
-                mProgress!!.dismiss()
+             updateelevate()
 
             } else {
                 dialogue_error();
@@ -1180,6 +1239,144 @@ class AlertDetails : AppCompatActivity() {
         }
 
     }
+
+
+    fun updateelevate() {
+        val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
+        alertDialog.setTitle("Elevate Alert")
+        val inflater: LayoutInflater =
+            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val layout_pwd: View =
+            inflater.inflate(R.layout.layout_update_alert, null)
+        alertDialog.setView(layout_pwd)
+        alert = alertDialog.create()
+        updateFNamee = layout_pwd.findViewById<View>(R.id.etName) as MaterialEditText
+        updateFNamee!!.setText(alert_level)
+
+        updateFNamee!!.isEnabled = alert_level != "Level 3"
+        updateFNamee!!.setOnClickListener {
+            updateFNamee!!.clearFocus()
+            updateFNamee!!.isFocusable = false
+            val dialog = LevelDialog(this)
+            dialog.setOnSelectingLevel { value -> updateFNamee?.setText(value) }
+            dialog.show()
+        }
+
+        val updateButton: Button =
+            layout_pwd.findViewById<View>(R.id.update) as Button
+        updateButton.setOnClickListener(View.OnClickListener {
+
+            val waitingDialog: android.app.AlertDialog = SpotsDialog.Builder().setContext(this).build()
+
+            updateFName = updateFNamee!!.getText().toString()
+
+            updateFNamee!!.clearFocus()
+
+            if (Utils.checkIfEmptyString(updateFName)) {
+                updateFNamee!!.error = "Alert Level Is Mandatory"
+                updateFNamee!!.requestFocus()
+            }
+            else {
+                waitingDialog.show()
+            }
+
+            //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
+
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                .addNetworkInterceptor(object : Interceptor {
+                    @Throws(IOException::class)
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val request: Request =
+                            chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                                .build()
+                        return chain.proceed(request)
+                    }
+                }).build()
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(Constants.API_BASE_URL)
+                .client(client) // This line is important
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+            val params: HashMap<String, String> = HashMap()
+            params["id"] = mid!!
+            params["rl"] = updateFName!!
+            val api: ALertUpgrade = retrofit.create(ALertUpgrade::class.java)
+            val call: Call<ResponseBody> = api.upgrade(params)
+
+            call.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    //Toast.makeText()
+                    Log.d("Call request", call.request().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", response.toString());
+                    Log.d("Response code", response.code().toString());
+
+                    if (response.isSuccessful) {
+                        val remoteResponse = response.body()!!.string()
+                        Log.d("test", remoteResponse)
+                        parseLoginDatas(remoteResponse)
+                        waitingDialog.dismiss()
+                    } else {
+                        mProgress?.dismiss()
+                        dialogue_error();
+                        promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                        Log.d("BAYO", response.code().toString())
+                        //btnLogin!!.text = "Submit"
+                        mProgress?.dismiss()
+                    }
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                    //btnLogin!!.text = "Submit"
+
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.i("onEmptyResponse", "" + t) //
+                    mProgress?.dismiss()
+                }
+            })
+        })
+        val dismissButton: Button =
+            layout_pwd.findViewById<View>(R.id.cancel) as Button
+        dismissButton.setOnClickListener(View.OnClickListener {
+            mProgress!!.dismiss()
+            alert!!.dismiss()
+        })
+        alertDialog.setView(layout_pwd)
+        alert!!.show()
+
+    }
+
+    private fun parseLoginDatas(jsonresponse: String) {
+        try {
+            val jsonObject = JSONObject(jsonresponse)
+            if (jsonObject.getString("status") == "true") {
+                dialogue();
+                promptPopUpView?.changeStatus(2, "Successfully reported!!")
+
+                mProgress!!.dismiss()
+                alert!!.dismiss()
+
+            }else{
+                mProgress?.dismiss()
+                dialogue_error();
+
+                promptPopUpView?.changeStatus(1, "Unable to add")
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
 
     private fun getGroupNames() {
 

@@ -148,6 +148,7 @@ class GroupMembers : AppCompatActivity(), MembersAdapter.ContactsAdapterListener
 //            global!!.setOnClickListener {
 //                startActivity(Intent(this, JoinGlobal::class.java))
 //            }
+
         floatingActionButton!!.setOnClickListener {
             addMember()
            // startActivity(Intent(activity!!, CreateAlert::class.java))
@@ -355,7 +356,7 @@ class GroupMembers : AppCompatActivity(), MembersAdapter.ContactsAdapterListener
                       exit()
                  //   Toast.makeText(this@GroupMembers, "Youre not an admin", Toast.LENGTH_LONG).show()
                 }else {
-                    Toast.makeText(this@GroupMembers, "You're not an  admin", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this@GroupMembers, "You're not an admin of this RG", Toast.LENGTH_LONG).show()
 
                 }
 

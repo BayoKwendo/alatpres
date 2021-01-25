@@ -22,7 +22,7 @@
         android:id="@+id/hotlist_hot"
         android:layout_width="wrap_content"
         android:minWidth="17sp"
-        android:textSize="12sp"
+        android:textSize="@dimen/_13ssp"
         android:textColor="#ffffffff"
         android:layout_height="wrap_content"
         android:gravity="center"

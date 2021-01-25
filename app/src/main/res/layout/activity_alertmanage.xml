@@ -67,7 +67,7 @@
                                     android:singleLine="true"
                                     android:text="Active Alats"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_13ssp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -102,7 +102,7 @@
                                     android:singleLine="true"
                                     android:text="Neutralized"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_13ssp"
                                     android:textStyle="bold" />
                             </LinearLayout>
 
@@ -141,7 +141,7 @@
                                     android:singleLine="true"
                                     android:text="Shared"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_13ssp"
                                     android:textStyle="bold" />
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
@@ -179,7 +179,7 @@
                                     android:singleLine="true"
                                     android:text="Elevated"
                                     android:textColor="@color/colorBlack"
-                                    android:textSize="14sp"
+                                    android:textSize="@dimen/_13ssp"
                                     android:textStyle="bold" />
                             </LinearLayout>
                         </androidx.cardview.widget.CardView>
