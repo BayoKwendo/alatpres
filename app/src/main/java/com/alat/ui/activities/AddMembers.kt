@@ -168,7 +168,7 @@ class AddMembers : AppCompatActivity() {
         mPostBtn!!.setOnClickListener(View.OnClickListener {
             val title = configlevel!!.getText().toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(title)) {
-                configlevel!!.setError("Alert Level is compulsory")
+                configlevel!!.setError("Alat Level is compulsory")
                 return@OnClickListener
             }
             if (!isNetworkAvailable()) {

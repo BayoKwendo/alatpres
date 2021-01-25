@@ -204,9 +204,10 @@ class CreateGlobalAlert : AppCompatActivity() {
         //Adapters
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        textInputLocation = findViewById(R.id.alertname)
+        textInputLocation = findViewById(R.id.location)
+        textInputAlert = findViewById(R.id.alertname)
+
         alert = findViewById(R.id.alert)
-        textInputAlert = findViewById(R.id.location)
         notes = findViewById(R.id.notes)
         mattach = findViewById(R.id.attach)
         imageView = findViewById(R.id.imageView);

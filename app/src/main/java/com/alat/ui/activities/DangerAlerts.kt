@@ -174,7 +174,7 @@ class DangerAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
 
-                    if (response.code().toString() == "200") {
+                    if (response.code().toString() == "201") {
                         errorNull!!.visibility = View.VISIBLE
                         mProgressLayout!!.visibility = View.GONE
                     }
@@ -342,20 +342,26 @@ class DangerAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener {
     }
 
     override fun onContactSelected(contact: rgModel?) {
+
+        val i =
+            Intent(this, AlertReport::class.java)
+        i.putExtra("alertSelect", contact!!.id.toString())
+        i.putExtra("level", contact.rl)
+        startActivity(i)
 //        Toast.makeText(
 //            this,
 //             ,
 //            Toast.LENGTH_LONG
 //        ).show()
 
-        val sharingIntent =
-            Intent(Intent.ACTION_SEND)
-        sharingIntent.type = "text/plain"
-        val shareBody = "Attention!!\n" + "ALERT: " + contact!!.alert_name + "\n from ALAPRES"
-        val shareSub = contact!!.alert_name
-        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub)
-        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
-        startActivity(Intent.createChooser(sharingIntent, "Share using"))
+//        val sharingIntent =
+//            Intent(Intent.ACTION_SEND)
+//        sharingIntent.type = "text/plain"
+//        val shareBody = "Attention!!\n" + "ALERT: " + contact!!.alert_name + "\n from ALAPRES"
+//        val shareSub = contact!!.alert_name
+//        sharingIntent.putExtra(Intent.EXTRA_SUBJECT, shareSub)
+//        sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
+//        startActivity(Intent.createChooser(sharingIntent, "Share using"))
 
 //        val i =
 //            Intent(this, AlertReport::class.java)

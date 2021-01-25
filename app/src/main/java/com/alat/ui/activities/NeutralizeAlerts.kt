@@ -207,7 +207,6 @@ class NeutralizeAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
 
-            Collections.reverse(items);
 
             contactList!!.clear()
 

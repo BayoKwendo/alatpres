@@ -226,10 +226,10 @@ class CreateAlerteNT : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_spinner_item, ITEMS)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
-        textInputLocation = findViewById(R.id.alertname)
+        textInputLocation = findViewById(R.id.location)
         alert = findViewById(R.id.alert)
 
-        textInputAlert = findViewById(R.id.location)
+        textInputAlert = findViewById(R.id.alertname)
         notes = findViewById(R.id.notes)
         mattach = findViewById(R.id.attach)
 
@@ -270,6 +270,7 @@ class CreateAlerteNT : AppCompatActivity() {
             ) {
                 if (spinner!!.selectedItem == null) {
                     // Toast.makeText(this@CreateAlert, "Please select an Alert Type", Toast.LENGTH_LONG).show();
+                    selectedItem = null
                     return
                 } else {
                     selectedItem = spinner!!.selectedItem.toString()

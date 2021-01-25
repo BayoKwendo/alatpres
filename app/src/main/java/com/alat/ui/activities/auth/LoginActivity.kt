@@ -75,7 +75,7 @@ class LoginActivity : AppCompatActivity() {
             validation()
         }
        // Picasso.with(this).load().fit().into(image);
-        Picasso.get().load("http://178.32.191.152/alatpres_api/api/logo.png").into(image)
+        Picasso.get().load("http://167.172.17.121/api/logo.png").into(image)
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
@@ -252,8 +252,14 @@ class LoginActivity : AppCompatActivity() {
             editor.putString("account_status", jsonObject.getString("account_status"))
             editor.putString("clients", jsonObject.getString("clients"))
             editor.putString("response_provider", jsonObject.getString("response_provider"))
-            editor.putString("first_check", jsonObject.getString("first_check"))
 
+
+            pref =
+                applicationContext.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+            val editor6: SharedPreferences.Editor = pref!!.edit()
+            editor6.putString("first_check", jsonObject.getString("first_check"))
+            editor6.clear()
+            editor6.apply()
 
             pref =
                 applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
@@ -268,21 +274,7 @@ class LoginActivity : AppCompatActivity() {
             editor5.putString("ads_enter", "1")
             editor5.clear()
             editor5.apply()
-            //  editor.putString("nature_response", jsonObject.getString("nature_response"))
 
-//            editor.putString("tax", jsonObject.getString("taxid"))
-//            editor.putString("nature_org", jsonObject.getString("nature_org"))
-//            editor.putString("description", jsonObject.getString("description"))
-//            editor.putString("physical_address", jsonObject.getString("physical_address"))
-//            editor.putString("postal_address", jsonObject.getString("postal_address"))
-//            editor.putString("town", jsonObject.getString("town"))
-//            editor.putString("code", jsonObject.getString("code"))
-//            editor.putString("website", jsonObject.getString("website"))
-//            editor.putString("role_id", jsonObject.getString("role_id"))
-//            editor.putString("mssdn2", jsonObject.getString("mssdn2"))
-//            editor.putString("date_of_incooperation", jsonObject.getString("date_of_incooperation"))
-//            editor.putString("response_provider", jsonObject.getString("response_provider"))
-//            editor.putString("nature_response", jsonObject.getString("nature_response"))
 
 
             editor.clear()

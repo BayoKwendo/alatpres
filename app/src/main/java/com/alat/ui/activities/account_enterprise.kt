@@ -114,6 +114,7 @@ class account_enterprise : AppCompatActivity() {
         mProgress!!.setCancelable(false);
 
 
+        btnBack!!.setVisibility(View.VISIBLE)
 
         pref =
             this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
@@ -140,15 +141,18 @@ class account_enterprise : AppCompatActivity() {
         idNo = pref!!.getString("idNo", null)
         county = pref!!.getString("county", null)
         mstatus = pref!!.getString("mstatus", null)
+        clients = pref!!.getString("clients", null)
+
+
+        pref =
+            this.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+
         check_first = pref!!.getString("first_check", null)
 
-        clients = pref!!.getString("clients", null)
-//        Toast.makeText(
-//            this,
-//            responseprovider,
-//            Toast.LENGTH_SHORT
-//        ).show()
+
+
         if (responseprovider == "YES") {
+
             val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 12500", "Yearly Ksh. 29500")
 
             account_type!!.setText("You're currently subscribed to Enterprise PREMIUM Account:  \n\n Expire in... ")
@@ -182,7 +186,7 @@ class account_enterprise : AppCompatActivity() {
                         } else if (selectedItem3 == "Quarterly Ksh. 12500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
-                            c.add(Calendar.DATE, 120)
+                            c.add(Calendar.DATE, 90)
                             date = dateFormat.format(c.time)
                             price = "12500"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
@@ -235,7 +239,7 @@ class account_enterprise : AppCompatActivity() {
                         } else if (selectedItem3 == "Quarterly Ksh. 3500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
-                            c.add(Calendar.DATE, 120)
+                            c.add(Calendar.DATE, 90)
                             date = dateFormat.format(c.time)
 
                             price = "3500"
@@ -254,6 +258,8 @@ class account_enterprise : AppCompatActivity() {
                     // TODO Auto-generated method stub
                 }
             }
+
+
         }
 
 
@@ -272,6 +278,19 @@ class account_enterprise : AppCompatActivity() {
         when (account) {
             "1" -> {
                 if(mstatus == "0"){
+                    btnBack!!.setText("Disable Ads")
+
+                    btnBack!!.setVisibility(View.GONE)
+
+                    btnBack!!.isEnabled = false
+                    pref =
+                        applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+                    val editor2: SharedPreferences.Editor = pref!!.edit()
+                    editor2.putString("ads", "0")
+                    editor2.clear()
+                    editor2.apply()
+
+
                     account_type!!.setText("You're currently using trial Account:  \n\n Expire in... ")
                     TITLE!!.setText("ALATPRES ENTERPRISE TRIAL ACCOUNT")
                     linear_layout_1!!.setVisibility(View.GONE)
@@ -304,6 +323,10 @@ class account_enterprise : AppCompatActivity() {
         })
 
         btnBack!!.setOnClickListener {
+//            if(mstatus == "0") {
+//                dialogue_error()
+//                promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+//            }
             if (account == "1" && adsstatus == "0") {
                 dialogue()
                 promptPopUpView?.changeStatus(2, "Ads were disabled successfully")
@@ -358,8 +381,6 @@ class account_enterprise : AppCompatActivity() {
         promptPopUpView = PromptPopUpView(this)
         AlertDialog.Builder(this)
             .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
-
-
                     pref =
                         this.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
                     adsstatus = pref!!.getString("ads_enter", null)
@@ -369,10 +390,7 @@ class account_enterprise : AppCompatActivity() {
 
                     } else {
                         btnBack!!.setText("Disable Ads")
-
-
                     }
-
             }
             .setCancelable(false)
             .setView(promptPopUpView)
@@ -552,6 +570,16 @@ class account_enterprise : AppCompatActivity() {
                                     editor.putString("response_provider", responseprovider)
                                     editor.clear()
                                     editor.apply()
+
+                                    pref =
+                                        applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+
+                                    val editor4: SharedPreferences.Editor = pref!!.edit()
+                                    editor4.putString("ads_enter", "0")
+                                    editor4.clear()
+                                    editor4.apply()
+
+
                                     recreate()
                                 } else {
                                     //Toast.makeText(this@account, "you"  , Toast.LENGTH_LONG).show()
@@ -669,7 +697,8 @@ class account_enterprise : AppCompatActivity() {
                 } else {
 //                    Toast.makeText(this@account_enterprise, date2, Toast.LENGTH_LONG).show();
 
-                    if (check_first === "0" ) {
+
+                    if (check_first == "0") {
                         CheckFirst()
                     } else {
                         val i =
@@ -685,10 +714,10 @@ class account_enterprise : AppCompatActivity() {
                 R.color.pdlg_color_white,
                 R.color.colorAccent) {
                 pDialog.dismiss()
-                if (check_first === "0") {
+                if (check_first == "0") {
                     CheckFirst23()
                 } else {
-                    Toast.makeText(this@account_enterprise, price, Toast.LENGTH_LONG).show();
+//                    Toast.makeText(this@account_enterprise, price, Toast.LENGTH_LONG).show();
                     paypal_demo(price!!)
                 }
             }

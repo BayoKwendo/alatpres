@@ -106,21 +106,8 @@ class GenerateReport : Fragment() ,
             )
         )
         recyclerView!!.adapter = mAdapter
-
-        mProgressLayout!!.visibility = View.VISIBLE
-        errorNull!!.visibility = View.GONE
-
-
-        view.context
-
-        return view
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
         pref =
-            activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
+            requireActivity().getSharedPreferences("MyPref", 0) // 0 - for private mode
 
 
         account = pref!!.getString("account_status", null)
@@ -136,6 +123,20 @@ class GenerateReport : Fragment() ,
         }else if (account =="1" || mstatus == "0") {
             getStudent()
         }
+
+        mProgressLayout!!.visibility = View.VISIBLE
+        errorNull!!.visibility = View.GONE
+
+
+        view.context
+
+        return view
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+
 
 
 
@@ -171,7 +172,11 @@ class GenerateReport : Fragment() ,
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
+
+
+
         val params: HashMap<String, String> = HashMap()
+        params["userid"] = userid!!
 
         val api: GetReport = retrofit.create(GetReport::class.java)
         val call: Call<ResponseBody> = api.GetReport(params)

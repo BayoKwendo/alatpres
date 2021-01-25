@@ -85,6 +85,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     var pref2: SharedPreferences? = null
 
     private var userid: String? = null
+    var check_first: String? = null
 
     var fname: String? = null
     private var account: String? = null
@@ -122,6 +123,11 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         mstatus = pref!!.getString("mstatus", null)
 
 
+
+
+
+//        Toast.makeText(this@HomePage, pref!!.getString("first_check", null), Toast.LENGTH_LONG).show();
+
 //        if (roleID == "2") {
         if (account == "1" || mstatus == "0") {
             getExpiry()
@@ -142,7 +148,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             ADS = pref2!!.getString("ads", null)
 
             if (ADS == "0") {
-                MobileAds.initialize(this, "ca-app-pub-8641077171287971/4006264825"); //TEST KEY
+                MobileAds.initialize(this, "ca-app-pub-1439472385814796/1524804272"); //TEST KEY
                 view = window.decorView.rootView;
 
                 Admob.createLoadBanner(applicationContext, view);
@@ -321,7 +327,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.intergration -> {
                 subscribe()
                 promptPopUpView?.changeStatus(
-                    2,
+                    3,
                     "NO DATA"
                 )
             }
@@ -353,7 +359,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
                 } else {
                     fragment = Station_Response()
-                    toolbar!!.title = "Station RGs Alats";
+                    toolbar!!.title = "Department RGs Alats";
                 }
 
             }
@@ -384,7 +390,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
                 } else {
                     fragment = AddStation()
-                    toolbar!!.title = "ADD STATION"
+                    toolbar!!.title = "ADD DEPARTMENT"
                 }
             }
             R.id.random_client -> {
@@ -946,9 +952,31 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                     editor.putString("userid", userid)
                                     editor.putString("account_status", "0")
                                     editor.putString("clients", clients)
+
                                     editor.putString("response_provider", responseprovider)
                                     editor.clear()
                                     editor.apply()
+
+
+
+                                    pref =
+                                        applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+
+                                    val editor4: SharedPreferences.Editor = pref!!.edit()
+                                    editor4.putString("ads_enter", "0")
+                                    editor4.clear()
+                                    editor4.apply()
+
+
+
+
+                                    pref =
+                                        applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+                                    val editor6: SharedPreferences.Editor = pref!!.edit()
+                                    editor6.putString("ads_basic", "0")
+                                    editor6.clear()
+                                    editor6.apply()
+
 
                                     recreate()
 

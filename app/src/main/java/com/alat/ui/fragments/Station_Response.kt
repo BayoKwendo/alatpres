@@ -246,7 +246,7 @@ class Station_Response : Fragment(),
         val pDialog = PrettyDialog(activity)
         pDialog
             .setIconTint(R.color.colorPrimary)
-            .setTitle("Create An Alert")
+            .setTitle("Create An Alat")
             .setTitleColor(R.color.pdlg_color_blue)
             .setMessage("Choose the type of alert you want to create")
             .setMessageColor(R.color.pdlg_color_gray)

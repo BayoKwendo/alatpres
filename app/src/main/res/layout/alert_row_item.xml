@@ -20,10 +20,10 @@
         android:layout_height="wrap_content"
         android:text="ddddddd"
         android:layout_marginLeft="@dimen/_20sdp"
-        android:fontFamily="sans-serif-medium"
         android:textStyle="bold"
         android:textColor="@color/colorBlack"
-        android:textSize="@dimen/contact_name" />
+        android:textSize="@dimen/_13ssp"
+        />
 
         <TextView
             android:id="@+id/id"
@@ -33,9 +33,8 @@
             android:textStyle="bold"
             android:visibility="gone"
             android:layout_marginLeft="@dimen/_20sdp"
-            android:fontFamily="sans-serif-medium"
             android:textColor="@color/colorBlack"
-            android:textSize="@dimen/contact_name" />
+            android:textSize="@dimen/_13ssp" />
 
     </LinearLayout>
 

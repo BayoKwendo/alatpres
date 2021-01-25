@@ -18,7 +18,6 @@
             android:id="@+id/back"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/gothamroundbold"
             android:gravity="start"
             android:layout_marginTop="@dimen/_20sdp"
             android:text="SUBSCRIPTION PACKAGES"

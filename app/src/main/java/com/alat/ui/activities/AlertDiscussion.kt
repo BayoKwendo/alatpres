@@ -501,7 +501,7 @@ class AlertDiscussion : AppCompatActivity(), ResponseAdapter.ContactsAdapterList
                 }
             }).build()
         val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl("http://178.32.191.152/alatpres_api/api/alert/")
+            .baseUrl("http://167.172.17.121/api/alert/")
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()

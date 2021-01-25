@@ -20,7 +20,7 @@
             android:id="@+id/station_rg"
             android:icon="@drawable/resources"
             android:visible="false"
-            android:title="Station RGs" />
+            android:title="Department RGs" />
 
         <item
             android:id="@+id/alert"
@@ -47,7 +47,7 @@
             android:id="@+id/create_station"
             android:icon="@drawable/baseline_add_circle_white_24dp"
             android:visible="false"
-            android:title="Add Station" />
+            android:title="Add Department" />
 
         <item
             android:id="@+id/join_resp_ent"

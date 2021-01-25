@@ -100,6 +100,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Location  of the client"
                                 android:inputType="text"
+                                android:id="@+id/loc2"
                                 android:maxLength="15"
                                 android:padding="@dimen/_10sdp"
                                 android:textColor="@color/colorBlack"

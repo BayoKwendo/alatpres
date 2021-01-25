@@ -211,7 +211,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
             }
 
             p = phoneNumber.replaceFirst("^0+(?!$)", "");
-            getJSON("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
+            getJSON("http://167.172.17.121/api/transactions/read.php?phone=" + 254 + p);
 
             mProgress.show();
             if (!isNetworkAvailable()) {
@@ -225,7 +225,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
     void enterTransaction() {
         mProgress.show();
         String p = mpesa_code.getText().toString().trim();
-        getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
+        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
     }
 
 
@@ -337,7 +337,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 //                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
                             mProgress.dismiss();
                             String p = dataobj.getString("TransID");
-                            getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
+                            getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
                             constraintLayout.setVisibility(View.VISIBLE);
                             constraintLayout2.setVisibility(View.GONE);
                             phoneNumber = editTextPhoneNumber.getText().toString().trim();
@@ -431,7 +431,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 //                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
                         mProgress.dismiss();
                         String p = dataobj.getString("TransID");
-                        getJSO("http://178.32.191.152/alatpres_api/api/transactions/update.php?phone=" + p);
+                        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
                         constraintLayout.setVisibility(View.VISIBLE);
                         constraintLayout2.setVisibility(View.GONE);
                         phoneNumber = editTextPhoneNumber.getText().toString().trim();
@@ -452,7 +452,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         "254717629732",
                         "4036601",
                          phoneNumber,
-                        "http://178.32.191.152/alatpres_api/api/transactions/alatpres.php",
+                        "http://167.172.17.121/api/transactions/alatpres.php",
                         "alatpres",
                         "Pay No"
                 );
@@ -595,7 +595,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
                                 MPESAExpressActivity.this.runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        getpayments("http://178.32.191.152/alatpres_api/api/transactions/read.php?phone=" + 254 + p);
+                                        getpayments("http://167.172.17.121/api/transactions/read.php?phone=" + 254 + p);
 
                                     }
                                 });
