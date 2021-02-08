@@ -140,6 +140,10 @@
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
 
+        <activity android:name=".ui.activities.mpesa.PaymentHistory"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
         <activity android:name=".ui.activities.AlertsGlobal"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>

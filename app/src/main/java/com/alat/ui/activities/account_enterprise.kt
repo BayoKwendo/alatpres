@@ -149,11 +149,12 @@ class account_enterprise : AppCompatActivity() {
 
         check_first = pref!!.getString("first_check", null)
 
+//        Toast.makeText(this, check_first, Toast.LENGTH_LONG).show();
 
 
         if (responseprovider == "YES") {
 
-            val ITEMS3 = arrayOf("Monthly ksh. 3800", "Quarterly Ksh. 12500", "Yearly Ksh. 29500")
+            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 7500", "Yearly Ksh. 29500")
 
             account_type!!.setText("You're currently subscribed to Enterprise PREMIUM Account:  \n\n Expire in... ")
             TITLE!!.setText("ALATPRES ENTERPRISE PREMIUM ACCOUNT")
@@ -171,24 +172,23 @@ class account_enterprise : AppCompatActivity() {
                     arg0: AdapterView<*>?, arg1: View?,
                     arg2: Int, arg3: Long  ) {
                     if (spinner_3!!.selectedItem == null) {
-                        // Toast.makeText(this@Enterprise, "Please select an Alert Type", Toast.LENGTH_LONG).show();
                         return
                     } else {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if (selectedItem3 == "Monthly ksh. 3800") {
+                        if (selectedItem3 == "Monthly ksh. 2600") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
-                            price = "3800"
+                            price = "2600"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        } else if (selectedItem3 == "Quarterly Ksh. 12500") {
+                        } else if (selectedItem3 == "Quarterly Ksh. 7500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 90)
                             date = dateFormat.format(c.time)
-                            price = "12500"
+                            price = "7500"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                         } else if (selectedItem3 == "Yearly Ksh. 29500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -206,7 +206,7 @@ class account_enterprise : AppCompatActivity() {
                 }
             }
         } else {
-            val ITEMS3 = arrayOf("Monthly ksh. 2600", "Quarterly Ksh. 3500", "Yearly Ksh. 7500")
+            val ITEMS3 = arrayOf("Monthly ksh. 1200", "Quarterly Ksh. 3350", "Yearly Ksh. 11500")
 
             account_type!!.setText("You're currently subscribed to Enterprise PRO Account:  \n\n Expire in... ")
             TITLE!!.setText("ALATPRES ENTERPRISE PRO ACCOUNT")
@@ -229,27 +229,27 @@ class account_enterprise : AppCompatActivity() {
                         selectedItem3 = spinner_3!!.selectedItem.toString()
                         selectedItem3 = spinner_3!!.selectedItem.toString()
 
-                        if (selectedItem3 == "Monthly ksh. 2600") {
+                        if (selectedItem3 == "Monthly ksh. 1200") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 30)
                             date = dateFormat.format(c.time)
-                            price = "2600"
+                            price = "1200"
                             //  Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        } else if (selectedItem3 == "Quarterly Ksh. 3500") {
+                        } else if (selectedItem3 == "Quarterly Ksh. 3350") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 90)
                             date = dateFormat.format(c.time)
 
-                            price = "3500"
+                            price = "3350"
                             // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                        } else if (selectedItem3 == "Yearly Ksh. 7500") {
+                        } else if (selectedItem3 == "Yearly Ksh. 11500") {
                             val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                             val c = Calendar.getInstance()
                             c.add(Calendar.DATE, 355)
                             date = dateFormat.format(c.time)
-                            price = "7500"
+                            price = "11500"
                         }
                     }
                 }
@@ -570,6 +570,15 @@ class account_enterprise : AppCompatActivity() {
                                     editor.putString("response_provider", responseprovider)
                                     editor.clear()
                                     editor.apply()
+
+
+                                    pref =
+                                        applicationContext.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+                                    val editor9: SharedPreferences.Editor = pref!!.edit()
+                                    editor9.putString("first_check", check_first)
+                                    editor9.clear()
+                                    editor9.apply()
+
 
                                     pref =
                                         applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode

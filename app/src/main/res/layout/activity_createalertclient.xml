@@ -76,8 +76,8 @@
             app:ms_arrowSize="16dp"
             android:padding="@dimen/_10sdp"
             app:ms_floatingLabelColor="#00FF00"
-            app:ms_floatingLabelText="Station Response Group"
-            app:ms_hint="Select Station"
+            app:ms_floatingLabelText="Department Response Group"
+            app:ms_hint="Select Department"
             app:ms_multiline="false" />
 
         <fr.ganfra.materialspinner.MaterialSpinner

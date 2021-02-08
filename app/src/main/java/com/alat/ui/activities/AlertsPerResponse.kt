@@ -5,6 +5,7 @@ import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.Gravity
 import android.view.Menu
@@ -31,6 +32,8 @@ import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.GetAlerts
+import com.alat.interfaces.UpdateAlertRead
+import com.alat.interfaces.UpdateAlertStatus
 import com.alat.model.rgModel
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -59,6 +62,8 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
 
    var response_group: String? = null
     var group_id: String? = null
+    var alerts_numbers: String? = null
+    var rg_members_id: String? = null
 
     private val TAG = AlertsPerResponse::class.java.simpleName
     private var recyclerView: RecyclerView? = null
@@ -82,6 +87,11 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
 
         response_group = intent.getStringExtra("groupSelect")
         group_id = intent.getStringExtra("groupID")
+        alerts_numbers = intent.getStringExtra("alerts_numbers")
+        rg_members_id = intent.getStringExtra("rg_members_id")
+
+
+
 
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         supportActionBar!!.title = response_group +"\t["+group_id+"]"
@@ -199,6 +209,8 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
                     array.toString(),
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
+            upDateAlerts()
+
 
 
             contactList!!.clear()
@@ -217,6 +229,67 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
         }
     }
 
+
+    private fun upDateAlerts() {
+         var deviceID: String = Settings.Secure.getString(
+            contentResolver,
+            Settings.Secure.ANDROID_ID
+        )
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+        params["alats_no"] = alerts_numbers!!
+        params["rg_members_id"] = rg_members_id!!
+        params["device_id"] = deviceID
+
+        val api: UpdateAlertRead = retrofit.create(UpdateAlertRead::class.java)
+        val call: Call<ResponseBody> = api.UpdateAlert(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("DONE", remoteResponse)
+                } else {
+                    mProgress?.dismiss()
+
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
         mToolbar!!.inflateMenu(R.menu.menu_items);
@@ -313,8 +386,7 @@ class AlertsPerResponse : AppCompatActivity(), AlertAdapter.ContactsAdapterListe
            .setMessage("Are you sure want to go back?")
            .setCancelable(false)
            .setPositiveButton("Yes") { _, id ->
-               finish()
-//               startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
+             startActivity(Intent(this@AlertsPerResponse, HomePage::class.java))
            }
            .setNegativeButton("No", null)
            .show().withCenteredButtons()

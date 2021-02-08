@@ -122,6 +122,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         clients = pref!!.getString("clients", null)
         mstatus = pref!!.getString("mstatus", null)
 
+        pref =
+            this.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+
+        check_first = pref!!.getString("first_check", null)
 
 
 
@@ -968,7 +972,12 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                     editor4.apply()
 
 
-
+                                    pref =
+                                        applicationContext.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+                                    val editor9: SharedPreferences.Editor = pref!!.edit()
+                                    editor9.putString("first_check", check_first)
+                                    editor9.clear()
+                                    editor9.apply()
 
                                     pref =
                                         applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
@@ -1010,105 +1019,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         })
     }
 
-
-//
-//
-//    private fun joinRequest() {
-//
-//
-//        //mToolbar!!.title = response_group + "\tRG"
-//
-//        val interceptor = HttpLoggingInterceptor()
-//        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-//        val client: OkHttpClient = OkHttpClient.Builder()
-//            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-//            .connectTimeout(2, TimeUnit.MINUTES)
-//            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
-//            .readTimeout(2, TimeUnit.MINUTES) // read timeout
-//            .addNetworkInterceptor(object : Interceptor {
-//                @Throws(IOException::class)
-//                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-//                    val request: Request =
-//                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
-//                            .build()
-//                    return chain.proceed(request)
-//                }
-//            }).build()
-//        val retrofit: Retrofit = Retrofit.Builder()
-//            .baseUrl(Constants.API_BASE_URL)
-//            .client(client) // This line is important
-//            .addConverterFactory(GsonConverterFactory.create())
-//            .build()
-//
-//        val params: HashMap<String, String> = HashMap()
-//        params["rg_id"] = response_group!!
-//        //params["userid"] = response_group!!
-//
-//
-//        val api: FriendReq = retrofit.create(FriendReq::class.java)
-//        val call: Call<ResponseBody> = api.Requests(params)
-//
-//        call.enqueue(object : Callback<ResponseBody?> {
-//            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-//                //Toast.makeText()
-//
-//                Log.d("Call request", call.request().toString());
-//                Log.d("Response raw header", response.headers().toString());
-//                Log.d("Response raw", response.toString());
-//                Log.d("Response code", response.code().toString());
-//
-//
-//                if (response.isSuccessful) {
-//                    val remoteResponse = response.body()!!.string()
-//                    Log.d("test", remoteResponse)
-//
-//                    if (response.code().toString() == "200") {
-//                        errorNull!!.visibility = View.VISIBLE
-//                        mProgressLayout!!.visibility = View.GONE
-//                    }
-//                    parseLoginData(remoteResponse)
-//                } else {
-//                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-//                    Log.d("BAYO", response.code().toString())
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-//                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-//                Log.i("onEmptyResponse", "" + t) //
-//            }
-//        })
-//    }
-//
-//    private fun parseLoginData(remoteResponse: String) {
-//        try {
-//            val o = JSONObject(remoteResponse)
-//            val array: JSONArray = o.getJSONArray("records")
-//            val names = arrayOfNulls<String>(array.length())
-//
-//            val items: List<rgModel> =
-//                Gson().fromJson<List<rgModel>>(
-//                    array.toString(),
-//                    object : TypeToken<List<rgModel?>?>() {}.type
-//                )
-//
-//            Collections.reverse(items);
-//
-//            contactList!!.clear()
-//
-//            contactList!!.addAll(items)
-//            mAdapter!!.notifyDataSetChanged()
-//
-//            mProgressLayout!!.visibility = View.GONE
-//            errorNull!!.visibility = View.GONE
-//
-//
-//            //    Log.d("onSuccess1", firstSport.toString())
-//
-//        } catch (e: JSONException) {
-//            e.printStackTrace()
-//        }
-//    }
 
 
 

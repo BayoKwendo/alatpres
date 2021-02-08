@@ -29,6 +29,7 @@ import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
+import com.alat.interfaces.GetAlerts
 import com.alat.interfaces.ViewGroups
 import com.alat.model.PreferenceModel
 import com.alat.model.rgModel
@@ -38,6 +39,7 @@ import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.CreateAlerteNT
 import com.alat.ui.activities.mpesa.Ban_Transfer
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
+import com.alat.ui.activities.mpesa.PaymentHistory
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.MobileAds
@@ -90,6 +92,7 @@ class Alert_Enterpris : Fragment(),
     private var mProgressLayout: LinearLayout? = null
     var views: View? = null
     private var mAdView: AdView? = null
+    private var global_alats: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -103,6 +106,9 @@ class Alert_Enterpris : Fragment(),
         recyclerView!!.isNestedScrollingEnabled = false;
 
 
+        global_alats = view.findViewById(R.id.fabCounter)
+
+        global_alats!!.visibility= View.GONE
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
         val mLayoutManager: RecyclerView.LayoutManager =
@@ -121,6 +127,8 @@ class Alert_Enterpris : Fragment(),
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
         pref =
             context!!.getSharedPreferences("MyPref", 0)
+
+        getAlertCount()
 
         userid = pref!!.getString("userid", null)
         accounts = pref!!.getString("account_status", null)
@@ -359,6 +367,10 @@ class Alert_Enterpris : Fragment(),
         // Fetch and store ShareActionProvider
         val item7 = menu.findItem(R.id.aboutus)
         item7.isVisible = true
+
+        val item11 = menu.findItem(R.id.payment_history)
+        item11.isVisible = true
+
         val item6 = menu.findItem(R.id.action_invite)
         item6.isVisible = false
 
@@ -452,6 +464,10 @@ class Alert_Enterpris : Fragment(),
                     startActivity(Intent(activity, account_enterprise::class.java))
 
             }
+            R.id.payment_history -> {
+                startActivity(Intent(activity, PaymentHistory::class.java))
+            }
+
 //            R.id.team-> {
 //                startActivity(Intent(activity, ResponseProviders::class.java))
 //            }
@@ -500,13 +516,86 @@ class Alert_Enterpris : Fragment(),
             Intent(activity, AlertsPerResponse::class.java)
         i.putExtra("groupSelect", contact!!.group_name.toString())
         i.putExtra("groupID", contact!!.id.toString())
+        i.putExtra("alerts_numbers", contact!!.alerts.toString())
+        i.putExtra("rg_members_id", contact!!.rg_members_id.toString())
 
         startActivity(i)
 
 
     }
 
+    private fun getAlertCount() {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
 
+        val params: HashMap<String, String> = HashMap()
+        params["rg"] = "Global Response Group"
+
+        val api: GetAlerts = retrofit.create(GetAlerts::class.java)
+        val call: Call<ResponseBody> = api.GetAlert(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+                    parseCountDateData(remoteResponse)
+                } else {
+                    mProgress?.dismiss()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
+    private fun parseCountDateData(remoteResponse: String) {
+        try {
+            val o = JSONObject(remoteResponse)
+            val array: JSONArray = o.getJSONArray("records")
+            pref =
+                requireActivity().getSharedPreferences("GLOBAL_ALAT_COUNT", 0) // 0 - for private mode
+
+            var global_counts = pref!!.getInt("global_counts", 0)
+
+            if(array.length() > global_counts){
+                global_alats!!.text= (array.length() - global_counts).toString()
+                global_alats!!.visibility= View.VISIBLE
+            }
+
+//            global_alats!!.visibility= View.GONE
+
+            Log.d("arraylength",array.length().toString())
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
 
 
 }

@@ -77,7 +77,7 @@ class account : AppCompatActivity() {
     private  var linear_layout_2:android.widget.LinearLayout? = null
     private var tv_days: TextView? = null
     private  var tv_hour:android.widget.TextView? = null
-    private val ITEMS3= arrayOf("Monthly ksh. 80", "Quarterly Ksh. 1200", "Yearly Ksh. 2600")
+    private val ITEMS3= arrayOf("Monthly ksh. 80", "Quarterly Ksh. 200", "Yearly Ksh. 900")
     var spinner_3: MaterialSpinner? = null
     var tv_minute:android.widget.TextView? = null
     private  var tv_second:android.widget.TextView? = null
@@ -254,20 +254,20 @@ btnBack!!.setOnClickListener {
                         date = dateFormat.format(c.time)
                         price = "80"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
-                    } else if(selectedItem3 == "Quarterly Ksh. 1200"){
+                    } else if(selectedItem3 == "Quarterly Ksh. 200"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 90)
                         date = dateFormat.format(c.time)
-                        price = "1200"
+                        price = "200"
                        // Toast.makeText(this@account, "Please"+ date, Toast.LENGTH_LONG).show();
                     }
-                    else if(selectedItem3 == "Yearly Ksh. 2600"){
+                    else if(selectedItem3 == "Yearly Ksh. 900"){
                         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
                         val c = Calendar.getInstance()
                         c.add(Calendar.DATE, 355)
                         date = dateFormat.format(c.time)
-                        price = "2600"
+                        price = "900"
                     }
                 }
             }

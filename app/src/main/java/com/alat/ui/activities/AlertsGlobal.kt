@@ -223,7 +223,6 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
                     object : TypeToken<List<rgModel?>?>() {}.type
                 )
 
-            Collections.reverse(items);
 
             contactList!!.clear()
 
@@ -232,6 +231,16 @@ class AlertsGlobal : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
 
             mProgressLayout!!.visibility = View.GONE
             errorNull!!.visibility = View.GONE
+
+
+
+            pref =
+                applicationContext.getSharedPreferences("GLOBAL_ALAT_COUNT", 0) // 0 - for private mode
+
+            val editorglobal: SharedPreferences.Editor = pref!!.edit()
+            editorglobal.putInt("global_counts", array.length() )
+            editorglobal.clear()
+            editorglobal.apply()
 
 
             //    Log.d("onSuccess1", firstSport.toString())

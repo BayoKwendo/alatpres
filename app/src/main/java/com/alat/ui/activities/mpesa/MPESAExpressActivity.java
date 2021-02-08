@@ -225,7 +225,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
     void enterTransaction() {
         mProgress.show();
         String p = mpesa_code.getText().toString().trim();
-        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
+        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p+"&userid="+ userid);
     }
 
 
@@ -337,7 +337,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 //                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
                             mProgress.dismiss();
                             String p = dataobj.getString("TransID");
-                            getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
+                            getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p+"&userid="+ userid);
                             constraintLayout.setVisibility(View.VISIBLE);
                             constraintLayout2.setVisibility(View.GONE);
                             phoneNumber = editTextPhoneNumber.getText().toString().trim();
@@ -431,7 +431,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
 //                        Toast.makeText(this, "Confirm your transaction", Toast.LENGTH_SHORT).show();
                         mProgress.dismiss();
                         String p = dataobj.getString("TransID");
-                        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p);
+                        getJSO("http://167.172.17.121/api/transactions/update.php?phone=" + p+"&userid="+ userid);
                         constraintLayout.setVisibility(View.VISIBLE);
                         constraintLayout2.setVisibility(View.GONE);
                         phoneNumber = editTextPhoneNumber.getText().toString().trim();

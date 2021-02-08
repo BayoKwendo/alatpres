@@ -79,7 +79,7 @@
                             android:id="@+id/loc2"
                             android:layout_height="match_parent"
                             android:backgroundTint="@color/colorAccent"
-                            android:hint="Location  of the Station"
+                            android:hint="Location  of the Department"
                             android:inputType="text"
                             android:maxLength="15"
                             android:padding="@dimen/_10sdp"

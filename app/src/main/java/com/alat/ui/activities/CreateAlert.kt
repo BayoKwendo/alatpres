@@ -772,10 +772,10 @@ class CreateAlert : AppCompatActivity() {
 
         } else textInputlevel!!.error = null
 
-//        if(selectedItem == null){
-//            Toast.makeText(this@CreateAlert, "Type of Alert is Mandatory!! Please select", Toast.LENGTH_LONG).show()
-//            return false
-//        }
+        if(selectedItem == null){
+            Toast.makeText(this@CreateAlert, "Type of Alert is Mandatory!! Please select", Toast.LENGTH_LONG).show()
+            return false
+        }
 
         if (selectedItem2 == null) {
             Toast.makeText(

@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">MaterialNumberPicker</string>
 
-    <string name="MPD_action_done">done</string>
-    <string name="MPD_action_cancel">cancel</string>
+    <string name="MPD_action_done">OK</string>
+    <string name="MPD_action_cancel">Exit</string>
     <string name="MPD_empty_message">value can not be empty</string>
     <string name="MPD_incorrect_message">please select correct value</string>
     <string name="baringo">Baringo County</string>

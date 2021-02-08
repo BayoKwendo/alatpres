@@ -140,7 +140,7 @@ class AddStation : Fragment() {
         edit = view.findViewById((R.id.loc2))
 
         mProgress = ProgressDialog(activity)
-        mProgress!!.setMessage("Creating Station....")
+        mProgress!!.setMessage("Creating Department....")
         mProgress!!.setCancelable(true)
 
         mProgressfetch = ProgressDialog(activity)

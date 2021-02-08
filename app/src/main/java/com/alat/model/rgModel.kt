@@ -23,6 +23,10 @@ class rgModel {
     var id: String? = null
     var mssidn: String? = null
 
+    var device_id: String? = null
+    var alats_no: Int? = null
+
+
     var checked: Boolean? = false
 
     var station_name: String? = null
@@ -32,6 +36,7 @@ class rgModel {
     var firstname: String? = null
 
     var lastname: String? = null
+    var rg_members_id: String? = null
 
 
 
@@ -54,6 +59,15 @@ class rgModel {
     var rg_id: String? = null
 
     var date_posted: String? = null
+
+
+    var phoneNumber: String? = null
+
+    var TransAmount: String? = null
+    var TransDate: String? = null
+
+    var TransID: String? = null
+
 
 
 }
