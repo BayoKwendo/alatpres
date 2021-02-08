@@ -51,7 +51,9 @@
 
     <item android:id="@+id/about"
         android:title="My Account" />
-
+    <item android:id="@+id/payment_history"
+        android:visible="false"
+        android:title="Payment History" />
     <item android:id="@+id/aboutus"
         android:visible="false"
         android:title="About Us" />

@@ -2,6 +2,7 @@ package com.alat.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,16 +25,21 @@ class CLientAdapter(
 ) : RecyclerView.Adapter<CLientAdapter.MyViewHolder>(),
     Filterable {
     private var contactListFiltered: List<rgModel>
-
+    private val deviceID: String = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ANDROID_ID
+    )
     inner class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         var name: TextView
         var ale: TextView
+        var alat_no: TextView
         var thumbnail: ImageView? = null
 
         init {
             name = view.findViewById(R.id.name)
             ale = view.findViewById(R.id.alerts)
+            alat_no= view.findViewById(R.id.fabCounter)
 
             view.setOnClickListener { // send selected contact in callback
                 listener.onContactSelected(contactListFiltered[adapterPosition])
@@ -61,20 +67,6 @@ class CLientAdapter(
         viewType: Int
     ): MyViewHolder {
 
-//        var viewHolder: RGAdapter.MyViewHolder? = null
-//        val inflater =
-//            LayoutInflater.from(parent.context)
-//        when (viewType) {
-//            1 -> {
-//                val v: View = inflater.inflate(R.layout.user_row_item, parent, false)
-//                viewHolder = MyViewHolder(v)
-//            }
-//            2 -> {
-////                val v: View = inflater.inflate(R.layout.list_item_admob, parent, false)
-////                viewHolder = ViewHolderAdMob(v)
-//            }
-//        }
-//        return viewHolder!!
 
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_row_item, parent, false)
@@ -86,16 +78,22 @@ class CLientAdapter(
         holder: MyViewHolder,
         position: Int
     ) {
-//
-//        when (holder.itemViewType) {
-//            1 -> {
+
                 val contact = contactListFiltered[position]
                   holder.name.text = contact.name +"\tRG"
                 holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
-            //}  2 -> {
-//            }
+        holder.alat_no.visibility= View.GONE
 
-//                  }
+        if  (contact.alerts!! > contact.alats_no!!){
+
+            if(contact.device_id == deviceID ) {
+
+                holder.alat_no.visibility= View.VISIBLE
+                holder.alat_no.text = (contact.alerts!! - contact.alats_no!!).toString()
+            }
+
+        }
+
     }
 
     override fun getItemCount(): Int {

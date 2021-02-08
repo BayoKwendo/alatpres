@@ -2,6 +2,9 @@ package com.alat.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
+import android.provider.Settings.Secure
+import android.provider.Settings.Secure.getString
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,19 +24,29 @@ class RGAdapter(
     private val context: Context,
     private val contactList: List<rgModel>,
     private val listener: ContactsAdapterListener
+
 ) : RecyclerView.Adapter<RGAdapter.MyViewHolder>(),
     Filterable {
+
+    private val deviceID: String = getString(
+        context.contentResolver,
+        Secure.ANDROID_ID
+    )
+
+
     private var contactListFiltered: List<rgModel>
 
     inner class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         var name: TextView
         var ale: TextView
+        var alat_no: TextView
         var thumbnail: ImageView? = null
 
         init {
             name = view.findViewById(R.id.name)
             ale = view.findViewById(R.id.alerts)
+            alat_no= view.findViewById(R.id.fabCounter)
 
             view.setOnClickListener { // send selected contact in callback
                 listener.onContactSelected(contactListFiltered[adapterPosition])
@@ -60,7 +73,6 @@ class RGAdapter(
         parent: ViewGroup,
         viewType: Int
     ): MyViewHolder {
-
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.user_row_item, parent, false)
         return MyViewHolder(itemView)
@@ -74,10 +86,28 @@ class RGAdapter(
 //
 //        when (holder.itemViewType) {
 //            1 -> {
-                val contact = contactListFiltered[position]
-                holder.name.text = contact.group_name +"\tRG"
-                holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
-            //}  2 -> {
+        val contact = contactListFiltered[position]
+        holder.name.text = contact.group_name + "\tRG"
+        holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
+        holder.alat_no.visibility= View.GONE
+
+        if  (contact.alerts!! > contact.alats_no!!){
+
+            if(contact.device_id == deviceID ) {
+
+                holder.alat_no.visibility= View.VISIBLE
+                holder.alat_no.text = (contact.alerts!! - contact.alats_no!!).toString()
+            }
+
+        }
+
+
+//
+//        holder.itemView.setOnClickListener {
+//            holder.itemView.setBackgroundColor(Color.parseColor("#000000"));
+//
+//        }
+        //}  2 -> {
 //            }
 
 //                  }
@@ -86,7 +116,8 @@ class RGAdapter(
     override fun getItemCount(): Int {
         return contactListFiltered.size
     }
-//    override fun getItemViewType(position: Int): Int {
+
+    //    override fun getItemViewType(position: Int): Int {
 //        return if (position % 5 == 0) {
 //            AD_TYPE
 //        } else {
@@ -108,7 +139,7 @@ class RGAdapter(
 
                         // name match condition. this might differ depending on your requirement
                         // here we are looking for name or phone number match
-                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase()) ) {
+                        if (row.group_name!!.toLowerCase().contains(charString.toLowerCase())) {
                             filteredList.add(row)
                         }
                     }

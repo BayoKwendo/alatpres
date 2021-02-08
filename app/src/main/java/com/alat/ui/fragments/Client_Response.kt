@@ -26,6 +26,7 @@ import com.alat.adapters.CLientAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
+import com.alat.interfaces.GetAlerts
 import com.alat.interfaces.ViewGPsEnteClient
 import com.alat.interfaces.ViewGPsEnterprise
 import com.alat.interfaces.ViewGroups
@@ -35,6 +36,7 @@ import com.alat.ui.AboutUs
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.CreateAlerteNT
+import com.alat.ui.activities.mpesa.PaymentHistory
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -83,6 +85,7 @@ class Client_Response : Fragment(),
     private var searchView: SearchView? = null
     var errorNull: TextView? = null
     private var mProgressLayout: LinearLayout? = null
+    private var global_alats: TextView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -96,7 +99,9 @@ class Client_Response : Fragment(),
         mAdapter = CLientAdapter(activity!!, contactList!!, this)
         recyclerView!!.setNestedScrollingEnabled(false);
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
+        global_alats = view.findViewById(R.id.fabCounter)
 
+        global_alats!!.visibility= View.GONE
         val mLayoutManager: RecyclerView.LayoutManager =
             LinearLayoutManager(activity)
         recyclerView!!.layoutManager = mLayoutManager
@@ -108,6 +113,8 @@ class Client_Response : Fragment(),
                 36
             )
         )
+
+        getAlertCount()
         recyclerView!!.adapter = mAdapter
         floatingActionButton =
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
@@ -294,6 +301,8 @@ class Client_Response : Fragment(),
         val item6 = menu.findItem(R.id.action_invite)
         item6.isVisible = false
 
+        val item11 = menu.findItem(R.id.payment_history)
+        item11.isVisible = true
         val mShareActionProvider: ShareActionProvider? =
             MenuItemCompat.getActionProvider(item) as ShareActionProvider?
         mShareActionProvider?.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME)
@@ -372,7 +381,9 @@ class Client_Response : Fragment(),
                 startActivity(Intent(activity, Notification::class.java))
 
             }
-
+            R.id.payment_history -> {
+                startActivity(Intent(activity, PaymentHistory::class.java))
+            }
 
             R.id.invites -> {
                 startActivity(Intent(activity, Invitations::class.java))
@@ -434,11 +445,84 @@ class Client_Response : Fragment(),
         val i =
             Intent(activity, AlertsPerResponse::class.java)
         i.putExtra("groupSelect", contact!!.name.toString())
-        i.putExtra("groupID", "A"+contact!!.id.toString())
-
+        i.putExtra("groupID", contact!!.id.toString())
+        i.putExtra("alerts_numbers", contact!!.alerts.toString())
+        i.putExtra("rg_members_id", contact!!.rg_members_id.toString())
         startActivity(i)
 
 
+    }
+    private fun getAlertCount() {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+        params["rg"] = "Global Response Group"
+
+        val api: GetAlerts = retrofit.create(GetAlerts::class.java)
+        val call: Call<ResponseBody> = api.GetAlert(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if (response.isSuccessful) {
+                    val remoteResponse = response.body()!!.string()
+                    Log.d("test", remoteResponse)
+                    parseCountDateData(remoteResponse)
+                } else {
+                    mProgress?.dismiss()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
+
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
+    private fun parseCountDateData(remoteResponse: String) {
+        try {
+            val o = JSONObject(remoteResponse)
+            val array: JSONArray = o.getJSONArray("records")
+            pref =
+                requireActivity().getSharedPreferences("GLOBAL_ALAT_COUNT", 0) // 0 - for private mode
+
+            var global_counts = pref!!.getInt("global_counts", 0)
+
+            if(array.length() > global_counts){
+                global_alats!!.text= (array.length() - global_counts).toString()
+                global_alats!!.visibility= View.VISIBLE
+            }
+
+//            global_alats!!.visibility= View.GONE
+
+            Log.d("arraylength",array.length().toString())
+
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
     }
 
 

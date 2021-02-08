@@ -2,6 +2,7 @@ package com.alat.adapters
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,16 +25,21 @@ class StationAdapter(
 ) : RecyclerView.Adapter<StationAdapter.MyViewHolder>(),
     Filterable {
     private var contactListFiltered: List<rgModel>
-
+    private val deviceID: String = Settings.Secure.getString(
+        context.contentResolver,
+        Settings.Secure.ANDROID_ID
+    )
     inner class MyViewHolder(view: View) :
         RecyclerView.ViewHolder(view) {
         var name: TextView
         var ale: TextView
+        var alat_no: TextView
         var thumbnail: ImageView? = null
 
         init {
             name = view.findViewById(R.id.name)
             ale = view.findViewById(R.id.alerts)
+            alat_no= view.findViewById(R.id.fabCounter)
 
             view.setOnClickListener { // send selected contact in callback
                 listener.onContactSelected(contactListFiltered[adapterPosition])
@@ -72,6 +78,18 @@ class StationAdapter(
                 val contact = contactListFiltered[position]
                 holder.name.text = contact.station_name +"\tRG"
                 holder.ale.text = "[\t" + contact.alerts.toString() + "\t]"
+
+        holder.alat_no.visibility= View.GONE
+
+        if  (contact.alerts!! > contact.alats_no!!){
+
+            if(contact.device_id == deviceID ) {
+
+                holder.alat_no.visibility= View.VISIBLE
+                holder.alat_no.text = (contact.alerts!! - contact.alats_no!!).toString()
+            }
+
+        }
        }
 
     override fun getItemCount(): Int {
