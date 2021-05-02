@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.cardview.widget.CardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    app:cardElevation="10dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:orientation="vertical"
+        android:background="@color/colorWhite"
+        android:backgroundTint="@color/colorWhite"
+        android:layout_height="wrap_content">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_margin="20dp"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+
+            <fr.ganfra.materialspinner.MaterialSpinner
+            android:id="@+id/spinner4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:ms_arrowColor="@color/colorAccent"
+            app:ms_arrowSize="16dp"
+            android:padding="@dimen/_10sdp"
+            app:ms_floatingLabelColor="#00FF00"
+            app:ms_floatingLabelText="Response Group"
+            app:ms_hint="Request a Service"
+            app:ms_multiline="false" />
+
+
+
+        </LinearLayout>
+
+    </ScrollView>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:orientation="horizontal"
+            android:padding="@dimen/_10sdp"
+            android:weightSum="1"
+            android:layout_height="wrap_content">
+
+            <Button
+                android:id="@+id/cancel"
+                android:layout_width="100dp"
+                android:layout_weight=".4"
+                android:background="@drawable/button_shape"
+                android:layout_height="wrap_content"
+                android:textColor="@color/colorWhite"
+                android:text="Back" />
+
+            <View
+                android:layout_width="@dimen/_20sdp"
+                android:layout_height="0dp"/>
+
+            <Button
+                android:id="@+id/update"
+                android:layout_width="100dp"
+                android:layout_weight=".6"
+                android:textColor="@color/colorWhite"
+                android:background="@drawable/button_shape"
+                android:layout_height="wrap_content"
+                android:text="Done" />
+
+        </LinearLayout>
+    </LinearLayout>
+
+
+</androidx.cardview.widget.CardView>

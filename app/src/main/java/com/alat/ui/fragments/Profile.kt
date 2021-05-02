@@ -270,6 +270,13 @@ class Profile : Fragment() {
         updateEmaill = layout_pwd.findViewById<View>(R.id.email) as MaterialEditText
         updatePhonee = layout_pwd.findViewById<View>(R.id.etPhone) as MaterialEditText
 
+
+        updateFNamee!!.setText(fname)
+        updateEmaill!!.setText(emailuser)
+        updatePhonee!!.setText(mssidn)
+        updateLNamee!!.setText(county_name)
+
+
         updateIDD!!.visibility = View.GONE
         val updateButton: Button =
             layout_pwd.findViewById<View>(R.id.update) as Button
@@ -328,7 +335,7 @@ class Profile : Fragment() {
 
                 val params: HashMap<String, String> = HashMap()
                 params["firstname"] = updateFName!!
-                params["lastname"] = updateLName!!
+                params["county"] = updateLName!!
                 params["email"] = updateEmail!!
                 params["mssdn"] = updatePhone!!
                 params["userid"] = user!!
@@ -361,6 +368,7 @@ class Profile : Fragment() {
                             Log.d("BAYO", response.code().toString())
                             //btnLogin!!.text = "Submit"
                             mProgress?.dismiss()
+                            waitingDialog.dismiss()
                         }
                     }
 

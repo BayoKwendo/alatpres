@@ -38,19 +38,6 @@
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@color/colorAccent" />
 
-            <com.rengwuxian.materialedittext.MaterialEditText
-                android:id="@+id/last"
-                android:hint="Last/Other Name"
-                android:inputType="text"
-                android:textColor="@color/colorAccent"
-                android:textColorHint="@color/accentColor"
-                android:textSize="@dimen/_13ssp"
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                app:met_singleLineEllipsis="true"
-                app:met_baseColor="@color/colorAccent"
-                app:met_floatingLabel="highlight"
-                app:met_primaryColor="@color/colorAccent" />
 
             <com.rengwuxian.materialedittext.MaterialEditText
                 android:id="@+id/etPhone"
@@ -113,6 +100,21 @@
                 app:met_baseColor="@color/colorAccent"
                 app:met_floatingLabel="highlight"
                 app:met_primaryColor="@color/colorAccent" />
+
+            <com.rengwuxian.materialedittext.MaterialEditText
+                android:id="@+id/last"
+                android:hint="Counties"
+                android:inputType="text"
+                android:textColor="@color/colorAccent"
+                android:textColorHint="@color/accentColor"
+                android:textSize="@dimen/_13ssp"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                app:met_singleLineEllipsis="true"
+                app:met_baseColor="@color/colorAccent"
+                app:met_floatingLabel="highlight"
+                app:met_primaryColor="@color/colorAccent" />
+
 
         </LinearLayout>
 

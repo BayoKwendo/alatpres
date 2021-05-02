@@ -347,7 +347,7 @@ class randomClients : Fragment(),
                 params["fullname"] = fullname!!
                 params["alert_type"] = "Client Update"!!
                 params["rg"] = groupname!!
-                params["rl"] = "Level 1"!!
+                params["rl"] = "Level 1"
                 params["mssdn"] = mssidn!!
                 params["userid"] = user!!
                 params["location"] = "null"!!
@@ -604,7 +604,7 @@ class randomClients : Fragment(),
             Intent.EXTRA_TEXT, """
           ALATPRES
      Get AlatPres.
-     https://play.google.com/store/apps/details?id=com.alatpres
+      https://play.google.com/store/apps/details?id=com.alat
      """.trimIndent()
         )
         val intent =

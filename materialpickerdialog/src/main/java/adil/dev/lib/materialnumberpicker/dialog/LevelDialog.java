@@ -82,6 +82,8 @@ public class LevelDialog extends Dialog {
             public void onItemClicked(String Level) {
                 selectedString = Level;
                 selectedTextView.setText(selectedString);
+                onSelectingLevel.onSelectingLevel(selectedString);
+                dismiss();
             }
         });
         recyclerView.setAdapter(adapter);

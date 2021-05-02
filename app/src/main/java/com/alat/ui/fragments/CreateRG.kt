@@ -25,6 +25,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.alat.HomePage
 import com.alat.R
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
@@ -41,6 +42,7 @@ import com.google.android.material.textfield.TextInputLayout
 import com.rengwuxian.materialedittext.MaterialEditText
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
+import io.karn.notify.Notify
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -55,7 +57,9 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.HashMap
 
 class CreateRG : Fragment() {
 
@@ -295,7 +299,7 @@ class CreateRG : Fragment() {
 
             rg_input?.error = "User ID Required";
             rg_input?.requestFocus()
-            val imm: InputMethodManager = activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            val imm: InputMethodManager = requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, InputMethodManager.HIDE_IMPLICIT_ONLY)
             return;
         }
@@ -315,13 +319,13 @@ class CreateRG : Fragment() {
 
     fun hideKeyboardFrom() {
         val imm =
-            activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(view!!.windowToken, 0)
     }
 
     private fun showKeyBoard() {
         val imm =
-            activity!!.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            requireActivity().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
 
@@ -603,8 +607,6 @@ class CreateRG : Fragment() {
                     mProgress?.dismiss()
                     hideKeyboardFrom()
                     btnLogin!!.text = "Submit"
-
-
                 } else if (account == "1" || mstatus == "0") {
                     bayo()
                 }
@@ -616,7 +618,43 @@ class CreateRG : Fragment() {
         }
     }
 
+    private fun dialoguess_exit()   {
 
+        promptPopUpView = PromptPopUpView(requireContext())
+
+        AlertDialog.Builder(requireContext())
+
+
+            .setPositiveButton(
+                "Finish"
+            ) { dialog, _ ->
+                dialog.dismiss()
+
+                Handler().postDelayed({
+                    val intent = Intent(requireActivity(), HomePage::class.java)
+                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                    startActivity(intent)
+                   requireActivity().finish()
+                }, 2000)
+
+                Notify
+                    .with(requireActivity())
+                    .asTextList {
+                        lines = listOf(
+                            "Your group was created successfully",
+                            "Group Name\t" +setNameRG,
+                            "Group ID\t" +rg_id )
+                        title = "Group Details!"
+                        text = "Group Name\t"+setNameRG+",\t" + "Group ID\t" +rg_id
+                    }
+                    .show()
+
+
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
     private fun bayo() {
 
         setNameRG = textInputSetGrpName!!.editText!!.text.toString().trim { it <= ' ' }
@@ -984,14 +1022,12 @@ class CreateRG : Fragment() {
                     setNameRG = textInputSetGrpName!!.editText!!.text.toString().trim { it <= ' ' }
 
 
-                    val i =
-                        Intent(activity, level_1::class.java)
-                    i.putExtra("rg_id", rg)
-
-                    i.putExtra("rg_name", setNameRG)
+                    mProgressS?.dismiss()
 
 
-                    startActivity(i)
+                    dialoguess_exit()
+                    promptPopUpView?.changeStatus(2, "Response Group was created successfully")
+
                     mProgressS!!.dismiss()
 
 
@@ -1369,22 +1405,12 @@ class CreateRG : Fragment() {
             .setPositiveButton("Add More") { _: DialogInterface?, _: Int ->
 
             }
-            .setNegativeButton("Continue") { _: DialogInterface?, _: Int ->
+            .setNegativeButton("DONE") { _: DialogInterface?, _: Int ->
 
-                dialogue()
-                promptPopUpView?.changeStatus(2, "Level 1 was successfully configured automatically!!\n\n Redirecting...")
+                dialoguess_exit()
+                promptPopUpView?.changeStatus(2, "Response Group was created successfully")
 
-                Handler().postDelayed({
-
-                    val i =
-                        Intent(activity, level_1::class.java)
-                    i.putExtra("rg_id", rg_id)
-                    i.putExtra("rg_name", setNameRG)
-
-                    startActivity(i)
-
-                }, 3000)
-
+                mProgressS!!.dismiss()
             }
             .setCancelable(false)
             .setView(promptPopUpView)

@@ -78,7 +78,10 @@ public class EmployDialogue extends Dialog {
             public void onItemClicked(String employ) {
                 selectedString = employ;
                 selectedTextView.setText(selectedString);
+                onSelectingEmploy.onSelectingEmploy(selectedString);
+                dismiss();
             }
+
         });
         recyclerView.setAdapter(adapter);
     }

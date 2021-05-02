@@ -101,18 +101,12 @@ class JoinRGEnter : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
         pref =
             activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
-
-
         account = pref!!.getString("account_status", null)
         userid = pref!!.getString("userid", null)
-
         roleID = pref!!.getString("role", null)
         updates()
-
         //you can set the title for your toolbar here for different fragments different title
     }
 
@@ -122,14 +116,10 @@ class JoinRGEnter : Fragment() {
         imm.toggleSoftInput(InputMethodManager.SHOW_FORCED, 0)
     }
     fun updates() {
-
-
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(activity)
         alertDialog.setTitle("Find Group")
-
         val inflater: LayoutInflater =
             activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-
         val layout_pwd: View =
             inflater.inflate(R.layout.layout_find_rg, null)
         alertDialog.setView(layout_pwd)
@@ -137,28 +127,20 @@ class JoinRGEnter : Fragment() {
         updateFNamee = layout_pwd.findViewById<View>(R.id.etName) as MaterialEditText
         updateFNamee!!.requestFocus()
         showKeyBoard()
-
         val updateButton: Button =
             layout_pwd.findViewById<View>(R.id.update) as Button
         updateButton.setOnClickListener(View.OnClickListener {
             waitingDialog =
                 SpotsDialog.Builder().setContext(activity).build()
-
-
             updateFName = updateFNamee!!.getText().toString()
-
             updateFNamee!!.clearFocus()
-
             if (Utils.checkIfEmptyString(updateFName)) {
                 updateFNamee!!.error = "Group ID is Mandatory"
                 updateFNamee!!.requestFocus()
             } else {
                  waitingDialog!!.show()
-                checkStatuss()
-
+                 checkStatuss()
             }
-
-
         })
         val dismissButton: Button =
             layout_pwd.findViewById<View>(R.id.cancel) as Button

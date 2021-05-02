@@ -353,6 +353,7 @@
                         android:layout_height="wrap_content"
                         android:text="ELEVATE(0)"
                         android:layout_weight=".5"
+                        android:visibility="gone"
                         android:textColor="@color/elevate"
                         android:textSize="18sp"
                         android:textStyle="bold" />

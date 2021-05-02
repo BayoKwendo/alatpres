@@ -1,2 +1,3 @@
+include ':nativetemplates'
 rootProject.name='Alat'
 include ':app',':library', ':materialpickerdialog',':daraja',':lib'

@@ -723,21 +723,15 @@ class ActiveAlerts : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  
         call.enqueue(object : Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 //Toast.makeText()
-
                 Log.d("Call request", call.request().toString());
                 Log.d("Call request header", call.request().headers.toString());
                 Log.d("Response raw header", response.headers().toString());
                 Log.d("Response raw", response.toString());
                 Log.d("Response code", response.code().toString());
-
-
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!.string()
                     Log.d("test", remoteResponse)
-
-
                     parseLoginDatass(remoteResponse)
-
                 } else {
                     dialogue_error();
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")

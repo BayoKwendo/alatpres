@@ -42,12 +42,17 @@
             android:gravity="bottom|center_horizontal"
             android:layout_marginBottom="@dimen/_10sdp"
             android:layout_height="match_parent">
-        <com.google.android.gms.ads.AdView
-            android:id="@+id/adView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:adSize="BANNER"
-            app:adUnitId="ca-app-pub-3940256099942544/6300978111">
+
+            <com.google.android.gms.ads.AdView
+                xmlns:ads="http://schemas.android.com/apk/res-auto"
+                android:id="@+id/adView"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/_100sdp"
+                android:layout_marginBottom="@dimen/_100ssp"
+                android:layout_centerHorizontal="true"
+                android:layout_alignParentBottom="true"
+                ads:adUnitId="@string/banner_ad_unit_id"
+                ads:adSize="BANNER">
 
         </com.google.android.gms.ads.AdView>
         </LinearLayout>

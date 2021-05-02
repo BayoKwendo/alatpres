@@ -76,6 +76,9 @@ public class GenderDialogue extends Dialog {
             public void onItemClicked(String gender) {
                 selectedString = gender;
                 selectedTextView.setText(selectedString);
+                onSelectingGender.onSelectingGender(selectedString);
+                dismiss();
+
             }
         });
         recyclerView.setAdapter(adapter);

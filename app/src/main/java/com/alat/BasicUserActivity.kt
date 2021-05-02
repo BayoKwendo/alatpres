@@ -23,7 +23,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.isVisible
 import com.afollestad.materialdialogs.MaterialDialog
 import com.alat.adapters.CountriesArrayListAdapter
 import com.alat.adapters.CountriesListAdapter
@@ -34,9 +33,9 @@ import com.alat.interfaces.CreateUser
 import com.alat.model.PreferenceModel
 import com.alat.model.TextViewDatePicker
 import com.alat.ui.activities.auth.Enterprise
-import com.alat.ui.activities.enterprise.AddClientActivitity
 import com.alat.ui.activities.auth.LoginActivity
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener
@@ -61,6 +60,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+
 
 @Suppress("DEPRECATION")
 class BasicUserActivity : AppCompatActivity() {
@@ -111,17 +111,18 @@ class BasicUserActivity : AppCompatActivity() {
 
     private val mCountries: ArrayList<String> = ArrayList()
 
+    var phone_number: String? = null
+
+    private val firebaseAuth: FirebaseAuth? = null
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_register_user)
         preferenceHelper = PreferenceModel(this)
-
+        phone_number = intent.getStringExtra("phone_numbers")
         mSimpleListAdapter1 = CountriesListAdapter(this, mCountries)
-
         mSimpleArrayListAdapter1 = CountriesArrayListAdapter(this, mCountries)
-
         mSearchableSpinner1 = findViewById<View>(R.id.SearchableSpinner1) as SearchableSpinner
         val privacy_policy: TextView =
             findViewById(R.id.privacy_text)
@@ -145,12 +146,14 @@ class BasicUserActivity : AppCompatActivity() {
             override fun onClick(widget: View) {
                 loadPolicy()
             }
+
             override fun updateDrawState(textPaint: TextPaint) {
                 textPaint.color = textPaint.linkColor // you can use custom color
                 textPaint.isUnderlineText = false // this remove the underline
             }
         }, spanText.length - policy.length, spanText.length, 0)
         privacy_policy.movementMethod = LinkMovementMethod.getInstance()
+
         privacy_policy.setText(spanText, TextView.BufferType.SPANNABLE)
         mProgress = ProgressDialog(this)
         mProgress!!.setMessage("Creating user...")
@@ -161,10 +164,17 @@ class BasicUserActivity : AppCompatActivity() {
         mSearchableSpinner1!!.setStatusListener(object : IStatusListener {
             override fun spinnerIsOpening() {
             }
+
             override fun spinnerIsClosing() {}
         })
         parseEntityDatas()
-    }
+
+
+
+//        Toast.makeText(this@BasicUserActivity, "Nothing" + phone_number, Toast.LENGTH_SHORT).show()
+
+
+}
 
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
@@ -180,15 +190,13 @@ class BasicUserActivity : AppCompatActivity() {
             if(position > 0){
                 textInputcounties = findViewById(R.id.counties_layout)
                 countries = mSimpleListAdapter1!!.getItem(position).toString()
-
-                textInputcounties!!.isVisible = countries == "Kenya"
+//                textInputcounties!!.isVisible = countries == "Kenya"
             } }
         override fun onNothingSelected() {
             Toast.makeText(this@BasicUserActivity, "Nothing Selected", Toast.LENGTH_SHORT).show() }
     }
 
     fun init() {
-
         textInputfirstName = findViewById(R.id.first_name)
         textInputlastname = findViewById<TextInputLayout>(R.id.last_name)
         textInputemail = findViewById(R.id.email)
@@ -313,22 +321,15 @@ class BasicUserActivity : AppCompatActivity() {
         try {
             val myJson =
                 inputStreamToString(this.resources.openRawResource(R.raw.africancountries))
-
 //            val br = BufferedReader(InputStreamReader(resources.openRawResource(R.raw.africancountries)))
 //            var temp: String?
-//            while (br.readLine().also { temp = it } != null) sb.append(temp)
-            Log.i("jsonbayo", myJson )
-
+////            while (br.readLine().also { temp = it } != null) sb.append(temp)
+//            Log.i("jsonbayo", myJson)
             mCountries.clear()
-
             val jArray = JSONArray(myJson.toString())
-
             for (i in 0 until jArray.length()) {
-
                val json_obj = jArray.getJSONObject(i)
-
                 mCountries.add(json_obj!!.getString("Country Name"))
-
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -368,43 +369,45 @@ class BasicUserActivity : AppCompatActivity() {
 
 
         if (Utils.checkIfEmptyString(firstName)) {
-            textInputfirstName!!.error = "FirstName is required"
+            textInputfirstName!!.error = "Name is required"
             textInputfirstName!!.requestFocus()
             showKeyBoard()
             return false
         } else textInputfirstName!!.error = null
-        if (Utils.checkIfEmptyString(lastName)) {
-            textInputlastname!!.error = "LastName is required"
-            textInputlastname!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputlastname!!.error = null
-        if (Utils.checkIfEmptyString(gender)) {
-            Toast.makeText(this, "Gender is Mandatory", Toast.LENGTH_SHORT).show()
-            textInputgender!!.error = "Gender is mandatory"
-            textInputgender!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputgender!!.error = null
-        if (Utils.checkIfEmptyString(dob)) {
-            textInputdob!!.error = "Date of Birth is mandatory"
-            textInputdob!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputdob!!.error = null
+//        if (Utils.checkIfEmptyString(lastName)) {
+//            textInputlastname!!.error = "LastName is required"
+//            textInputlastname!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputlastname!!.error = null
+//        if (Utils.checkIfEmptyString(gender)) {
+//            Toast.makeText(this, "Gender is Mandatory", Toast.LENGTH_SHORT).show()
+//            textInputgender!!.error = "Gender is mandatory"
+//            textInputgender!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputgender!!.error = null
+//        if (Utils.checkIfEmptyString(dob)) {
+//            textInputdob!!.error = "Date of Birth is mandatory"
+//            textInputdob!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputdob!!.error = null
 
-        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email!!).matches()) {
-            textInputemail!!.error = "Enter a valid email!"
-            textInputemail!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputemail!!.error = null
-        if (Utils.checkIfEmptyString(mssidn)) {
-            textInputmssidn!!.error = "Phone No. is mandatory"
-            textInputmssidn!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputmssidn!!.error = null
+//        if (!android.util.Patterns.EMAIL_ADDRESS.matcher(email!!).matches()) {
+//            textInputemail!!.error = "Enter a valid email!"
+//            textInputemail!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputemail!!.error = null
+
+
+//        if (Utils.checkIfEmptyString(mssidn)) {
+//            textInputmssidn!!.error = "Phone No. is mandatory"
+//            textInputmssidn!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputmssidn!!.error = null
 
         if (user_id!!.isEmpty()){
             textInputuserid!!.error = "Please set your user ID"
@@ -428,8 +431,8 @@ class BasicUserActivity : AppCompatActivity() {
             return false
         }else textInputuserid!!.error = null
 
-        if (password!!.length < 6){
-            Toast.makeText(this, "Password must be at least six characters", Toast.LENGTH_SHORT).show()
+        if (password!!.length < 4){
+            Toast.makeText(this, "Password must be at least four characters", Toast.LENGTH_SHORT).show()
             textInputpassword!!.error = "User ID must be at least six characters"
             textInputpassword!!.requestFocus()
             showKeyBoard()
@@ -458,6 +461,7 @@ class BasicUserActivity : AppCompatActivity() {
     private fun createUser() {
 
         registerVar()
+
 
         var date: String? = null
         val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -492,16 +496,17 @@ class BasicUserActivity : AppCompatActivity() {
         val params: HashMap<String, String> = HashMap()
         params["firstname"] = firstName!!
         params["lastname"] = lastName!!
-        params["email"] = email!!
-        params["gender"] = gender!!
+        params["email"] = "basic_user"
+        params["gender"] = "GENDER"
         params["idNo"] = "2922"
         params["DoB"] = dob!!
-        params["mssdn"] = mssidn!!
-        params["country"] = countries!!
-        params["county"] = county!!
+        params["mssdn"] = phone_number!!
+        params["country"] = "N/B"
+        params["county"] = "NONE"
         params["userid"] = user_id!!
-        params["date_now"] = date!!
+        params["date_now"] = date
         params["password"] = password!!
+
 
         val api: CreateUser = retrofit.create(CreateUser::class.java)
         val call: Call<ResponseBody> = api.UserCreate(params)
@@ -520,40 +525,46 @@ class BasicUserActivity : AppCompatActivity() {
 //                    val remoteResponse = response.body()!!.string()
 //                    Log.d("test", remoteResponse)
 
-                    if (response.code() == 201){
+                    if (response.code() == 201) {
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Email already taken!!")
                     }
-                    if (response.code() == 204){
+                    if (response.code() == 204) {
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Phone already taken!!")
                     }
-                    if (response.code() == 202){
+                    if (response.code() == 202) {
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "User ID already taken!!")
                     }
-                    if (response.code() == 400){
+                    if (response.code() == 400) {
                         mProgress?.dismiss()
 
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Unable to create User! please try again")
-                    }
-                    else if(response.code() == 200){
+                    } else if (response.code() == 200) {
                         mProgress?.dismiss()
                         pref =
-                            applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+                            applicationContext.getSharedPreferences(
+                                "ADS",
+                                0
+                            ) // 0 - for private mode
 
                         val editor2: SharedPreferences.Editor = pref!!.edit()
                         editor2.putString("ads", "0")
                         editor2.clear()
                         editor2.apply()
-                        Toast.makeText(this@BasicUserActivity, "Login to continue" , Toast.LENGTH_SHORT).show()
+                        Toast.makeText(
+                            this@BasicUserActivity,
+                            "Login to continue",
+                            Toast.LENGTH_SHORT
+                        ).show()
 
                         dialogue()
                         promptPopUpView?.changeStatus(2, "Registration was successful!")
@@ -603,7 +614,8 @@ class BasicUserActivity : AppCompatActivity() {
         AlertDialog.Builder(this)
         AlertDialog.Builder(this)
             .setPositiveButton(
-                "Ok") { dialog, _ -> dialog.dismiss() }
+                "Ok"
+            ) { dialog, _ -> dialog.dismiss() }
            .setCancelable(false)
             .setView(promptPopUpView)
             .show() }

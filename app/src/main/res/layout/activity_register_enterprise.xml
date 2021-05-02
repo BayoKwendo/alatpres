@@ -133,6 +133,7 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_30sdp"
+                            android:visibility="gone"
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
                             app:layout_constraintEnd_toEndOf="@+id/name"
@@ -143,6 +144,7 @@
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Other Name/s"
+                                android:text="ltd/org"
                                 android:inputType="text"
                                 android:maxLength="100"
                                 android:padding="@dimen/_10sdp"
@@ -155,6 +157,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginLeft="@dimen/_30sdp"
                             android:layout_marginRight="@dimen/_30sdp"
+                            android:visibility="gone"
                             app:errorEnabled="true"
                             app:layout_constraintEnd_toEndOf="@+id/other_name"
                             app:layout_constraintStart_toStartOf="@+id/other_name"
@@ -166,6 +169,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Tax ID"
                                 android:inputType="text"
+                                android:text="00001"
                                 android:maxLength="100"
                                 android:padding="@dimen/_10sdp"
                                 android:textColor="@color/colorBlack"
@@ -215,6 +219,7 @@
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
                             app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="gone"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/linear">
@@ -239,6 +244,7 @@
                             android:layout_marginLeft="@dimen/_30sdp"
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
@@ -249,6 +255,7 @@
                                 android:layout_height="match_parent"
                                 android:backgroundTint="@color/colorAccent"
                                 android:focusable="false"
+                                android:text="ORG"
                                 android:hint="Nature of Org."
                                 android:inputType="text"
                                 android:padding="@dimen/_10sdp"
@@ -265,6 +272,7 @@
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
                             app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="gone"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/nature">
@@ -290,6 +298,7 @@
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
                             app:layout_constraintEnd_toEndOf="parent"
+                            android:visibility="gone"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
                             app:layout_constraintTop_toBottomOf="@+id/date_layout">
@@ -314,6 +323,7 @@
                             android:layout_marginLeft="@dimen/_30sdp"
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
@@ -339,6 +349,7 @@
                             android:layout_marginLeft="@dimen/_30sdp"
                             android:layout_marginRight="@dimen/_30sdp"
                             app:errorEnabled="true"
+                            android:visibility="gone"
                             app:layout_constraintEnd_toEndOf="parent"
                             app:layout_constraintHorizontal_bias="0.5"
                             app:layout_constraintStart_toStartOf="parent"
@@ -356,131 +367,9 @@
                                 android:textColor="@color/colorBlack"
                                 android:textSize="@dimen/_13ssp" />
                         </com.google.android.material.textfield.TextInputLayout>
-                        <Button
-                            android:id="@+id/buttonNext"
-                            android:layout_width="@dimen/_100sdp"
-                            android:layout_height="wrap_content"
-                            android:layout_alignParentBottom="true"
-                            android:layout_marginTop="@dimen/_20sdp"
-                            android:layout_marginBottom="@dimen/_10sdp"
-                            android:background="@drawable/button_shape"
-                            android:gravity="center"
-                            android:text="NEXT"
-                            android:textColor="#ffffff"
-                            android:textSize="15sp"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintHorizontal_bias="0.5"
-                            app:layout_constraintStart_toStartOf="parent"
-                            app:layout_constraintTop_toBottomOf="@+id/description"
-                            app:layout_constraintVertical_bias="1.0" />
 
 
-<!--                        <com.poovam.pinedittextfield.LinePinField-->
-<!--                            android:id="@+id/pin_input"-->
-<!--                            android:layout_width="wrap_content"-->
-<!--                            android:layout_height="wrap_content"-->
-<!--                            android:layout_marginTop="@dimen/_15sdp"-->
-<!--                            android:focusable="true"-->
-<!--                            android:inputType="number"-->
-<!--                            android:textColor="@color/colorBlackish"-->
-<!--                            android:textSelectHandle="@drawable/text_handle"-->
-<!--                            android:textSize="@dimen/_24ssp"-->
-<!--                            app:highlightColor="@color/colorAccent"-->
-<!--                            app:highlightSingleFieldMode="true"-->
-<!--                            app:isCursorEnabled="true"-->
-<!--                            app:layout_constraintEnd_toEndOf="@+id/pin_text"-->
-<!--                            app:layout_constraintStart_toStartOf="@+id/pin_text"-->
-<!--                            app:layout_constraintTop_toBottomOf="@+id/pin_text"-->
-<!--                            app:noOfFields="4" />-->
-
-                    </androidx.constraintlayout.widget.ConstraintLayout>
-                </androidx.core.widget.NestedScrollView>
-            </androidx.cardview.widget.CardView>
-
-        </androidx.appcompat.widget.LinearLayoutCompat>
-
-
-        <!--Next View-->
-
-
-    <FrameLayout
-        android:id="@+id/next_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone">
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/toolbar"
-        android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"
-        android:layout_marginBottom="@dimen/_5sdp"
-        android:background="?attr/colorPrimary"
-        android:theme="@style/ToolbarTheme">
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="1"
-            android:singleLine="true"
-            android:text="Cont..."
-            android:textColor="@color/colorWhite"
-            android:textSize="20sp"
-            android:textStyle="bold" />
-    </androidx.appcompat.widget.Toolbar>
-
-
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="10dp"
-        android:layout_marginTop="@dimen/_20sdp"
-        android:layout_marginBottom="20dp"
-        android:padding="20dp"
-        app:cardElevation="0dp">
-
-        <androidx.core.widget.NestedScrollView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:scrollbarSize="@dimen/_2sdp"
-            android:scrollbars="vertical">
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <TextView
-                    android:id="@+id/nextx"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="start"
-                    android:layout_marginTop="@dimen/_20sdp"
-                    android:text="SUBSCRIPTION PACKAGES"
-                    android:layout_marginLeft="@dimen/_10sdp"
-                    android:textColor="@color/colorBlack"
-                    android:textSize="@dimen/_12ssp"
-                    android:visibility="gone"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toStartOf="parent"/>
-
-                <com.google.android.material.textfield.TextInputLayout
+                         <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/physical_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -490,7 +379,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/nextx">
+                    app:layout_constraintTop_toBottomOf="@+id/description">
                     <com.google.android.material.textfield.TextInputEditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -506,6 +395,7 @@
                     android:id="@+id/postal_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:visibility="gone"
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_30sdp"
                     app:errorEnabled="true"
@@ -531,6 +421,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_30sdp"
+                    android:visibility="gone"
                     android:layout_marginRight="@dimen/_30sdp"
                     app:errorEnabled="true"
                     app:layout_constraintEnd_toEndOf="@+id/postal_address"
@@ -559,6 +450,7 @@
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_30sdp"
                     android:orientation="vertical"
+                    android:visibility="gone"
                     app:errorEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -613,6 +505,7 @@
                     android:layout_marginRight="@dimen/_30sdp"
                     app:errorEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
+                    android:visibility="gone"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/mobile">
@@ -662,6 +555,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="@dimen/_30sdp"
                     android:layout_marginRight="@dimen/_30sdp"
+                    android:visibility="gone"
                     app:errorEnabled="true"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
@@ -923,8 +817,155 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/accept_adds" />
 
+                        <Button
+                            android:id="@+id/submit"
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginTop="@dimen/_35sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            app:layout_constraintTop_toBottomOf="@+id/privacy_text"
+                            android:background="@drawable/button_shape"
+                            android:gravity="center"
+                            android:text="Submit"
+                            android:textColor="#ffffff"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintVertical_bias="1.0"
+                            />
+
+                        <Button
+                            android:id="@+id/buttonNext"
+                            android:layout_width="@dimen/_100sdp"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginTop="@dimen/_20sdp"
+                            android:layout_marginBottom="@dimen/_10sdp"
+                            android:background="@drawable/button_shape"
+                            android:visibility="gone"
+                            android:gravity="center"
+                            android:text="NEXT"
+                            android:textColor="#ffffff"
+                            android:textSize="15sp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/description"
+                            app:layout_constraintVertical_bias="1.0" />
+
+
+<!--                        <com.poovam.pinedittextfield.LinePinField-->
+<!--                            android:id="@+id/pin_input"-->
+<!--                            android:layout_width="wrap_content"-->
+<!--                            android:layout_height="wrap_content"-->
+<!--                            android:layout_marginTop="@dimen/_15sdp"-->
+<!--                            android:focusable="true"-->
+<!--                            android:inputType="number"-->
+<!--                            android:textColor="@color/colorBlackish"-->
+<!--                            android:textSelectHandle="@drawable/text_handle"-->
+<!--                            android:textSize="@dimen/_24ssp"-->
+<!--                            app:highlightColor="@color/colorAccent"-->
+<!--                            app:highlightSingleFieldMode="true"-->
+<!--                            app:isCursorEnabled="true"-->
+<!--                            app:layout_constraintEnd_toEndOf="@+id/pin_text"-->
+<!--                            app:layout_constraintStart_toStartOf="@+id/pin_text"-->
+<!--                            app:layout_constraintTop_toBottomOf="@+id/pin_text"-->
+<!--                            app:noOfFields="4" />-->
+
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </androidx.core.widget.NestedScrollView>
+            </androidx.cardview.widget.CardView>
+
+        </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        <!--Next View-->
+
+
+    <FrameLayout
+        android:id="@+id/next_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:layout_marginBottom="@dimen/_5sdp"
+        android:background="?attr/colorPrimary"
+        android:theme="@style/ToolbarTheme">
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="1"
+            android:singleLine="true"
+            android:text="Cont..."
+            android:textColor="@color/colorWhite"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+    </androidx.appcompat.widget.Toolbar>
+
+
+    <androidx.cardview.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="@dimen/_20sdp"
+        android:layout_marginBottom="20dp"
+        android:padding="20dp"
+        app:cardElevation="0dp">
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:scrollbarSize="@dimen/_2sdp"
+            android:scrollbars="vertical">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/nextx"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="start"
+                    android:layout_marginTop="@dimen/_20sdp"
+                    android:text="SUBSCRIPTION PACKAGES"
+                    android:layout_marginLeft="@dimen/_10sdp"
+                    android:textColor="@color/colorBlack"
+                    android:textSize="@dimen/_12ssp"
+                    android:visibility="gone"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"/>
+
+
+
                 <Button
-                    android:id="@+id/submit"
+                    android:id="@+id/submitc"
                     android:layout_width="@dimen/_100sdp"
                     android:layout_height="wrap_content"
                     android:layout_alignParentBottom="true"
@@ -934,6 +975,7 @@
                     android:background="@drawable/button_shape"
                     android:gravity="center"
                     android:text="Submit"
+                    android:visibility="gone"
                     android:textColor="#ffffff"
                     android:textSize="15sp"
                     app:layout_constraintBottom_toBottomOf="parent"
