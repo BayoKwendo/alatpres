@@ -360,7 +360,7 @@ class Client_Response : Fragment(),
             Intent.EXTRA_TEXT, """
           ALATPRES
      Get AlatPres.
-     https://play.google.com/store/apps/details?id=com.alatpres
+     https://play.google.com/store/apps/details?id=com.alat
      """.trimIndent()
         )
         val intent =

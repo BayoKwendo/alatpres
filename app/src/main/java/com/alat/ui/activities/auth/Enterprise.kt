@@ -397,7 +397,7 @@ class Enterprise : AppCompatActivity() {
                 textInputcounties = findViewById(R.id.counties_layout)
                 countries = mSimpleListAdapter1!!.getItem(position).toString()
 
-                textInputcounties!!.isVisible = countries == "Kenya"
+//                textInputcounties!!.isVisible = countries == "Kenya"
             } }
         override fun onNothingSelected() {
             Toast.makeText(this@Enterprise, "Nothing Selected", Toast.LENGTH_SHORT).show() }
@@ -641,39 +641,39 @@ class Enterprise : AppCompatActivity() {
             return false
         } else textInputname!!.error = null
 
-        if (Utils.checkIfEmptyString(tax)) {
-            textInputtax!!.error = "Tax ID is mandatory"
-            textInputtax!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputtax!!.error = null
-        if (Utils.checkIfEmptyString(dob)) {
-            textInputdob!!.error = "Date of Incorporation is mandatory"
-            textInputdob!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputdob!!.error = null
+//        if (Utils.checkIfEmptyString(tax)) {
+//            textInputtax!!.error = "Tax ID is mandatory"
+//            textInputtax!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputtax!!.error = null
+//        if (Utils.checkIfEmptyString(dob)) {
+//            textInputdob!!.error = "Date of Incorporation is mandatory"
+//            textInputdob!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputdob!!.error = null
 
-        if (Utils.checkIfEmptyString(nature)) {
-            textInputnature!!.error = "Nature of your org is mandatory"
-            textInputnature!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputnature!!.error = null
+//        if (Utils.checkIfEmptyString(nature)) {
+//            textInputnature!!.error = "Nature of your org is mandatory"
+//            textInputnature!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputnature!!.error = null
 
-        if (Utils.checkIfEmptyString(clients)) {
-            textInputnclient!!.error = "Client level is mandatory"
-            textInputnclient!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputnclient!!.error = null
-        if (Utils.checkIfEmptyString(employee)) {
-            Toast.makeText(this, "Employee number is Mandatory", Toast.LENGTH_SHORT).show()
-            textInputemply!!.error = "Gender is mandatory"
-            textInputemply!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputemply!!.error = null
+//        if (Utils.checkIfEmptyString(clients)) {
+//            textInputnclient!!.error = "Client level is mandatory"
+//            textInputnclient!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputnclient!!.error = null
+//        if (Utils.checkIfEmptyString(employee)) {
+//            Toast.makeText(this, "Employee number is Mandatory", Toast.LENGTH_SHORT).show()
+//            textInputemply!!.error = "Gender is mandatory"
+//            textInputemply!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputemply!!.error = null
 
 
         return true
@@ -692,24 +692,24 @@ class Enterprise : AppCompatActivity() {
             return false
         } else textInputphysicaladdress!!.error = null
 
-        if (Utils.checkIfEmptyString(postal)) {
-            textInputpostal!!.error = "Postal address is mandatory"
-            textInputpostal!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputpostal!!.error = null
-        if (Utils.checkIfEmptyString(town)) {
-            textInputtown!!.error = "Town is mandatory"
-            textInputtown!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputtown!!.error = null
-        if (Utils.checkIfEmptyString(code)) {
-            textInputcode!!.error = "Date of Incorporation is mandatory"
-            textInputcode!!.requestFocus()
-            showKeyBoard()
-            return false
-        } else textInputcode!!.error = null
+//        if (Utils.checkIfEmptyString(postal)) {
+//            textInputpostal!!.error = "Postal address is mandatory"
+//            textInputpostal!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputpostal!!.error = null
+//        if (Utils.checkIfEmptyString(town)) {
+//            textInputtown!!.error = "Town is mandatory"
+//            textInputtown!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputtown!!.error = null
+//        if (Utils.checkIfEmptyString(code)) {
+//            textInputcode!!.error = "Date of Incorporation is mandatory"
+//            textInputcode!!.requestFocus()
+//            showKeyBoard()
+//            return false
+//        } else textInputcode!!.error = null
         if (Utils.checkIfEmptyString(mssidn)) {
             textInputmssidn!!.error = "phone number is mandatory"
             textInputmssidn!!.requestFocus()
@@ -749,8 +749,8 @@ class Enterprise : AppCompatActivity() {
             return false
         } else textInputuserid!!.error = null
 
-        if (password!!.length < 6) {
-            Toast.makeText(this, "Password must be at least six characters", Toast.LENGTH_SHORT)
+        if (password!!.length < 4) {
+            Toast.makeText(this, "Password must be at least four characters", Toast.LENGTH_SHORT)
                 .show()
             textInputpassword!!.error = "User ID must be at least six characters"
             textInputpassword!!.requestFocus()
@@ -852,25 +852,25 @@ class Enterprise : AppCompatActivity() {
         params["firstname"] = name!!
         params["lastname"] = other_name!!
         params["email"] = email!!
-        params["taxid"] = tax!!
-        params["nature_org"] = nature!!
-        params["description"] = description!!
+        params["taxid"] = "333"
+        params["nature_org"] = "nature"
+        params["description"] = "desc"
         params["physical_address"] = physical!!
         params["postal_address"] = postal!!
-        params["town"] = town!!
-        params["clients"] = clients!!
-        params["code"] = code!!
-        params["website"] = website!!
+        params["town"] = "town"
+        params["clients"] = "3"
+        params["code"] = "233"
+        params["website"] = "web"
         params["country"] = countries!!
-        params["date_of_incooperation"] = dob!!
-        params["mssdn2"] = mssidn2!!
+        params["date_of_incooperation"] = "Date"
+        params["mssdn2"] = date!!
         params["mssdn"] = mssidn!!
         params["account_status"] = "1"
         params["response_provider"] = selectedItem!!
         params["nature_response"] = mySpinner!!.buildSelectedItemString()!!
-        params["county"] = county!!
+        params["county"] = mySpinner1!!.buildSelectedItemString()!!
         params["userid"] = user_id!!
-        params["date_now"] = date!!
+        params["date_now"] = date
         params["password"] = password!!
 
 
@@ -1002,12 +1002,12 @@ class Enterprise : AppCompatActivity() {
         params["mssdn"] = mssidn!!
         params["nature_response"] =mySpinner!!.buildSelectedItemString()!!
         params["userid"] = user_id!!
-        params["town"] = town!!
+        params["town"] = "None"
         params["county_operation"] = mySpinner1!!.buildSelectedItemString()!!
-        params["code"] = code!!
+        params["code"] = "000"
         params["physical_address"] = physical!!
-        params["postal_address"] = postal!!
-        params["county"] = county!!
+        params["postal_address"] = "NONE"
+        params["county"] = "NONE"
 
 
 

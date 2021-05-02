@@ -25,6 +25,7 @@ import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.UpdateSubscription
 import com.alat.interfaces.paypal
+import com.alat.ui.activities.mpesa.MPESAC2B
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
 import libs.mjn.prettydialog.PrettyDialog
@@ -86,6 +87,9 @@ class account : AppCompatActivity() {
     private var btnConfirm: Button? = null
     private var btnBack: Button? = null
     private var firstRun = true
+
+    private var upgradetrial: Button? = null
+
     var selectedItem3: String? = null
     var account_status: String? = null
     var date: String? = null
@@ -106,6 +110,8 @@ class account : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         edtPIN = findViewById<View>(R.id.account) as TextView
         btnBack = findViewById<View>(R.id.btn_disable) as Button
+        upgradetrial = findViewById<View>(R.id.btn_upgrade_trial) as Button
+
         account_title = findViewById<View>(R.id.acccount_title) as TextView
         account_msg = findViewById<View>(R.id.account_msg) as TextView
 
@@ -151,9 +157,7 @@ class account : AppCompatActivity() {
         when (account) {
             "1" -> {
                 if(mstatus == "0"){
-                    btnBack!!.setText("Disable Ads")
-                    btnBack!!.isEnabled = false
-                    btnBack!!.setVisibility(View.GONE)
+                    btnBack!!.setVisibility(View.VISIBLE)
 
                     pref =
                         applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
@@ -167,10 +171,14 @@ class account : AppCompatActivity() {
 
                     linear_layout_1!!.setVisibility(View.GONE)
                     linear_layout_2!!.setVisibility(View.VISIBLE)
+
+                    upgradetrial!!.visibility = View.VISIBLE
                     getStudent()
                 }else {
                     account_title!!.setText("ALATPRES PRO ACCOUNT")
                     account_msg!!.setText("You're currently subscribed to Pro account.  \n\n Expire in....")
+
+                    upgradetrial!!.visibility = View.GONE
 
                     linear_layout_1!!.setVisibility(View.GONE)
                     linear_layout_2!!.setVisibility(View.VISIBLE)
@@ -180,12 +188,20 @@ class account : AppCompatActivity() {
             "0" -> {
                 btnBack!!.setText("Disable Ads")
 
+                upgradetrial!!.visibility = View.GONE
 
                 linear_layout_1!!.setVisibility(View.VISIBLE)
                 linear_layout_2!!.setVisibility(View.GONE)
             }
         }
 
+
+        upgradetrial!!.setOnClickListener(View.OnClickListener {
+            linear_layout_1!!.setVisibility(View.VISIBLE)
+            linear_layout_2!!.setVisibility(View.GONE)
+            upgradetrial!!.visibility = View.GONE
+
+        })
 btnBack!!.setOnClickListener {
 //      Toast.makeText(this@account, adsstatus, Toast.LENGTH_LONG).show();
     if (account == "1" && adsstatus == "0") {
@@ -280,6 +296,9 @@ btnBack!!.setOnClickListener {
         btnConfirm!!.setOnClickListener(View.OnClickListener {
             BackAlert()
         })
+
+
+
     }
 
 //    @SuppressLint("ResourceAsColor")
@@ -546,7 +565,7 @@ private fun dialogue() {
                     ).show();
                 } else {
                     val i =
-                        Intent(this@account, MPESAExpressActivity::class.java)
+                        Intent(this@account, MPESAC2B::class.java)
                     i.putExtra("price", price)
                     i.putExtra("time", date)
                     startActivity(i)

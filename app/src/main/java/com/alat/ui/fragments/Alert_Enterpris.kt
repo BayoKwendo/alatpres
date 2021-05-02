@@ -6,7 +6,6 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -25,7 +24,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
-import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
@@ -37,8 +35,6 @@ import com.alat.ui.AboutUs
 import com.alat.ui.activities.*
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.CreateAlerteNT
-import com.alat.ui.activities.mpesa.Ban_Transfer
-import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import com.alat.ui.activities.mpesa.PaymentHistory
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdView
@@ -91,6 +87,8 @@ class Alert_Enterpris : Fragment(),
     var errorNull: TextView? = null
     private var mProgressLayout: LinearLayout? = null
     var views: View? = null
+    private var linearLayout: LinearLayout? = null
+
     private var mAdView: AdView? = null
     private var global_alats: TextView? = null
 
@@ -137,9 +135,12 @@ class Alert_Enterpris : Fragment(),
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
         errorNull = view.findViewById(R.id.texterror)
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
-        global =
-            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
-        global!!.setOnClickListener {
+
+
+
+        linearLayout = view.findViewById(R.id.globalgroup)
+
+        linearLayout!!.setOnClickListener {
             if (accounts == "0") {
                 subscribe()
                 promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
@@ -147,6 +148,11 @@ class Alert_Enterpris : Fragment(),
                 startActivity(Intent(activity!!, JoinGlobal::class.java))
             }
         }
+//        global =
+//            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
+//        global!!.setOnClickListener {
+//
+//        }
         if (accounts == "0"){
              var ADS: String? = null
             var pref2: SharedPreferences? = null
@@ -156,10 +162,9 @@ class Alert_Enterpris : Fragment(),
             ADS = pref2!!.getString("ads", null)
 
             if(ADS == "0") {
-                MobileAds.initialize(activity, "ca-app-pub-8641077171287971/4788863450"); //TEST KEY
-                views = activity!!.window!!.decorView.rootView;
-                Admob.createLoadBanner(activity!!.applicationContext, views);
-                Admob.createLoadInterstitial(activity!!.applicationContext, null);
+
+                MobileAds.initialize(activity) {}
+                views = requireActivity().window!!.decorView.rootView;
                 mAdView = view.findViewById<View>(R.id.adView) as AdView?
                 val adRequest: AdRequest = AdRequest.Builder().build()
                 mAdView!!.loadAd(adRequest)
@@ -428,7 +433,7 @@ class Alert_Enterpris : Fragment(),
             Intent.EXTRA_TEXT, """
           ALATPRES
      Get AlatPres.
-     https://play.google.com/store/apps/details?id=com.alatpres
+     https://play.google.com/store/apps/details?id=com.alat
      """.trimIndent()
         )
         val intent =

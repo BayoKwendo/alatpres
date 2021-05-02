@@ -42,7 +42,7 @@ class AboutUs : AppCompatActivity() {
             .addWebsite("http://alatpres.com/")
             .addFacebook("Alatpres-103664461222667")
             .addTwitter("alatpres")
-            .addPlayStore("com.alatpres")
+            .addPlayStore("com.alat")
             .addItem(copyRightsElement)
             .create()
         setContentView(aboutPage)

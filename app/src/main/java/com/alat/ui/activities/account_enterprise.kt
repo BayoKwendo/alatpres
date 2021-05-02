@@ -23,6 +23,7 @@ import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.paypal
+import com.alat.ui.activities.mpesa.MPESAC2B
 import com.alat.ui.activities.mpesa.MPESAExpressActivity
 import fr.ganfra.materialspinner.MaterialSpinner
 import libs.mjn.prettydialog.PrettyDialog
@@ -57,19 +58,16 @@ class account_enterprise : AppCompatActivity() {
     var firstname: kotlin.String? = null
     private var roleID: String? = null
     var check_first: kotlin.String? = null
-
     var email: kotlin.String? = null
     var sname: kotlin.String? = null
     var dob: kotlin.String? = null
     var gender: kotlin.String? = null
-
     var mssdn: kotlin.String? = null
     var idNo: kotlin.String? = null
     var county: kotlin.String? = null
     var clients: kotlin.String? = null
     var responseprovider: kotlin.String? = null
     var Calling_URL: String? = null
-
     var spinner_3: MaterialSpinner? = null
     var tv_minute: android.widget.TextView? = null
     private var tv_second: android.widget.TextView? = null
@@ -86,16 +84,13 @@ class account_enterprise : AppCompatActivity() {
     private var account: String? = null
     private var userid: String? = null
     var TAB_REQUEST_CODE = 465
-  var mstatus: String? = null
+    var mstatus: String? = null
     var adsstatus: String? = null
-
     var account_type:TextView? = null
-
     var Mmeesage:TextView? = null
-
     var TITLE:TextView? = null
-
     private var mProgress: ProgressDialog? = null
+    private var upgradetrial: Button? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -113,6 +108,7 @@ class account_enterprise : AppCompatActivity() {
         mProgress!!.setMessage("Redirecting..");
         mProgress!!.setCancelable(false);
 
+        upgradetrial = findViewById<View>(R.id.btn_upgrade_trial) as Button
 
         btnBack!!.setVisibility(View.VISIBLE)
 
@@ -278,11 +274,8 @@ class account_enterprise : AppCompatActivity() {
         when (account) {
             "1" -> {
                 if(mstatus == "0"){
-                    btnBack!!.setText("Disable Ads")
+                    btnBack!!.setVisibility(View.VISIBLE)
 
-                    btnBack!!.setVisibility(View.GONE)
-
-                    btnBack!!.isEnabled = false
                     pref =
                         applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
                     val editor2: SharedPreferences.Editor = pref!!.edit()
@@ -290,6 +283,7 @@ class account_enterprise : AppCompatActivity() {
                     editor2.clear()
                     editor2.apply()
 
+                    upgradetrial!!.visibility = View.VISIBLE
 
                     account_type!!.setText("You're currently using trial Account:  \n\n Expire in... ")
                     TITLE!!.setText("ALATPRES ENTERPRISE TRIAL ACCOUNT")
@@ -299,11 +293,14 @@ class account_enterprise : AppCompatActivity() {
                 }else {
                     linear_layout_1!!.setVisibility(View.GONE)
                     linear_layout_2!!.setVisibility(View.VISIBLE)
+                    upgradetrial!!.visibility = View.GONE
+
                     getStudent()
                 }
 
             }
             "0"-> {
+                upgradetrial!!.visibility = View.GONE
                 linear_layout_1!!.setVisibility(View.VISIBLE)
                 linear_layout_2!!.setVisibility(View.GONE)
             }
@@ -321,6 +318,18 @@ class account_enterprise : AppCompatActivity() {
         btnConfirm!!.setOnClickListener(View.OnClickListener {
             BackAlert()
         })
+
+
+        upgradetrial!!.setOnClickListener(View.OnClickListener {
+            linear_layout_1!!.setVisibility(View.VISIBLE)
+            linear_layout_2!!.setVisibility(View.GONE)
+            upgradetrial!!.visibility = View.GONE
+
+        })
+
+//        upgradetrial!!.setOnClickListener(View.OnClickListener {
+//            BackAlert()
+//        })
 
         btnBack!!.setOnClickListener {
 //            if(mstatus == "0") {
@@ -711,7 +720,7 @@ class account_enterprise : AppCompatActivity() {
                         CheckFirst()
                     } else {
                         val i =
-                            Intent(this@account_enterprise, MPESAExpressActivity::class.java)
+                            Intent(this@account_enterprise, MPESAC2B::class.java)
                         i.putExtra("price", price)
                         i.putExtra("time", date)
                         startActivity(i)

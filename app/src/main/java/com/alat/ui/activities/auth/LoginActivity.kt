@@ -74,7 +74,9 @@ class LoginActivity : AppCompatActivity() {
         signin!!.setOnClickListener {
             validation()
         }
-       // Picasso.with(this).load().fit().into(image);
+//        Toast.makeText(this, "",    Toast.LENGTH_LONG).show()
+
+        // Picasso.with(this).load().fit().into(image);
         Picasso.get().load("http://167.172.17.121/api/logo.png").into(image)
         pref =
             this.getSharedPreferences("MyPref", 0) // 0 - for private mode
@@ -85,10 +87,6 @@ class LoginActivity : AppCompatActivity() {
             startActivity(intent)
             finish()
         }
-
-
-
-
         forgot = findViewById(R.id.tv_forgot_password)
         forgot?.setOnClickListener {
             startActivity(Intent(this, ForgotPassword::class.java))
@@ -214,7 +212,6 @@ class LoginActivity : AppCompatActivity() {
                 promptPopUpView?.changeStatus(2, "SUCCESSFUL")
                 mProgress?.dismiss()
                 Handler().postDelayed({
-                 //   Toast.makeText(this, "" + jsonObject.getString("response_provider"),    Toast.LENGTH_LONG).show()
                     val intent = Intent(this@LoginActivity, Permission::class.java)
                     intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
                     startActivity(intent)

@@ -112,6 +112,8 @@
                 android:backgroundTint="@color/colorAccent"
                 android:focusable="false"
                 android:hint="Choose Rescue Level"
+                android:visibility="gone"
+
                 android:inputType="text"
                 android:padding="@dimen/_10sdp"
                 android:maxLength="35"

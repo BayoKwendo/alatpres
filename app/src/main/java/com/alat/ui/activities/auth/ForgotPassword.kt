@@ -59,7 +59,8 @@ class ForgotPassword : AppCompatActivity() {
                 if (!isNetworkAvailable()) {
                     internet()
                     promptPopUpView?.changeStatus(1, "Connection Error\n\n Check your internet connectivity")
-                }else {
+                }
+                else {
                 mProgress!!.show()
                 getStudent()
                 }

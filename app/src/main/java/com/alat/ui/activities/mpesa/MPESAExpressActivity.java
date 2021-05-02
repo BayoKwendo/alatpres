@@ -441,14 +441,13 @@ public class MPESAExpressActivity extends AppCompatActivity {
 
                 }
             }  else {
-                // Toast.makeText(this, "" + price, Toast.LENGTH_SHORT).show();
 
                 //TODO :: REPLACE WITH YOUR OWN CREDENTIALS  :: THIS IS SANDBOX DEMO
                 LNMExpress lnmExpress = new LNMExpress (
                         "4036601",
                         "c3b0702afc4d3133916e1ff36821b9b407a8f4da06e30afbdcd6907d940ef033",  //https://developer.safaricom.co.ke/test_credentials
                         TransactionType.CustomerPayBillOnline,
-                         "1",
+                         price,
                         "254717629732",
                         "4036601",
                          phoneNumber,
@@ -456,7 +455,6 @@ public class MPESAExpressActivity extends AppCompatActivity {
                         "alatpres",
                         "Pay No"
                 );
-
                 //This is the
                 daraja.requestMPESAExpress(lnmExpress,
                         new DarajaListener<LNMResult>() {

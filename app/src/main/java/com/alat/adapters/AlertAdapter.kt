@@ -67,7 +67,9 @@ class AlertAdapter(
             holder.name.setTextColor(ContextCompat.getColor(context, R.color.accentGreen))
         }
         holder.name.text = contact.alert_name
-        holder.id.text = contact.id.toString() }
+        holder.id.text = contact.id.toString()
+
+    }
 
     override fun getItemCount(): Int {
         return contactListFiltered.size

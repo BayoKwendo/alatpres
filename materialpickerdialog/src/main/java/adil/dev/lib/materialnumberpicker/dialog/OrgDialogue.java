@@ -79,6 +79,8 @@ public class OrgDialogue extends Dialog {
             public void onItemClicked(String org) {
                 selectedString = org;
                 selectedTextView.setText(selectedString);
+                onSelectingOrg.onSelectingOrg(selectedString);
+                dismiss();
             }
         });
         recyclerView.setAdapter(adapter);

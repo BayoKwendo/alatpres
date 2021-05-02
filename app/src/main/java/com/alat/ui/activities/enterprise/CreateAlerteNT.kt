@@ -1173,7 +1173,7 @@ class CreateAlerteNT : AppCompatActivity() {
         params["fullname"] = fullname!!
         params["alert_type"] = "NULL"
         params["rg"] = selectedItem2!!
-        params["rl"] = setLevel!!
+        params["rl"] = "Level 1"
         params["mssdn"] = mssidn!!
         params["userid"] = user!!
         params["location"] = setLoc!!
@@ -1388,7 +1388,7 @@ class CreateAlerteNT : AppCompatActivity() {
         params["fullname"] = fullname!!
         params["alert_type"] = "NULL"
         params["rg"] = selecteditem3!!
-        params["rl"] = setLevel!!
+        params["rl"] = "Level 1"
         params["mssdn"] = mssidn!!
         params["userid"] = user!!
         params["location"] = setLoc!!

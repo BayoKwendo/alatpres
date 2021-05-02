@@ -84,6 +84,8 @@ public class CountyDialog extends Dialog {
             public void onItemClicked(String county) {
                 selectedString = county;
                 selectedTextView.setText(selectedString);
+                onSelectingcounty.onSelectingcounty(selectedString);
+                dismiss();
             }
         });
         recyclerView.setAdapter(adapter);

@@ -1137,7 +1137,8 @@ class CreateGlobalAlert : AppCompatActivity() {
         params["fullname"] = fullname!!
         params["alert_type"] = selectedItem!!
         params["rg"] = "Global Response Group"
-        params["rl"] = setLevel!!
+
+        params["rl"] = "Level 1"
         params["mssdn"] = mssidn!!
         params["userid"] = user!!
         params["location"] = setLoc!!
@@ -1357,7 +1358,7 @@ class CreateGlobalAlert : AppCompatActivity() {
         params["fullname"] = fullname!!
         params["alert_type"] = selectedItem!!
         params["rg"] = "Global Response Group"
-        params["rl"] = setLevel!!
+        params["rl"] = "Level 1"
         params["mssdn"] = mssidn!!
         params["userid"] = user!!
         params["location"] = setLoc!!

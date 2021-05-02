@@ -257,14 +257,32 @@
     </LinearLayout>
 
     <Button
+        android:id="@+id/btn_upgrade_trial"
+        android:layout_width="148dp"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/button_shape"
+        app:layout_constraintBottom_toTopOf="@id/btn_disable"
+        android:layout_marginBottom="@dimen/_16ssp"
+        android:text="subscribe"
+        android:textAllCaps="false"
+        android:visibility="gone"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
         android:id="@+id/btn_disable"
         android:layout_width="148dp"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginBottom="@dimen/_30ssp"
-        android:textAllCaps="false"
         android:background="@drawable/button_shape"
-        android:textColor="@color/colorWhite"
+        android:text="Disable Ads"
+        android:textAllCaps="false"
+
+        android:textColor="@android:color/white"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"

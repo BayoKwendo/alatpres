@@ -25,11 +25,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import cn.pedant.SweetAlert.SweetAlertDialog
-import com.alat.helpers.Admob
 import com.alat.helpers.Constants
+import com.alat.helpers.ForceUpdateChecker
 import com.alat.helpers.PromptPopUpView
 import com.alat.interfaces.FindTime
 import com.alat.interfaces.FriendInivte
+import com.alat.ui.activities.IntergrationMendu
 import com.alat.ui.activities.ResponseProviders
 import com.alat.ui.activities.auth.LoginActivity
 import com.alat.ui.activities.enterprise.AddClientActivitity
@@ -59,7 +60,7 @@ import java.text.SimpleDateFormat
 import java.util.concurrent.TimeUnit
 
 
-class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener
+class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener, ForceUpdateChecker.OnUpdateNeededListener
 {
     private var toolbar: androidx.appcompat.widget.Toolbar? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -114,6 +115,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         firstname = pref!!.getString("fname", null)
         sname = pref!!.getString("lname", null)
         email = pref!!.getString("email", null)
+
         dob = pref!!.getString("dob", null)
         gender = pref!!.getString("gender", null)
         mssdn = pref!!.getString("mssdn", null)
@@ -145,19 +147,16 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             this.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
         adsstatus2 = pref!!.getString("ads_basic", null)
 
-        if (adsstatus == "0" || adsstatus2 == "0") {
+        if (adsstatus == "0" || adsstatus2 == "0" || mstatus == "0") {
 
             pref2 =
                 this.getSharedPreferences("ADS", 0) // 0 - for private mode
             ADS = pref2!!.getString("ads", null)
 
             if (ADS == "0") {
-                MobileAds.initialize(this, "ca-app-pub-1439472385814796/1524804272"); //TEST KEY
+                MobileAds.initialize(this) {}
+
                 view = window.decorView.rootView;
-
-                Admob.createLoadBanner(applicationContext, view);
-                Admob.createLoadInterstitial(applicationContext, null);
-
                 mAdView = findViewById<View>(R.id.adView) as AdView?
                 val adRequest: AdRequest = AdRequest.Builder().build()
                 mAdView!!.loadAd(adRequest)
@@ -167,11 +166,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
 
         if (account == "0") {
-            setSupportActionBar(toolbar)
-
-
-//
-        }
+         }
 //
         getStudent()
         if (!isNetworkAvailable()) {
@@ -184,14 +179,26 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
         }
         initDrawer()
 
-//        Toast.makeText(
-//            this,
-//            roleID ,
-//            Toast.LENGTH_LONG
-//        ).show()
-
+        ForceUpdateChecker.with(this).onUpdateNeeded(this).check()
     }
 
+    override fun onUpdateNeeded(updateUrl: String) {
+        val dialog = AlertDialog.Builder(this)
+            .setTitle("New version available")
+            .setMessage("Please, update app to new version")
+            .setPositiveButton(
+                "Update"
+            ) { dialog, which -> redirectStore(updateUrl) }.setNegativeButton(
+                "No, thanks"
+            ) { dialog, which ->  }.create()
+        dialog.show()
+    }
+
+    private fun redirectStore(updateUrl: String) {
+        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(updateUrl))
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+        startActivity(intent)
+    }
 
     private fun initDrawer() {
         val drawer =
@@ -323,17 +330,20 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                 toolbar!!.title = "Alats";
             }
             R.id.alert_entr -> {
-                    fragment = Alert_Enterpris()
-                    toolbar!!.title = "Local Rgs Alats";
+                fragment = Alert_Enterpris()
+                toolbar!!.title = "Local Rgs Alats";
 
             }
 
             R.id.intergration -> {
-                subscribe()
-                promptPopUpView?.changeStatus(
-                    3,
-                    "NO DATA"
-                )
+                fragment = IntergrationMendu()
+                toolbar!!.title = "Response Services"
+//                subscribe()
+//                promptPopUpView?.changeStatus(
+//                    3,
+//                    "NO DATA"
+//                )
+
             }
 
             R.id.join_resp_ent -> {
@@ -344,7 +354,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             1,
                             "Kindly upgrade to a PRO to enjoy this feature. Thank you"
                         )
-                    }else{
+                    } else {
                         subscribe()
                         promptPopUpView?.changeStatus(
                             1,
@@ -360,7 +370,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.station_rg -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = Station_Response()
                     toolbar!!.title = "Department RGs Alats";
@@ -371,7 +384,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.client_grp -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = Client_Response()
                     toolbar!!.title = "Client RGs Alats";
@@ -381,7 +397,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.create_client -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = AddClientActivitity()
                     toolbar!!.title = "ADD CLIENT"
@@ -391,7 +410,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.create_station -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = AddStation()
                     toolbar!!.title = "ADD DEPARTMENT"
@@ -400,7 +422,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.random_client -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = randomClients()
                     toolbar!!.title = "Random Clients"
@@ -419,7 +444,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             R.id.create_respRG -> {
                 if (account == "0") {
                     subscribe()
-                    promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
+                    promptPopUpView?.changeStatus(
+                        1,
+                        "Kindly subscribe to a plan to enjoy this feature. Thank you"
+                    )
                 } else {
                     fragment = CreateRG()
                     toolbar!!.title = "Create Local RG";
@@ -433,7 +461,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             1,
                             "Kindly upgrade to a PRO to enjoy this feature. Thank you"
                         )
-                    }else{
+                    } else {
                         subscribe()
                         promptPopUpView?.changeStatus(
                             1,
@@ -459,7 +487,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             1,
                             "Kindly upgrade to a PRO to enjoy this feature. Thank you"
                         )
-                    }else{
+                    } else {
                         subscribe()
                         promptPopUpView?.changeStatus(
                             1,
@@ -482,7 +510,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                             1,
                             "Kindly upgrade to a PRO to enjoy this feature. Thank you"
                         )
-                    }else{
+                    } else {
                         subscribe()
                         promptPopUpView?.changeStatus(
                             1,
@@ -547,7 +575,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                     I just discovered a Reliable and Amazing way to share Emergency Alerts, Access Emergency services, 
                     receive safety updates, manage my business and personal safety as well as that of my loved ones and thought of sharing with you.
  
-                    Click https://play.google.com/store/apps/details?id=com.alatpres to download Alatpres App and enjoy managing your safety.
+                    Click https://play.google.com/store/apps/details?id=com.alat to download Alatpres App and enjoy managing your safety.
                     """.trimIndent()
                 sharingIntent.putExtra(Intent.EXTRA_TEXT, shareBody)
                 startActivity(Intent.createChooser(sharingIntent, "Share Via"))
@@ -673,7 +701,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
         promptPopUpView = PromptPopUpView(this)
 
-        AlertDialog.Builder( this)
+        AlertDialog.Builder(this)
 
             .setPositiveButton(
                 "Retry"
@@ -832,35 +860,35 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
                 if (response.isSuccessful) {
                     val remoteResponse = response.body()!!.string()
-                       try {
-                            val o = JSONObject(remoteResponse)
+                    try {
+                        val o = JSONObject(remoteResponse)
 
-                            val array: JSONArray = o.getJSONArray("records")
+                        val array: JSONArray = o.getJSONArray("records")
 
-                            for (i in 0 until array.length()) {
-                                val dataobj: JSONObject = array.getJSONObject(i)
-                                Log.d("DATAFULL", remoteResponse);
+                        for (i in 0 until array.length()) {
+                            val dataobj: JSONObject = array.getJSONObject(i)
+                            Log.d("DATAFULL", remoteResponse);
 
-                                Log.d("STATUSRECORD", dataobj.getString("status"));
+                            Log.d("STATUSRECORD", dataobj.getString("status"));
 
-                                if (dataobj.getString("status") == "true") {
-                                    Notify
-                                        .with(this@HomePage)
-                                        .asBigText {
-                                            title = "Group Invitation Request!!"
-                                            text = "You have a group invitation request to review "
-                                            expandedText = ""
-                                            bigText =
-                                                "You have been invited to join response group/s.\n" + "\n" +
-                                                        "Go to menu, notifications then invitation, for you to accept or reject your invitation/s"
-                                        }
-                                        .show()
-                                }
+                            if (dataobj.getString("status") == "true") {
+                                Notify
+                                    .with(this@HomePage)
+                                    .asBigText {
+                                        title = "Group Invitation Request!!"
+                                        text = "You have a group invitation request to review "
+                                        expandedText = ""
+                                        bigText =
+                                            "You have been invited to join response group/s.\n" + "\n" +
+                                                    "Go to menu, notifications then invitation, for you to accept or reject your invitation/s"
+                                    }
+                                    .show()
                             }
-
-                        } catch (e: JSONException) {
-                            e.printStackTrace()
                         }
+
+                    } catch (e: JSONException) {
+                        e.printStackTrace()
+                    }
 
                 } else {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
@@ -931,7 +959,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                 val strDate = sdf.parse(dataobj.getString("subscription_date"))
                                 if (System.currentTimeMillis() > strDate.time) {
                                     pref =
-                                        applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+                                        applicationContext.getSharedPreferences(
+                                            "ADS",
+                                            0
+                                        ) // 0 - for private mode
 
                                     val editor2: SharedPreferences.Editor = pref!!.edit()
                                     editor2.putString("ads", "0")
@@ -949,7 +980,7 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                     editor.putString("dob", dob)
                                     editor.putString("role", roleID)
                                     editor.putString("mssdn", mssdn)
-                                    editor.putString("gender", gender)
+                                    editor.putString("gender", "Gender")
                                     editor.putString("mstatus", "1")
                                     editor.putString("idNo", idNo)
                                     editor.putString("county", county)
@@ -964,7 +995,10 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
 
                                     pref =
-                                        applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
+                                        applicationContext.getSharedPreferences(
+                                            "ADS_ENTER",
+                                            0
+                                        ) // 0 - for private mode
 
                                     val editor4: SharedPreferences.Editor = pref!!.edit()
                                     editor4.putString("ads_enter", "0")
@@ -973,14 +1007,20 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
 
 
                                     pref =
-                                        applicationContext.getSharedPreferences("FIRSTCHECK", 0) // 0 - for private mode
+                                        applicationContext.getSharedPreferences(
+                                            "FIRSTCHECK",
+                                            0
+                                        ) // 0 - for private mode
                                     val editor9: SharedPreferences.Editor = pref!!.edit()
                                     editor9.putString("first_check", check_first)
                                     editor9.clear()
                                     editor9.apply()
 
                                     pref =
-                                        applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
+                                        applicationContext.getSharedPreferences(
+                                            "ADS_BASIC",
+                                            0
+                                        ) // 0 - for private mode
                                     val editor6: SharedPreferences.Editor = pref!!.edit()
                                     editor6.putString("ads_basic", "0")
                                     editor6.clear()
@@ -992,15 +1032,18 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
                                 }
                             }
                             //Log.d("onSuccess1", firstSport.toString())
-                           } catch (e: JSONException) {
+                        } catch (e: JSONException) {
                             e.printStackTrace()
                         }
                     } else {
 
 
-                        Log.i("onEmptyResponse", "Returned empty response") //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        ) //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
                     }
-                }else{
+                } else {
                     Log.d("bayo", response.errorBody()!!.string())
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
 

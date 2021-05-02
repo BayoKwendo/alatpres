@@ -16,9 +16,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.ShareActionProvider
 import androidx.appcompat.widget.Toolbar
 import androidx.core.view.MenuItemCompat
-import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -27,7 +25,6 @@ import cn.pedant.SweetAlert.SweetAlertDialog
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.RGAdapter
-import com.alat.helpers.Admob
 import com.alat.helpers.Constants
 import com.alat.helpers.MyDividerItemDecoration
 import com.alat.helpers.PromptPopUpView
@@ -94,6 +91,7 @@ class alerts : Fragment(),
     private var userid: String? = null
 
     private var roleID: String? = null
+    private var linearLayout: LinearLayout? = null
 
     private var global_alats: TextView? = null
 
@@ -109,6 +107,7 @@ class alerts : Fragment(),
 
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
+
 
         global_alats = view.findViewById(R.id.fabCounter)
 
@@ -154,10 +153,8 @@ class alerts : Fragment(),
 
        if(ADS == "0") {
 
-           MobileAds.initialize(activity, "ca-app-pub-3940256099942544~3347511713"); //TEST KEY
-           views = activity!!.window!!.decorView.rootView;
-           Admob.createLoadBanner(activity!!.applicationContext, views);
-           Admob.createLoadInterstitial(activity!!.applicationContext, null);
+           MobileAds.initialize(requireActivity()) {}
+           views = requireActivity().window!!.decorView.rootView;
            mAdView = view.findViewById<View>(R.id.adView) as AdView?
            val adRequest: AdRequest = AdRequest.Builder().build()
            mAdView!!.loadAd(adRequest)
@@ -165,11 +162,16 @@ class alerts : Fragment(),
        }
 
    }
-        global =
-            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
 
-        global!!.setOnClickListener {
-            startActivity(Intent(activity!!, JoinGlobal::class.java))
+
+//        global =
+//            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
+
+
+        linearLayout = view.findViewById(R.id.globalgroup)
+
+        linearLayout!!.setOnClickListener {
+            startActivity(Intent(requireActivity(), JoinGlobal::class.java))
         }
 
         floatingActionButton!!.setOnClickListener {
@@ -482,7 +484,7 @@ class alerts : Fragment(),
             Intent.EXTRA_TEXT, """
           ALATPRES
      Get AlatPres.
-     https://play.google.com/store/apps/details?id=com.alatpres
+     https://play.google.com/store/apps/details?id=com.alat
      """.trimIndent()
         )
         val intent =
@@ -501,22 +503,16 @@ class alerts : Fragment(),
             }
             R.id.join -> {
                 startActivity(Intent(activity, Notification::class.java))
-
             }
-
-
             R.id.invites -> {
                 startActivity(Intent(activity, Invitations::class.java))
             }
-
             R.id.payment_history -> {
                 startActivity(Intent(activity, PaymentHistory::class.java))
             }
-
             R.id.aboutus -> {
                 startActivity(Intent(activity, AboutUs::class.java))
             }
-
             R.id.about -> {
                 if (roleID == "1") {
                     startActivity(Intent(activity, com.alat.ui.activities.account::class.java))
@@ -527,14 +523,11 @@ class alerts : Fragment(),
 //            R.id.team-> {
 //                startActivity(Intent(activity, ResponseProviders::class.java))
 //            }
-
             R.id.logout -> {
                 logout()
             }
-
             else -> super.onOptionsItemSelected(item)
         }
-
         return true
     }
 
@@ -608,6 +601,11 @@ class alerts : Fragment(),
 
 
     private fun getAlertCount() {
+
+//        global_alats!!.text= "20"
+//        global_alats!!.visibility= View.VISIBLE
+
+
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -663,18 +661,14 @@ class alerts : Fragment(),
             val array: JSONArray = o.getJSONArray("records")
             pref =
                 requireActivity().getSharedPreferences("GLOBAL_ALAT_COUNT", 0) // 0 - for private mode
-
             var global_counts = pref!!.getInt("global_counts", 0)
 
             if(array.length() > global_counts){
                 global_alats!!.text= (array.length() - global_counts).toString()
                 global_alats!!.visibility= View.VISIBLE
             }
-
 //            global_alats!!.visibility= View.GONE
-
             Log.d("arraylength",array.length().toString())
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }

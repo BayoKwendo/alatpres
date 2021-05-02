@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ALATPRES</string>
+    <string name="app_name" translatable="false">ALATPRES</string>
     <string name="forgot_password">Forgot Password?</string>
     <string name="as_an_enterprise">As an Enterprise</string>
     <string name="as_a_normal_user_individual">As a Normal User(Individual)</string>
@@ -16,17 +16,17 @@
     <string name="error_file">Can\'t read pdf file</string>
     <string name="send_to">Send mail...</string>
     <string name="copy_right" translatable="false">Copyrights © %1$d</string>
-<!--    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>-->
     <string name="bt_descriptor_visa">Visa</string>
     <string name="bt_descriptor_mastercard">MasterCard</string>
     <string name="bt_descriptor_amex">Amex</string>
     <string name="bt_descriptor_jcb">JCB</string>
     <string name="bt_descriptor_discover">Discover</string>
 
-    <string name="admob_showIntersitial_ad_unit_id">ca-app-pub-3940256099942544/1033173712</string>
-    <string name="banner_ad_unit_id">ca-app-pub-3940256099942544/6300978111</string>
 
-<!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
+    <string name="banner_ad_unit_id" translatable="false"><ca-app></ca-app>-pub-8641077171287971/1413824642</string>
+
+
+    <!--    <string name="firstname">First Name<font color='#FF0000'>*</font></string>-->
 <!--    <string name="lastname">First Name<font color='#FF0000'>*</font></string>-->
 <!--    <string name="gender">First Name<font color='#FF0000'>*</font></string>-->
 <!--    <string name="datebirt">First Name<font color='#FF0000'>*</font></string>-->

@@ -22,6 +22,7 @@ import com.alat.helpers.PromptPopUpView;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
+import com.google.firebase.auth.FirebaseAuth;
 
 ;
 
@@ -119,7 +120,10 @@ public class LauncherActivity extends Activity{
 
             // Successfully signed in
             if (resultCode == RESULT_OK) {
-                startActivity(new Intent(LauncherActivity.this, BasicUserActivity.class));
+                startActivity(new Intent(LauncherActivity.this,
+                        BasicUserActivity.class)
+                        .putExtra("phone_numbers",FirebaseAuth.getInstance().getCurrentUser().getPhoneNumber().toString()));
+
                 Toast.makeText(this, "OTP verification success", Toast.LENGTH_SHORT).show();
             } else {
                 // Sign in failed

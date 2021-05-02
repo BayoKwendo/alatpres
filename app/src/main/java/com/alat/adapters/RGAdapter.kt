@@ -63,7 +63,6 @@ class RGAdapter(
         init {
             mAdView = view.findViewById<View>(R.id.adView) as AdView
             val adRequest: AdRequest = AdRequest.Builder()
-                .addTestDevice(AdRequest.DEVICE_ID_EMULATOR)
                 .build()
             mAdView.loadAd(adRequest)
         }

@@ -15,13 +15,13 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
     <uses-permission android:name="android.permission.STORAGE" />
 
-
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
+        android:name="com.alat.helpers.App"
         android:requestLegacyExternalStorage="true"
         android:networkSecurityConfig="@xml/network_security_config"
         android:screenOrientation="locked"
@@ -29,9 +29,10 @@
         tools:replace="android:icon">
 
 
+
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-1439472385814796~7922691664"/>
+            android:value="ca-app-pub-8641077171287971~2574863071"/>
 
         <activity android:name=".BasicUserActivity"
             android:screenOrientation="locked"
@@ -130,6 +131,11 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <activity android:name=".ui.activities.IntergrationMendu"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <activity android:name=".presentation.BubbleActivity"
             android:screenOrientation="locked"
 
@@ -139,6 +145,15 @@
         <activity android:name=".ui.activities.AlertsPerResponse"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
+
+        <activity android:name=".ui.activities.SafetyProviderDetails"
+            android:label="Safety Provider Details"/>
+
+        <activity android:name=".ui.activities.Safety_Providers"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+
 
         <activity android:name=".ui.activities.mpesa.PaymentHistory"
             android:screenOrientation="locked"
@@ -235,6 +250,12 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity android:name=".ui.activities.mpesa.MPESAExpressActivity"
+            android:label="Payments"
+            android:screenOrientation="locked">
+        </activity>
+
+
+        <activity android:name=".ui.activities.mpesa.MPESAC2B"
             android:label="Payments"
             android:screenOrientation="locked">
         </activity>

@@ -1,5 +1,15 @@
 [
   {
+    "Country Name": "Kenya",
+    "Calling Code": 254,
+    "Official Language": "English",
+    "Capital": "Nairobi",
+    "Currency": "Kenyan shilling",
+    "Country Flag": "🇰🇪",
+    "Internet users": 3996000,
+    "Population": 45010056
+  },
+  {
     "Country Name": "Algeria",
     "Calling Code": 213,
     "Official Language": "Arabic",
@@ -238,16 +248,6 @@
     "Country Flag": "🇬🇼",
     "Internet users": 37100,
     "Population": 1693398
-  },
-  {
-    "Country Name": "Kenya",
-    "Calling Code": 254,
-    "Official Language": "English",
-    "Capital": "Nairobi",
-    "Currency": "Kenyan shilling",
-    "Country Flag": "🇰🇪",
-    "Internet users": 3996000,
-    "Population": 45010056
   },
   {
     "Country Name": "Lesotho",
