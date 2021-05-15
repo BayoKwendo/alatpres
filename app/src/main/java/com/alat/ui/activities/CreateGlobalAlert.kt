@@ -561,7 +561,7 @@ class CreateGlobalAlert : AppCompatActivity() {
 
 
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
-        alertDialog.setTitle("Attach Alert other Response Group")
+        alertDialog.setTitle("Attach Alat other Response Group")
 
         val inflater: LayoutInflater =
             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

@@ -75,7 +75,7 @@
                     android:textColor="@color/colorBlack"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="8dp"
-                    android:text="Global Response Group/s" />
+                    android:text="Global Response Group" />
 
             </LinearLayout>
             <View
@@ -136,7 +136,6 @@
         android:background="@drawable/error"
         android:paddingHorizontal="16dp"
         android:paddingVertical="17dp"
-        android:text="To start Using Alatpres, Create a Response group and begin sharing and receiving alats from your members"
         android:textColor="@color/error"
         android:textSize="17sp"
         android:visibility="gone"

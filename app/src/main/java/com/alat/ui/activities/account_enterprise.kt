@@ -752,7 +752,7 @@ class account_enterprise : AppCompatActivity() {
             .setMessage("ONBOARDING FEE " + 3500 +"\n\n  SUBSCRIPTION FEE "+Integer.parseInt(price!!)+
                     "\n\n TOTAL  " + (Integer.parseInt(price!!) + 3500) +
 
-                    "\n\nContinue with the payment"  )
+                    "\n\n(Onboarding fee is one-time) Continue with the payment"  )
 
             .setMessageColor(R.color.pdlg_color_gray)
             .addButton(
@@ -784,7 +784,7 @@ class account_enterprise : AppCompatActivity() {
                 "ONBOARDING FEE " + 3500 + "\n\n  SUBSCRIPTION FEE " + Integer.parseInt(price!!) +
                         "\n\n TOTAL  " + (Integer.parseInt(price!!) + 3500) +
 
-                        "\n\nContinue with the payment"
+                        "\n\n (Onboarding fee is one-time) Continue with the payment"
             )
 
             .setMessageColor(R.color.pdlg_color_gray)

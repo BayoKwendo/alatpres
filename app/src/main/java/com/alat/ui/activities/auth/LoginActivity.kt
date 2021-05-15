@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         join = findViewById(R.id.joinalat)
         image = findViewById(R.id.imageview)
         join?.setOnClickListener {
-            startActivity(Intent(this, LauncherActivity::class.java))
+            startActivity(Intent(this, BasicUserActivity::class.java))
         }
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Authenticating...");
@@ -261,14 +261,14 @@ class LoginActivity : AppCompatActivity() {
             pref =
                 applicationContext.getSharedPreferences("ADS_BASIC", 0) // 0 - for private mode
             val editor4: SharedPreferences.Editor = pref!!.edit()
-            editor4.putString("ads_basic", "1")
+            editor4.putString("ads_basic", "0")
             editor4.clear()
             editor4.apply()
 
             pref =
                 applicationContext.getSharedPreferences("ADS_ENTER", 0) // 0 - for private mode
             val editor5: SharedPreferences.Editor = pref!!.edit()
-            editor5.putString("ads_enter", "1")
+            editor5.putString("ads_enter", "0")
             editor5.clear()
             editor5.apply()
 
@@ -406,6 +406,7 @@ class LoginActivity : AppCompatActivity() {
             .setView(promptPopUpView)
             .show()
     }
+
 
     private fun internet() {
         promptPopUpView = PromptPopUpView(this)

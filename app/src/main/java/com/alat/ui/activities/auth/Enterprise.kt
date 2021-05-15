@@ -325,8 +325,16 @@ class Enterprise : AppCompatActivity() {
         btn_submit!!.setOnClickListener {
             if (!checkContactError()) return@setOnClickListener
             else {
-                createUser()
-                mProgress!!.show()
+
+                if (selectedItem == "YES") {
+                    dialogue_listed()
+                    promptPopUpView?.changeStatus(3, "Getting listed in the Response Providers Database gets your services and information listed publicly allowing all users to share alats to you\nDo you want to get listed??")
+                    //    Toast.makeText(this@Enterprise, "Please" + , Toast.LENGTH_LONG).show();
+
+                } else {
+                  createUser()
+                }
+
             }
         }
 
@@ -625,6 +633,9 @@ class Enterprise : AppCompatActivity() {
     }
 
 
+
+
+
     private fun showKeyBoard() {
         val imm =
             getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -915,11 +926,6 @@ class Enterprise : AppCompatActivity() {
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Unable to create User! please try again")
                     } else if (response.code() == 200) {
-
-
-                        if (selectedItem == "YES") {
-                            createProvider()
-                        } else {
                             pref =
                                 applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
 
@@ -944,8 +950,151 @@ class Enterprise : AppCompatActivity() {
                                 finish()
                             }, 3000)
 
-                        }
+                    }
+                } else {
+                    mProgress?.dismiss()
+                    dialogue_error()
+                    promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                    Log.d("BAYO", response.code().toString())
+                    mProgress?.dismiss()
+                }
+            }
 
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress?.dismiss()
+            }
+        })
+    }
+
+
+
+
+    private fun createUserprovider() {
+        registerVar()
+        var date: String? = null
+        val dateFormat: DateFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
+        val c = Calendar.getInstance()
+        c.add(Calendar.DATE, 30)
+        date = dateFormat.format(c.time)
+        // Toast.makeText(this@Enterprise, "VALUE" + selectedItem2, Toast.LENGTH_LONG).show();
+
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(ScalarsConverterFactory.create())
+
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+
+        val params: HashMap<String, String> = HashMap()
+        params["firstname"] = name!!
+        params["lastname"] = other_name!!
+        params["email"] = email!!
+        params["taxid"] = "333"
+        params["nature_org"] = "nature"
+        params["description"] = "desc"
+        params["physical_address"] = physical!!
+        params["postal_address"] = postal!!
+        params["town"] = "town"
+        params["clients"] = "3"
+        params["code"] = "233"
+        params["website"] = "web"
+        params["country"] = countries!!
+        params["date_of_incooperation"] = "Date"
+        params["mssdn2"] = date!!
+        params["mssdn"] = mssidn!!
+        params["account_status"] = "1"
+        params["response_provider"] = selectedItem!!
+        params["nature_response"] = mySpinner!!.buildSelectedItemString()!!
+        params["county"] = mySpinner1!!.buildSelectedItemString()!!
+        params["userid"] = user_id!!
+        params["date_now"] = date
+        params["password"] = password!!
+
+
+        val api: CreateEnterprise = retrofit.create(CreateEnterprise::class.java)
+        val call: Call<ResponseBody> = api.EnterCreate(params)
+
+        call.enqueue(object : Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                //Toast.makeText()
+
+                Log.d("Call request", call.request().toString());
+                Log.d("Response raw header", response.headers().toString());
+                Log.d("Response raw", response.toString());
+                Log.d("Response code", response.code().toString());
+
+
+                if (response.isSuccessful) {
+//                    val remoteResponse = response.body()!!.string()
+//                    Log.d("test", remoteResponse)
+
+                    if (response.code() == 201) {
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Email already taken!!")
+                    }
+                    if (response.code() == 204){
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Phone already taken!!")
+                    }
+                    if (response.code() == 202) {
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "User ID already taken!!")
+                    }
+                    if (response.code() == 400) {
+                        mProgress?.dismiss()
+
+                        dialogue_error()
+                        promptPopUpView?.changeStatus(1, "Unable to create User! please try again")
+                    } else if (response.code() == 200) {
+                        createProvider()
+                        pref =
+                            applicationContext.getSharedPreferences("ADS", 0) // 0 - for private mode
+
+                        val editor2: SharedPreferences.Editor = pref!!.edit()
+                        editor2.putString("ads", "0")
+                        editor2.clear()
+                        editor2.apply()
+
+                        mProgress?.dismiss()
+
+                        Toast.makeText(this@Enterprise, "Login to continue", Toast.LENGTH_SHORT)
+                            .show()
+
+                        dialogue()
+                        promptPopUpView?.changeStatus(2, "Registration was successful!")
+
+
+                        Handler().postDelayed({
+                            val intent = Intent(this@Enterprise, LoginActivity::class.java)
+                            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)
+                            startActivity(intent)
+                            finish()
+                        }, 3000)
 
                     }
                 } else {
@@ -1105,6 +1254,36 @@ class Enterprise : AppCompatActivity() {
             }
 
 
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
+
+    private fun dialogue_listed() {
+
+        promptPopUpView = PromptPopUpView(this)
+
+        AlertDialog.Builder(this)
+
+
+            .setPositiveButton("YES"){ dialog, _ ->
+
+//                createUser()
+
+                createUserprovider()
+
+                mProgress!!.show()
+
+                dialog.dismiss()
+
+            }
+            .setNeutralButton("No"){ dialog, _ ->
+                createUser()
+                mProgress!!.show()
+
+                dialog.dismiss()
+            }
             .setCancelable(false)
             .setView(promptPopUpView)
             .show()

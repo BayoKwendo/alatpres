@@ -5,12 +5,14 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".BasicUserActivity">
+
   <androidx.core.widget.NestedScrollView
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     app:layout_constraintEnd_toEndOf="parent"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent">
+
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -56,17 +58,44 @@
             app:ms_hint="Select Type of Alat (Optional)"
             app:ms_multiline="false" />
 
-        <fr.ganfra.materialspinner.MaterialSpinner
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:paddingTop="@dimen/_10sdp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rsp"
+            >
+            <TextView
+                android:layout_width="match_parent"
+                android:id="@+id/rg_label"
+                android:layout_height="match_parent"
+                android:text="Select Client"/>
+        </LinearLayout>
+        <com.alat.adapters.MultiSelectionSpinner
             android:id="@+id/spinner2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:ms_arrowColor="@color/colorAccent"
+            android:layout_weight="2"
+            android:spinnerMode="dropdown"
+            app:ms_arrowColor="@color/red_btn_bg_color"
             app:ms_arrowSize="16dp"
             android:padding="@dimen/_10sdp"
             app:ms_floatingLabelColor="#00FF00"
-            app:ms_floatingLabelText="Client Response Group"
-            app:ms_hint="Select Client"
-            app:ms_multiline="false" />
+            app:ms_floatingLabelText="Select Client" />
+
+<!--        -->
+<!--        <fr.ganfra.materialspinner.MaterialSpinner-->
+<!--            android:id="@+id/"-->
+<!--            android:layout_width="match_parent"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:ms_arrowColor="@color/colorAccent"-->
+<!--            app:ms_arrowSize="16dp"-->
+<!--            app:ms_floatingLabelColor="#00FF00"-->
+<!--            app:ms_floatingLabelText="Client Response Group"-->
+<!--            app:ms_hint=""-->
+<!--            app:ms_multiline="false" />-->
 
         <fr.ganfra.materialspinner.MaterialSpinner
             android:id="@+id/spinner4"

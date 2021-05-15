@@ -257,14 +257,14 @@ class Station_Response : Fragment(),
             .setMessage("Choose the type of alert you want to create")
             .setMessageColor(R.color.pdlg_color_gray)
             .addButton(
-                "Update Alert",
+                "Update Alat",
                 R.color.pdlg_color_white,
                 R.color.colorAccent
             ) { pDialog.dismiss()
                 startActivity(Intent(activity, CreateAlerteNT::class.java))
             }
             .addButton(
-                "Incident Alert",
+                "Incident Alat",
                 R.color.pdlg_color_white,
                 R.color.colorAccent) {
                 pDialog.dismiss()
