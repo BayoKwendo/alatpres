@@ -24,8 +24,8 @@ public class App extends Application {
 
         // set in-app defaults
         Map<String, Object> remoteConfigDefaults = new HashMap();
-        remoteConfigDefaults.put(ForceUpdateChecker.KEY_UPDATE_REQUIRED, false);
-        remoteConfigDefaults.put(ForceUpdateChecker.KEY_CURRENT_VERSION, "1.0.0");
+        remoteConfigDefaults.put(ForceUpdateChecker.KEY_UPDATE_REQUIRED, true);
+        remoteConfigDefaults.put(ForceUpdateChecker.KEY_CURRENT_VERSION, "1.0.1.5");
         remoteConfigDefaults.put(ForceUpdateChecker.KEY_UPDATE_URL,
                 "https://play.google.com/store/apps/details?id=com.alat");
 
@@ -38,7 +38,7 @@ public class App extends Application {
                             Log.d(TAG, "remote config is fetched.");
                             firebaseRemoteConfig.fetchAndActivate();
                         }
-                    }
+                      }
                 });
     }
 }

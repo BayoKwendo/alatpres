@@ -64,7 +64,7 @@ class ManageAlert : Fragment() {
 
         if (account == "0"){
             dialogue_error()
-            promptPopUpView?.changeStatus(1, "You're not allowed to manage alerts! \n kindly upgrade to Pro Account")
+            promptPopUpView?.changeStatus(1, "You're not allowed to manage alats! \n kindly upgrade to Pro Account")
 
 
         }else if (account =="1" || mstatus == "0") {

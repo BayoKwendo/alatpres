@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.PackageManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 
@@ -41,6 +42,10 @@ public class ForceUpdateChecker {
             String currentVersion = remoteConfig.getString(KEY_CURRENT_VERSION);
             String appVersion = getAppVersion(context);
             String updateUrl = remoteConfig.getString(KEY_UPDATE_URL);
+
+//            Toast.makeText(context, currentVersion, Toast.LENGTH_SHORT).show();
+//
+//            Toast.makeText(context, "app version" + appVersion, Toast.LENGTH_SHORT).show();
 
             if (!TextUtils.equals(currentVersion, appVersion)
                     && onUpdateNeededListener != null) {

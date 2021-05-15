@@ -1,6 +1,7 @@
 package com.alat.ui.activities
 
 import adil.dev.lib.materialnumberpicker.dialog.LevelDialog
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
@@ -40,6 +41,10 @@ import com.alat.adapters.SimpleListAdapter
 import com.alat.helpers.*
 import com.alat.helpers.Constants.API_BASE_URL
 import com.alat.interfaces.*
+import com.bytcode.lib.spinner.multiselectspinner.data.KeyPairBoolData
+import com.bytcode.lib.spinner.multiselectspinner.spinners.MultiSpinnerSearch
+import com.bytcode.lib.spinner.multiselectspinner.spinners.SingleSpinner
+import com.bytcode.lib.spinner.multiselectspinner.spinners.SingleSpinnerSearch
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -139,7 +144,11 @@ class CreateAlert : AppCompatActivity() {
 
     var imageView: ImageView? = null
     private var mSimpleArrayListAdapter: SimpleArrayListAdapter? = null
+
+
     private val mStrings: ArrayList<String> = ArrayList()
+
+
     var imageName: EditText? = null
 
     var progressDialog: ProgressDialog? = null
@@ -181,20 +190,26 @@ class CreateAlert : AppCompatActivity() {
     var pref: SharedPreferences? = null
     private var GALLERY2 = 1
     private var DOCUMENTS = 1
-    val catList: ArrayList<String> = ArrayList()
     var fname: String? = null
     var user: String? = null
 
     var textLabel: TextView? = null
+    val listofVehicleNames = arrayListOf<String>()
 
     var check: Boolean? = null
+
+    var mrelative: RelativeLayout? = null
+
     private val REQUEST_RECORD_AUDIO = 0
     private var account: String? = null
     private var roleID: String? = null
     private val mID: ArrayList<String> = ArrayList()
     private var mSimpleListAdapter7: IDListAdapter? = null
     var selectedRG: ArrayList<String>? = null
+    var searchSpinner: MultiSpinnerSearch ? = null
+    var  marraylist: List<KeyPairBoolData> = ArrayList()
 
+    val catList: ArrayList<String> = ArrayList()
 
     var mstatus: String? = null
     private var mProgress: ProgressDialog? = null
@@ -208,6 +223,13 @@ class CreateAlert : AppCompatActivity() {
         if (!Places.isInitialized()) {
             Places.initialize(this, application.getString(R.string.google_maps_key))
         }
+
+        searchSpinner =
+            findViewById<View>(R.id.searchMultiSpinnerUnlimited) as MultiSpinnerSearch
+
+        mrelative =
+            findViewById<View>(R.id.searchMultiSpinnerUnlimitedLayout) as RelativeLayout
+
 
 
         pref =
@@ -378,13 +400,17 @@ class CreateAlert : AppCompatActivity() {
 
                         findViewById<View>(R.id.spinner2).visibility = View.GONE
 
+                        mrelative!!.visibility = View.GONE
+
                         mySpinner!!.visibility = View.VISIBLE
                         textLabel!!.visibility = View.VISIBLE
                         alertsss!!.dismiss()
 
 
                     } else {
-                        findViewById<View>(R.id.SearchableSpinner1).visibility = View.VISIBLE
+                        findViewById<View>(R.id.SearchableSpinner1).visibility = View.GONE
+                        mrelative!!.visibility = View.VISIBLE
+
 
                         findViewById<View>(R.id.spinner2).visibility = View.GONE
 
@@ -450,7 +476,7 @@ class CreateAlert : AppCompatActivity() {
         override fun onItemSelected(view: View?, position: Int, id: Long) {
             if (position > 0) {
                 response_provider = mSimpleListAdapter!!.getItem(position).toString()
-                orgphone = mSimpleListAdapter7!!.getItem(position).toString()
+//                orgphone = mSimpleListAdapter7!!.getItem(position).toString()
 
                 // Toast.makeText(this@CreateAlert, "VALUE" + orgphone, Toast.LENGTH_LONG).show();
 
@@ -538,14 +564,48 @@ class CreateAlert : AppCompatActivity() {
             for (i in 0 until jsonarray.length()) {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
 
-
-                mStrings.add(
-                    jsonobject.getString("firstname") + ", " + jsonobject.getString("county") + ", " + jsonobject.getString(
-                        "town"
-                    )
-                            + "town, " + jsonobject.getString("nature_response")
+                mStrings.add (jsonobject.getString("firstname") + ", " + jsonobject.getString("county") + ",\n"
+                        + jsonobject.getString("town") + ",\n"
+                        + jsonobject.getString("nature_response") + "\n"
+                        +"/"+jsonobject.getString("mssdn")
                 )
                 mID.add(jsonobject.getString("mssdn"))
+            }
+
+            val listArray: MutableList<KeyPairBoolData> = ArrayList()
+            for (i in 0 until mStrings.size) {
+                val h = KeyPairBoolData()
+                h.id = (i + 1).toLong()
+                h.name = mStrings[i]
+//                h.phone = mID[i]
+                h.isSelected = false
+                listArray.add(h)
+            }
+            searchSpinner!!.setItems( listArray, -1 ) { items ->
+
+
+
+//                Toast.makeText(this,  searchSpinner!!.selectedItem.toString().substringAfterLast("/") , Toast.LENGTH_LONG).show();
+
+
+                for (i in items.indices) {
+                    if (items[i].isSelected) {
+                        listofVehicleNames.add(items[i].name.substringAfterLast("/"))
+                        orgphone = listofVehicleNames.toString()
+
+
+//                        var songs: Array<String> = arrayOf()
+//
+//                        fun add(input: String) {
+//                            songs += input
+//                        }
+
+//                        msisdn
+//                        sendAlert()
+//                        Toast.makeText(this,  items[i].name.substringAfterLast("/") , Toast.LENGTH_LONG).show();
+//                        Log.i(TAG, i.toString() +  " : " + items[i].name + " : " + items[i].isSelected)
+                    }
+                }
             }
         } catch (e: JSONException) {
             e.printStackTrace()
@@ -716,12 +776,14 @@ class CreateAlert : AppCompatActivity() {
         })
     }
 
+    @SuppressLint("LogNotTimber")
     private fun parseLogiData(jsonresponse: String) {
         try {
             val o = JSONObject(jsonresponse)
             val array: JSONArray = o.getJSONArray("records")
             //  val array: JSONArray = JSONArray(jsonresponse)
             val jsonarray = JSONArray(array.toString())
+
             for (i in 0 until jsonarray.length()) {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
                 catList.add(jsonobject.getString("group_name"))
@@ -732,6 +794,8 @@ class CreateAlert : AppCompatActivity() {
             selectedRG = mySpinner!!.selectedItems
             listString = TextUtils.join(", ", mySpinner!!.selectedItems)
             mySpinner!!.setSelection(selectedRG);
+
+
 
 //            val CommaSeparated = "item1 , item2 , item3"
 
@@ -804,7 +868,6 @@ class CreateAlert : AppCompatActivity() {
 
 
     fun updates() {
-
 
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         alertDialog.setTitle("Attach Alert other Response Group")
@@ -1200,12 +1263,22 @@ class CreateAlert : AppCompatActivity() {
 
 
     fun subm() {
-        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
 
-        if (path == null) {
-            uploadImages()
-        } else {
-            uploadImage(path!!)
+        setLevel = textInputlevel!!.editText!!.text.toString().trim { it <= ' ' }
+//        Toast.makeText(
+//            this,
+//            orgphone,
+//            Toast.LENGTH_SHORT
+//        ).show()
+
+        if(orgphone != null){
+            sendAlert()
+        }else {
+            if (path == null) {
+                uploadImages()
+            } else {
+                uploadImage(path!!)
+            }
         }
 
     }
@@ -1424,98 +1497,120 @@ class CreateAlert : AppCompatActivity() {
 
     private fun sendAlert() {
 
-        mProgress!!.show()
-        pref =
-            this.getSharedPreferences("MyPref", 0) // 0 - for private mode
-
-        fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
-
-        mssidn = pref!!.getString("mssdn", null)
-
-        user = pref!!.getString("userid", null)
-
-        val interceptor = HttpLoggingInterceptor()
-        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-        val client: OkHttpClient = OkHttpClient.Builder()
-            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-            .connectTimeout(2, TimeUnit.MINUTES)
-            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
-            .readTimeout(2, TimeUnit.MINUTES) // read timeout
-            .addNetworkInterceptor(object : Interceptor {
-                @Throws(IOException::class)
-                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                    val request: Request =
-                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
-                            .build()
-                    return chain.proceed(request)
-                }
-            }).build()
-        val retrofit: Retrofit = Retrofit.Builder()
-            .baseUrl(Constants.API_BASE_URL)
-            .client(client) // This line is important
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-
-        val params: java.util.HashMap<String, String> = java.util.HashMap()
-        //  response_id = intent.getStringExtra("groupSelect")
-
-        params["mssdn"] = mssidn!!
-        params["user_id"] = user!!
-        params["alert_name"] = alert_namess!!
-        params["alert_type"] = selectedItem!!
-        params["rl"] = "Level 1"
-        params["groupPhone"] = orgphone!!
-        params["location"] = setLoc!!
-        params["notes"] = addnotes!!
-        params["name"] = fullname!!
+        listofVehicleNames.forEach { st ->
+//            Toast.makeText(this@CreateAlert,  st.toString(), Toast.LENGTH_LONG).show()
 
 
-        val api: sendSMSOffline = retrofit.create(sendSMSOffline::class.java)
-        val call: Call<ResponseBody> = api.send(params)
+            mProgress!!.show()
+            pref =
+                this.getSharedPreferences("MyPref", 0) // 0 - for private mode
 
-        call.enqueue(object : Callback<ResponseBody?> {
-            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                //Toast.makeText()
+            fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
-                Log.d("Call request", call.request().toString());
-                Log.d("Response raw header", response.headers().toString());
-                Log.d("Response raw", response.toString());
-                Log.d("Response code", response.code().toString());
+            mssidn = pref!!.getString("mssdn", null)
+
+            user = pref!!.getString("userid", null)
+
+            val interceptor = HttpLoggingInterceptor()
+            interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+            val client: OkHttpClient = OkHttpClient.Builder()
+                .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                .connectTimeout(2, TimeUnit.MINUTES)
+                .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                .addNetworkInterceptor(object : Interceptor {
+                    @Throws(IOException::class)
+                    override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                        val request: Request =
+                            chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                                .build()
+                        return chain.proceed(request)
+                    }
+                }).build()
+            val retrofit: Retrofit = Retrofit.Builder()
+                .baseUrl(Constants.API_BASE_URL)
+                .client(client) // This line is important
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+
+            val params: java.util.HashMap<String, String> = java.util.HashMap()
+            //  response_id = intent.getStringExtra("groupSelect")
+
+            params["mssdn"] = st
+            params["user_id"] = user!!
+            params["alert_name"] = alert_namess!!
+            params["alert_type"] = selectedItem!!
+            params["rl"] = "Level 1"
+            params["groupPhone"] = "254717629732"
+            params["location"] = setLoc!!
+            params["name"] = fullname!!
 
 
-                if (response.isSuccessful) {
-                    val remoteResponse = response.body()!!.string()
-                    Log.d("test", remoteResponse)
+            val api: sendSMSOffline = retrofit.create(sendSMSOffline::class.java)
+            val call: Call<ResponseBody> = api.send(params)
 
-                    if (response.code().toString() == "200") {
+            call.enqueue(object : Callback<ResponseBody?> {
+                override fun onResponse(
+                    call: Call<ResponseBody?>,
+                    response: Response<ResponseBody?>
+                ) {
+                    //Toast.makeText()
 
-                        mProgress?.dismiss()
-                        //waitingDialog!!.dismiss()
-                        btnLogin!!.text = "Submit"
-                        imageView!!.visibility = View.GONE
-                        dialogue();
-                        promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+                    Log.d("Call request", call.request().toString());
+                    Log.d("Response raw header", response.headers().toString());
+                    Log.d("Response raw", response.toString());
+                    Log.d("Response code", response.code().toString());
 
+
+                    if (response.isSuccessful) {
+                        val remoteResponse = response.body()!!.string()
+                        Log.d("test", remoteResponse)
+
+                        if (response.code().toString() == "200") {
+
+                            mProgress?.dismiss()
+                            //waitingDialog!!.dismiss()
+                            btnLogin!!.text = "Submit"
+                            imageView!!.visibility = View.GONE
+
+                            Handler().postDelayed(
+                                {
+                                    startActivity(
+                                        Intent(
+                                            this@CreateAlert,
+                                            HomePage::class.java
+                                        )
+                                    )
+                                    // This method will be executed once the timer is over
+                                },
+                                1000 // value in milliseconds
+                            )
+
+                            Toast.makeText(this@CreateAlert, "Alat was created successfully", Toast.LENGTH_LONG).show();
+
+                            promptPopUpView?.changeStatus(2, "SUCCESSFUL")
+
+                        } else {
+                            dialogue_error()
+                            promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
+                            Log.d("BAYO", response.code().toString())
+                            mProgress?.dismiss()
+                        }
                     } else {
                         dialogue_error()
                         promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
                         Log.d("BAYO", response.code().toString())
                         mProgress?.dismiss()
                     }
-                } else {
-                    dialogue_error()
+                }
+
+                override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                     promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                    Log.d("BAYO", response.code().toString())
+                    Log.i("onEmptyResponse", "" + t) //
                     mProgress?.dismiss()
                 }
-            }
-
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                Log.i("onEmptyResponse", "" + t) //
-                mProgress?.dismiss()
-            }
-        })
+            })
+        }
     }
 
 

@@ -5,23 +5,36 @@ import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
+import android.graphics.Bitmap
+import android.graphics.Typeface
+import android.media.MediaScannerConnection
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
+import android.provider.MediaStore
 import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.annotation.NonNull
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
+import cafe.adriel.androidaudiorecorder.AndroidAudioRecorder
+import cafe.adriel.androidaudiorecorder.TypefaceHelper
+import cafe.adriel.androidaudiorecorder.model.AudioChannel
+import cafe.adriel.androidaudiorecorder.model.AudioSampleRate
+import cafe.adriel.androidaudiorecorder.model.AudioSource
 import com.alat.R
 import com.alat.helpers.Constants
+import com.alat.helpers.FileUtils
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.GetSafetyProvider
+import com.alat.interfaces.MultiInterfaceSafety
 import com.alat.interfaces.SendAlatRequest
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
@@ -31,10 +44,9 @@ import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.rengwuxian.materialedittext.MaterialEditText
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
-import okhttp3.Interceptor
-import okhttp3.OkHttpClient
-import okhttp3.Request
-import okhttp3.ResponseBody
+import libs.mjn.prettydialog.PrettyDialog
+import okhttp3.*
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.logging.HttpLoggingInterceptor
 import org.json.JSONArray
 import org.json.JSONException
@@ -44,8 +56,15 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import java.io.IOException
+import java.util.*
 import java.util.concurrent.TimeUnit
+import kotlin.collections.ArrayList
+import kotlin.collections.HashMap
 
 class SafetyProviderDetails : AppCompatActivity() {
 
@@ -55,6 +74,9 @@ class SafetyProviderDetails : AppCompatActivity() {
     var updateFNamee: MaterialEditText? = null
     var alert: android.app.AlertDialog? = null
     var spinner_select: MaterialSpinner? = null
+    private var mfile: ImageView? = null
+    var path: String? = null
+    private val IMAGE_DIRECTORY = "/demonuts_upload_gallery"
 
     //textview declaration
     var msafety_providdr_name: TextView? = null
@@ -62,15 +84,18 @@ class SafetyProviderDetails : AppCompatActivity() {
     var malatpres_id: TextView? = null
     var mareas_of_operations: TextView? = null
     var mRGs: TextView? = null
-
-
+    var imageView: ImageView? = null
     var SEARCHPLACE = 5
+    private var mattach: TextView? = null
+    private var GALLERY2 = 1
+    var bitmap: Bitmap? = null
 
     //MaterialEdit initialization
     var mcontactName: MaterialEditText? = null
     var mmsisdn: MaterialEditText? = null
     var mlocation: MaterialEditText? = null
     var mtype_alat: MaterialEditText? = null
+    private var DOCUMENTS = 1
 
     private var mProgress: ProgressDialog? = null
 
@@ -91,6 +116,7 @@ class SafetyProviderDetails : AppCompatActivity() {
 
     //button
     var mproceed: Button? = null
+    private val REQUEST_RECORD_AUDIO = 0
 
     var pref: SharedPreferences? = null
     private var promptPopUpView: PromptPopUpView? = null
@@ -330,12 +356,72 @@ class SafetyProviderDetails : AppCompatActivity() {
     }
 
 
+    private fun attachemts() {
+
+        val pDialog = PrettyDialog(this)
+        pDialog
+            .setIconTint(R.color.colorPrimary)
+            .setTitle("Add Attachment")
+            .setTitleColor(R.color.pdlg_color_blue)
+            .setMessage("Select type of attachment you would like to add")
+            .setMessageColor(R.color.pdlg_color_gray)
+            .addButton(
+                "Images",
+                R.color.pdlg_color_white,
+                R.color.colorPrimary
+            ) {
+                val galleryIntent = Intent(
+                    Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                )
+                startActivityForResult(galleryIntent, GALLERY2)
+                pDialog.dismiss()
+            }
+            .addButton(
+                "PDF Documents",
+                R.color.pdlg_color_white,
+                R.color.colorPrimary
+            ) {
+                browseDocuments()
+                pDialog.dismiss()
+            }
+            .addButton(
+                "Record an Audio",
+                R.color.pdlg_color_white,
+                R.color.colorPrimary
+            ) {
+                pDialog.dismiss()
+                TypefaceHelper.DEFAULT =
+                    Typeface.createFromAsset(
+                        assets,
+                        "fonts/IRANSansMobile-Regular.ttf"
+                    )
+                path =
+                    Environment.getExternalStorageDirectory().path + "/recorded_audio.wav"
+
+                AndroidAudioRecorder.with(this) // Required
+                    .setFilePath(path)
+                    .setColor(ContextCompat.getColor(this, R.color.recorder_bg))
+                    .setRequestCode(REQUEST_RECORD_AUDIO) // Optional
+                    .setSource(AudioSource.MIC)
+                    .setChannel(AudioChannel.STEREO)
+                    .setSampleRate(AudioSampleRate.HZ_48000)
+                    .setAutoStart(false)
+                    .setKeepDisplayOn(true) // Start recording
+                    .record()
+            }
+
+            .show()
+
+    }
+
+
     fun sendRequest() {
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
         alertDialog.setTitle("Send Alat/Request")
 
         val inflater: LayoutInflater =
-            getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+            getSystemService(LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
         val layout_pwd: View =
             inflater.inflate(R.layout.layout_send_alat, null)
@@ -347,6 +433,22 @@ class SafetyProviderDetails : AppCompatActivity() {
         mmsisdn = layout_pwd.findViewById<View>(R.id.etPhone) as MaterialEditText
         mlocation = layout_pwd.findViewById<View>(R.id.location) as MaterialEditText
         mtype_alat = layout_pwd.findViewById<View>(R.id.type_alat) as MaterialEditText
+        mattach = layout_pwd.findViewById<View>(R.id.attach) as TextView
+
+//         = findViewById(R.id.attach)
+
+
+        imageView = layout_pwd.findViewById<View>(R.id.imageView) as ImageView
+
+        imageView!!.visibility = View.GONE
+
+
+        mfile = layout_pwd.findViewById<View>(R.id.file) as ImageView
+
+        mfile!!.setOnClickListener(View.OnClickListener { v: View? ->
+            attachemts()
+        }
+        )
 
         mcontactName!!.requestFocus()
 
@@ -354,6 +456,7 @@ class SafetyProviderDetails : AppCompatActivity() {
         mlocation!!.setOnClickListener {
             searchPlace()
         }
+
 
         val updateButton: Button =
             layout_pwd.findViewById<View>(R.id.update) as Button
@@ -363,10 +466,10 @@ class SafetyProviderDetails : AppCompatActivity() {
                 SpotsDialog.Builder().setContext(this).build()
 
             contactName = mcontactName!!.getText().toString()
-            msisdn = mmsisdn!!.getText().toString()
+            msisdn = mmsisdn!!.text.toString()
 //            updateID = updateIDD!!.getText()!!.toString()
             // updateAlatpressID = updateAlatpressIDD!!.getText().toString()
-            location = mlocation!!.getText().toString()
+            location = mlocation!!.text.toString()
             type_alat = mtype_alat!!.getText().toString()
 
 
@@ -375,99 +478,209 @@ class SafetyProviderDetails : AppCompatActivity() {
                 mtype_alat!!.requestFocus()
             } else {
                 waitingDialog.show()
-                val interceptor = HttpLoggingInterceptor()
-                interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
-                val client: OkHttpClient = OkHttpClient.Builder()
-                    .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
-                    .connectTimeout(2, TimeUnit.MINUTES)
-                    .writeTimeout(2, TimeUnit.MINUTES) // write timeout
-                    .readTimeout(2, TimeUnit.MINUTES) // read timeout
-                    .addNetworkInterceptor(object : Interceptor {
-                        @Throws(IOException::class)
-                        override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
-                            val request: Request =
-                                chain.request()
-                                    .newBuilder() // .addHeader(Constant.Header, authToken)
-                                    .build()
-                            return chain.proceed(request)
-                        }
-                    }).build()
-                val retrofit: Retrofit = Retrofit.Builder()
-                    .baseUrl(Constants.API_BASE_URL)
-                    .client(client) // This line is important
-                    .addConverterFactory(GsonConverterFactory.create())
-                    .build()
 
-                val params: HashMap<String, String> = HashMap()
-                params["name"] = contactName!!
-                params["msisdn"] = msisdn!!
-                params["location"] = location!!
-                params["alat_type"] = type_alat!!
-                params["msisdn_provider"] = msisdn_provider!!
-                params["userid"] = user!!
+                if (path == null) {
 
-                val api: SendAlatRequest = retrofit.create(SendAlatRequest::class.java)
-                val call: Call<ResponseBody> = api.sendRequest(params)
-
-                call.enqueue(object : Callback<ResponseBody?> {
-                    override fun onResponse(
-                        call: Call<ResponseBody?>,
-                        response: Response<ResponseBody?>
-                    ) {
-
-                        Log.d("Call request", call.request().toString());
-                        Log.d("Response raw header", response.headers().toString());
-                        Log.d("Response raw", response.toString());
-                        Log.d("Response code", response.code().toString());
-
-
-                        //Toast.makeText()
-
-                        if (response.isSuccessful) {
-                            val remoteResponse = response.body()!!.string()
-                            Log.d("test", remoteResponse)
-                            waitingDialog.dismiss()
-                            try {
-                                val jsonObject = JSONObject(remoteResponse)
-                                if (jsonObject.getString("status") == "true") {
-                                    dialogue();
-                                    promptPopUpView?.changeStatus(2, "Your request has been sent successfully. The provider will reach out to you within the shortest time. Thank you")
-                                    mProgress?.dismiss()
-
-                                } else {
-                                    mProgress?.dismiss()
-                                    dialogue_error();
-
-                                    promptPopUpView?.changeStatus(1, "Unable to send")
-                                }
-                            } catch (e: JSONException) {
-                                e.printStackTrace()
+                    val interceptor = HttpLoggingInterceptor()
+                    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+                    val client: OkHttpClient = OkHttpClient.Builder()
+                        .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                        .connectTimeout(2, TimeUnit.MINUTES)
+                        .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                        .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                        .addNetworkInterceptor(object : Interceptor {
+                            @Throws(IOException::class)
+                            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                                val request: Request =
+                                    chain.request()
+                                        .newBuilder() // .addHeader(Constant.Header, authToken)
+                                        .build()
+                                return chain.proceed(request)
                             }
-                        } else {
-                            mProgress?.dismiss()
+                        }).build()
+                    val retrofit: Retrofit = Retrofit.Builder()
+                        .baseUrl(Constants.API_BASE_URL)
+                        .client(client) // This line is important
+                        .addConverterFactory(GsonConverterFactory.create())
+                        .build()
+
+                    val params: HashMap<String, String> = HashMap()
+                    params["name"] = contactName!!
+                    params["msisdn"] = msisdn!!
+                    params["location"] = location!!
+                    params["alat_type"] = type_alat!!
+                    params["msisdn_provider"] = msisdn_provider!!
+                    params["userid"] = user!!
+
+                    val api: SendAlatRequest = retrofit.create(SendAlatRequest::class.java)
+                    val call: Call<ResponseBody> = api.sendRequest(params)
+
+                    call.enqueue(object : Callback<ResponseBody?> {
+                        override fun onResponse(
+                            call: Call<ResponseBody?>,
+                            response: Response<ResponseBody?>
+                        ) {
+
+                            Log.d("Call request", call.request().toString());
+                            Log.d("Response raw header", response.headers().toString());
+                            Log.d("Response raw", response.toString());
+                            Log.d("Response code", response.code().toString());
+
+
+                            //Toast.makeText()
+
+                            if (response.isSuccessful) {
+                                val remoteResponse = response.body()!!.string()
+                                Log.d("test", remoteResponse)
+                                waitingDialog.dismiss()
+                                try {
+                                    val jsonObject = JSONObject(remoteResponse)
+                                    if (jsonObject.getString("status") == "true") {
+                                        dialogue();
+                                        alert!!.dismiss();
+                                        promptPopUpView?.changeStatus(
+                                            2,
+                                            "Your request has been sent successfully. The provider will reach out to you within the shortest time. Thank you"
+                                        )
+                                        mProgress?.dismiss()
+
+                                    } else {
+                                        mProgress?.dismiss()
+                                        dialogue_error();
+
+                                        promptPopUpView?.changeStatus(1, "Unable to send")
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            } else {
+                                mProgress?.dismiss()
 //                            dialogue_error();
 //                            promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                            Log.d("BAYO", response.code().toString())
-                            //btnLogin!!.text = "Submit"
-                            mProgress?.dismiss()
-                            dialogue_error();
+                                Log.d("BAYO", response.code().toString())
+                                //btnLogin!!.text = "Submit"
+                                mProgress?.dismiss()
+                                dialogue_error();
 
-                            promptPopUpView?.changeStatus(1, "Unable to send")
-                            waitingDialog.dismiss()
+                                promptPopUpView?.changeStatus(1, "Unable to send")
+                                waitingDialog.dismiss()
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                        //btnLogin!!.text = "Submit"
+                        override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                            //btnLogin!!.text = "Submit"
 //
 //                        dialogue_error()
 //                        promptPopUpView?.changeStatus(1, "Something went wrong. Try again")
-                        Log.i("onEmptyResponse", "" + t) //
-                        mProgress?.dismiss()
-                        dialogue_error();
-                        promptPopUpView?.changeStatus(1, "Unable to send")
-                    }
-                })
+                            Log.i("onEmptyResponse", "" + t) //
+                            mProgress?.dismiss()
+                            dialogue_error();
+                            promptPopUpView?.changeStatus(1, "Unable to send")
+                        }
+                    })
+                } else {
+
+                    val interceptor = HttpLoggingInterceptor()
+                    interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+                    val client: OkHttpClient = OkHttpClient.Builder()
+                        .connectTimeout(2, TimeUnit.MINUTES)
+                        .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+                        .readTimeout(2, TimeUnit.MINUTES) // read timeout
+                        .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+                        .addNetworkInterceptor(object : Interceptor {
+                            @Throws(IOException::class)
+                            override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                                val request: Request =
+                                    chain.request()
+                                        .newBuilder() // .addHeader(Constant.Header, authToken)
+                                        .build()
+                                return chain.proceed(request)
+                            }
+                        }).build()
+
+                    val imgname = Calendar.getInstance().timeInMillis.toString()
+                    val retrofit: Retrofit = Retrofit.Builder()
+                        .baseUrl(Constants.API_BASE_URL)
+                        .client(client)
+                        .addConverterFactory(ScalarsConverterFactory.create())
+                        .build()
+
+                    //Create a file object using file path
+                    val file = File(path)
+                    // Parsing any Media type file
+                    val requestBody =
+                        RequestBody.create("*/*".toMediaTypeOrNull(), file)
+                    val fileToUpload =
+                        MultipartBody.Part.createFormData("filename", file.name, requestBody)
+                    val filename =
+                        RequestBody.create("text/plain".toMediaTypeOrNull(), imgname)
+                    val getResponse: MultiInterfaceSafety = retrofit.create(MultiInterfaceSafety::class.java)
+                    val call: Call<String> = getResponse.uploadImage(
+                        fileToUpload,
+                        contactName!!,
+                        msisdn!!,
+                        location!!,
+                        type_alat!!,
+                        msisdn_provider!!,
+                        user,
+                        filename
+                    )
+                    call.enqueue(object : Callback<String?> {
+                        override fun onResponse(
+                            @NonNull call: Call<String?>,
+                            @NonNull response: Response<String?>
+                        ) {
+                            Log.d("parseLoginData2", response.toString())
+
+                            if (response.isSuccessful) {
+                                val remoteResponse = response.body()!!
+                                try {
+                                    val jsonObject = JSONObject(remoteResponse)
+                                    Log.d("tesTIMAGE3", jsonObject.toString())
+
+                                    if (jsonObject.getString("status") == "true") {
+                                        dialogue();
+                                        alert!!.dismiss();
+                                        waitingDialog.dismiss()
+
+                                        promptPopUpView?.changeStatus(
+                                            2,
+                                            "Your request has been sent successfully. The provider will reach out to you within the shortest time. Thank you"
+                                        )
+                                        mProgress?.dismiss()
+                                    } else {
+                                        dialogue_error();
+                                        alert!!.dismiss();
+                                        waitingDialog.dismiss()
+
+                                        promptPopUpView?.changeStatus(
+                                            1,
+                                            "Something went wrongssssssssss. Try again"
+                                        )
+                                        mProgress?.dismiss()
+                                    }
+                                } catch (e: JSONException) {
+                                    e.printStackTrace()
+                                }
+                            } else {
+                                mProgress?.dismiss()
+                                dialogue_error();
+                                waitingDialog.dismiss()
+                                alert!!.dismiss();
+                                promptPopUpView?.changeStatus(
+                                    1,
+                                    "Something went wrondddddddddddg. Try again"
+                                )
+                                Log.d("BAYO", response.code().toString())
+                                mProgress?.dismiss()
+                            }
+                        }
+
+                        override fun onFailure(call: Call<String?>, t: Throwable) {
+                            Log.d("TAGSS", "File Saved::--->" + t.toString())
+                        }
+                    })
+                }
             }
 
             //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
@@ -479,7 +692,18 @@ class SafetyProviderDetails : AppCompatActivity() {
         dismissButton.setOnClickListener(View.OnClickListener { alert!!.dismiss() })
         alertDialog.setView(layout_pwd)
         alert!!.show()
+    }
+    //RequestBody body = RequestBody.Companion.create(json, JSON)\\\
 
+
+    private fun browseDocuments() {
+        val chooseFile: Intent
+        val intent: Intent
+        chooseFile = Intent(Intent.ACTION_GET_CONTENT)
+        chooseFile.addCategory(Intent.CATEGORY_OPENABLE)
+        chooseFile.type = "application/pdf"
+        intent = Intent.createChooser(chooseFile, "Choose a file")
+        startActivityForResult(intent, DOCUMENTS)
     }
 
 
@@ -583,7 +807,6 @@ class SafetyProviderDetails : AppCompatActivity() {
         negative.layoutParams = layoutParams
     }
 
-
     override fun onActivityResult(
         RC: Int,
         RQC: Int,
@@ -620,6 +843,108 @@ class SafetyProviderDetails : AppCompatActivity() {
             }
         }
 
+        if (RC == GALLERY2) {
+            if (RQC == RESULT_OK) {
+                val contentURI = I!!.data
+                try {
+                    bitmap =
+                        MediaStore.Images.Media.getBitmap(this.contentResolver, contentURI)
+                    if (bitmap != null) {
+                        mattach!!.text =
+                            "Image is attached successfully!! You now can submit your alert"
+//                        Toast.makeText(
+//                            this, "Document recorded successfully!", Toast.LENGTH_SHORT).show()
+                        imageView!!.setImageBitmap(bitmap)
+                        imageView!!.visibility = View.VISIBLE
+                        path = saveImage(bitmap!!)
+                    }
+                } catch (e: IOException) {
+                    e.printStackTrace()
+                    Toast.makeText(
+                        this@SafetyProviderDetails,
+                        e.toString(),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+        }
+
+        if (RC == REQUEST_RECORD_AUDIO) {
+            if (RQC == RESULT_OK) {
+                mattach!!.text =
+                    "Audio record is attached successfully!! You can now submit your alert"
+                Toast.makeText(
+                    this,
+                    "Audio recorded successfully!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (RQC == RESULT_CANCELED) {
+                Toast.makeText(
+                    this,
+                    "Audio was not recorded",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
+        if (RC == DOCUMENTS) {
+            if (RQC == RESULT_OK) {
+                mattach!!.text = "Document is attached successfully!! You now can submit your alat"
+
+//                mattach!!.text = "Document is attached successfully!! You now can submit your alert"
+                val uri: Uri = I!!.getData()!!
+                val filePathFromUri = FileUtils.getRealPath(this, uri)
+                val file = File(filePathFromUri)
+                path = file.absolutePath
+
+//                p ath = pickiT!!.getPath(I!!.data, Build.VERSION.SDK_INT).toString();
+//                Toast.makeText(
+//                    this, path,
+//                    Toast.LENGTH_SHORT
+//                ).show()
+            } else if (RQC == RESULT_CANCELED) {
+                Toast.makeText(
+                    this,
+                    "Document not attached",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
     }
 
+
+    fun saveImage(myBitmap: Bitmap): String? {
+        val bytes = ByteArrayOutputStream()
+        myBitmap.compress(Bitmap.CompressFormat.JPEG, 90, bytes)
+        val wallpaperDirectory = File(
+            Environment.getExternalStorageDirectory()
+                .toString() + IMAGE_DIRECTORY
+        )
+        // have the object build the directory structure, if needed.
+        if (!wallpaperDirectory.exists()) {
+            wallpaperDirectory.mkdirs()
+        }
+        try {
+            val f = File(
+                wallpaperDirectory, Calendar.getInstance()
+                    .timeInMillis.toString() + ".jpg"
+            )
+            f.createNewFile()
+            val fo = FileOutputStream(f)
+            fo.write(bytes.toByteArray())
+            MediaScannerConnection.scanFile(
+                this,
+                arrayOf(f.path),
+                arrayOf("image/jpeg"),
+                null
+            )
+            fo.close()
+            Log.d("TAG", "File Saved::--->" + f.absolutePath)
+            return f.absolutePath
+        } catch (e1: IOException) {
+            e1.printStackTrace()
+        }
+        return ""
+    }
 }

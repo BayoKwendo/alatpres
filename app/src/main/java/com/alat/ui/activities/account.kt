@@ -154,6 +154,8 @@ class account : AppCompatActivity() {
             btnBack!!.setText("Disable Ads")
         }
 
+//        Toast.makeText(this@account, adsstatus, Toast.LENGTH_LONG).show();
+
         when (account) {
             "1" -> {
                 if(mstatus == "0"){
