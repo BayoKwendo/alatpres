@@ -46,7 +46,6 @@
             android:textColor="@android:color/black"
             android:textSize="@dimen/_13ssp"
             android:id="@+id/nature_response"
-
             tools:text="Security"
             android:layout_marginHorizontal="8dp"
             android:layout_marginTop="10dp"
@@ -74,6 +73,7 @@
             android:textSize="@dimen/_13ssp"
             android:textStyle="bold"
             android:id="@+id/town"
+            android:visibility="gone"
             android:gravity="center"
             tools:text="Town"
             android:layout_weight="1"

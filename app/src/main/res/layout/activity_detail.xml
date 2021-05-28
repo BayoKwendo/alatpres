@@ -397,6 +397,7 @@
                             android:layout_height="27dp"
                             android:text="NEUTRALIZED(0)"
                             android:layout_weight=".8"
+                            android:visibility="gone"
                             android:textColor="@color/safe"
                             android:textSize="18sp"
                             android:textStyle="bold"

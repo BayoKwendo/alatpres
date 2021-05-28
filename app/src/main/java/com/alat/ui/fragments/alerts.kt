@@ -94,6 +94,7 @@ class alerts : Fragment(),
     private var linearLayout: LinearLayout? = null
 
     private var global_alats: TextView? = null
+    private var mrandomAlats: LinearLayout? = null
 
     var MYCODE = 1000
     var views: View? = null
@@ -107,6 +108,11 @@ class alerts : Fragment(),
 
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
+
+        mrandomAlats = view.findViewById(R.id.random_alats)
+        mrandomAlats!!.setOnClickListener {
+            startActivity(Intent(requireActivity(), RandomAlats::class.java))
+        }
 
 
         global_alats = view.findViewById(R.id.fabCounter)

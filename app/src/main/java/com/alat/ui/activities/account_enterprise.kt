@@ -763,7 +763,7 @@ class account_enterprise : AppCompatActivity() {
                 if (selectedItem3 == null) {
                     Toast.makeText(this@account_enterprise, "Please select a subscription package", Toast.LENGTH_LONG).show();
                 } else {
-                    val i = Intent(this@account_enterprise, MPESAExpressActivity::class.java)
+                    val i = Intent(this@account_enterprise, MPESAC2B::class.java)
                     i.putExtra("price", (Integer.parseInt(price!!) + 3500))
                     i.putExtra("time", date)
                     startActivity(i)

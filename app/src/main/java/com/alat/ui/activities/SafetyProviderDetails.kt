@@ -36,6 +36,7 @@ import com.alat.helpers.Utils
 import com.alat.interfaces.GetSafetyProvider
 import com.alat.interfaces.MultiInterfaceSafety
 import com.alat.interfaces.SendAlatRequest
+import com.alat.ui.activities.mpesa.MPESAC2B
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -96,7 +97,6 @@ class SafetyProviderDetails : AppCompatActivity() {
     var mlocation: MaterialEditText? = null
     var mtype_alat: MaterialEditText? = null
     private var DOCUMENTS = 1
-
     private var mProgress: ProgressDialog? = null
 
     //strings
@@ -318,12 +318,18 @@ class SafetyProviderDetails : AppCompatActivity() {
                         alert!!.dismiss()
                         sendRequest()
                     } else {
-                        alert!!.dismiss()
-                        val viewIntent = Intent(
-                            "android.intent.action.VIEW",
-                            Uri.parse(url)
-                        )
-                        startActivity(viewIntent)
+
+
+
+
+
+                        val i =
+                            Intent(this@SafetyProviderDetails, MPESAC2B::class.java)
+                        i.putExtra("price", "50")
+                        i.putExtra("service_redirecting_url", url)
+                        i.putExtra("is_account_paid", true)
+                        startActivity(i)
+
                     }
 //                     Toast.makeText(this@CreateAlert, selectedItem, Toast.LENGTH_LONG).show();
                 }
@@ -510,7 +516,7 @@ class SafetyProviderDetails : AppCompatActivity() {
                     params["location"] = location!!
                     params["alat_type"] = type_alat!!
                     params["msisdn_provider"] = msisdn_provider!!
-                    params["userid"] = user!!
+                    params["user_id"] = user!!
 
                     val api: SendAlatRequest = retrofit.create(SendAlatRequest::class.java)
                     val call: Call<ResponseBody> = api.sendRequest(params)
@@ -655,7 +661,7 @@ class SafetyProviderDetails : AppCompatActivity() {
 
                                         promptPopUpView?.changeStatus(
                                             1,
-                                            "Something went wrongssssssssss. Try again"
+                                            "Error! please check your image and try again"
                                         )
                                         mProgress?.dismiss()
                                     }
