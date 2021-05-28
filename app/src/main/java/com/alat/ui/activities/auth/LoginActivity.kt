@@ -156,8 +156,6 @@ class LoginActivity : AppCompatActivity() {
         val retrofit: Retrofit = Retrofit.Builder()
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
-            .addConverterFactory(ScalarsConverterFactory.create())
-
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 

@@ -92,19 +92,20 @@ class Alert_Enterpris : Fragment(),
     private var mAdView: AdView? = null
     private var global_alats: TextView? = null
 
+    private var mrandomAlats: LinearLayout? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = inflater.inflate(R.layout.activity_home_enterpris, container, false)
         setHasOptionsMenu(true)
-        preferenceHelper = PreferenceModel(activity!!)
+        preferenceHelper = PreferenceModel(requireActivity())
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
         contactList = ArrayList()
-        mAdapter = RGAdapter(activity!!, contactList!!, this)
+        mAdapter = RGAdapter(requireActivity(), contactList!!, this)
         recyclerView!!.isNestedScrollingEnabled = false;
-
-
         global_alats = view.findViewById(R.id.fabCounter)
+        mrandomAlats = view.findViewById(R.id.random_alats)
 
         global_alats!!.visibility= View.GONE
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
@@ -115,7 +116,7 @@ class Alert_Enterpris : Fragment(),
         recyclerView!!.itemAnimator = DefaultItemAnimator()
         recyclerView!!.addItemDecoration(
             MyDividerItemDecoration(
-                activity!!,
+                requireActivity(),
                 DividerItemDecoration.VERTICAL,
                 36
             )
@@ -124,7 +125,7 @@ class Alert_Enterpris : Fragment(),
         floatingActionButton =
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
         pref =
-            context!!.getSharedPreferences("MyPref", 0)
+            requireContext().getSharedPreferences("MyPref", 0)
 
         getAlertCount()
 
@@ -137,6 +138,9 @@ class Alert_Enterpris : Fragment(),
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
 
+        mrandomAlats!!.setOnClickListener {
+            startActivity(Intent(requireActivity(), RandomAlats::class.java))
+        }
 
         linearLayout = view.findViewById(R.id.globalgroup)
 
@@ -145,7 +149,7 @@ class Alert_Enterpris : Fragment(),
                 subscribe()
                 promptPopUpView?.changeStatus(1, "Kindly subscribe to a plan to enjoy this feature. Thank you")
             } else {
-                startActivity(Intent(activity!!, JoinGlobal::class.java))
+                startActivity(Intent(requireActivity(), JoinGlobal::class.java))
             }
         }
 //        global =

@@ -285,6 +285,8 @@ class randomClients : Fragment(),
         val inflater: LayoutInflater =
             activity!!.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
 
+
+
         val layout_pwd: View =
             inflater.inflate(R.layout.layout_find_update, null)
         alertDialog.setView(layout_pwd)

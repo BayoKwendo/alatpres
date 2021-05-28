@@ -40,6 +40,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+
+
         <activity android:name="com.alat.ui.activities.auth.LoginActivity"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar">
@@ -145,6 +147,12 @@
         <activity android:name=".ui.activities.AlertsPerResponse"
             android:screenOrientation="locked"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity android:name=".ui.activities.RandomAlats"
+            android:screenOrientation="locked"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+
+
 
         <activity android:name=".ui.activities.SafetyProviderDetails"
             android:label="Safety Provider Details"/>
@@ -164,7 +172,9 @@
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <activity android:name=".ui.activities.AlertDetails"
-            android:label="Alert Detail"/>
+            android:label="Alat Detail"/>
+        <activity android:name=".ui.activities.RandomAlatDetails"
+            android:label="Alat Detail"/>
 
         <activity android:name=".ui.activities.ResponseDetails"
             android:screenOrientation="locked"

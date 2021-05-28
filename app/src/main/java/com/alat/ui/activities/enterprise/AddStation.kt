@@ -1,30 +1,24 @@
 package com.alat.ui.activities.enterprise
 
-import adil.dev.lib.materialnumberpicker.dialog.CountyDialog
-import adil.dev.lib.materialnumberpicker.dialog.EmployDialogue
-import adil.dev.lib.materialnumberpicker.dialog.OrgDialogue
-import android.app.Activity
+import android.annotation.SuppressLint
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
-import android.net.Uri
+import android.os.AsyncTask
 import android.os.Bundle
-import android.provider.ContactsContract
+import android.text.Html
 import android.util.Log
 import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
-import android.widget.Button
-import android.widget.Toast
+import android.widget.*
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
-import com.alat.BasicUserActivity
 import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.SimpleArrayListAdapter
@@ -32,12 +26,8 @@ import com.alat.adapters.SimpleListAdapter
 import com.alat.helpers.Constants
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
-import com.alat.interfaces.AddClient
+import com.alat.interfaces.*
 import com.alat.interfaces.AddStation
-import com.alat.interfaces.GetClients
-import com.alat.interfaces.ViewGPsEnteClient
-import com.alat.model.TextViewDatePicke
-import com.alat.model.rgModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
@@ -45,9 +35,6 @@ import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import fr.ganfra.materialspinner.MaterialSpinner
 import gr.escsoft.michaelprimez.searchablespinner.SearchableSpinner
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.IStatusListener
 import gr.escsoft.michaelprimez.searchablespinner.interfaces.OnItemSelectedListener
@@ -65,7 +52,11 @@ import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.converter.scalars.ScalarsConverterFactory
+import java.io.BufferedReader
 import java.io.IOException
+import java.io.InputStreamReader
+import java.net.HttpURLConnection
+import java.net.URL
 import java.util.*
 import java.util.concurrent.TimeUnit
 import kotlin.collections.ArrayList
@@ -91,6 +82,8 @@ class AddStation : Fragment() {
     private var location: String? = null
 
     private var userid: String? = null
+    var btn_back: android.widget.Button? = null
+    var confirmPay: android.widget.Button? = null
 
     private var postal: String? = null
     private var email: String? = null
@@ -99,8 +92,17 @@ class AddStation : Fragment() {
     private var nature: String? = null
     private var description: String? = null
     private var nameRG: String? = null
+    var phone: EditText? = null
+    var mpesa_code: android.widget.EditText? = null
+
+    var mtxtView: TextView? = null
+
+    var payment_procedure: android.widget.TextView? = null
+
     private var nature_RG: String? = null
+
     var AUTOCOMPLETE_REQUEST_CODE = 1
+
     private var destinationAddress: String? = null
 
     private val ITEMS1 = arrayOf("Open", "Private")
@@ -112,30 +114,52 @@ class AddStation : Fragment() {
     private var fullname: String? = null
     private var edit: TextInputEditText? = null
 
+    var p: String?= null
+
+    var send: Button? = null
+
+    var constraintLayout: ConstraintLayout? = null
+    var constraintLayout2: androidx.constraintlayout.widget.ConstraintLayout? = null
+
+    private var mProgressDialog: ProgressDialog? = null
+
+    var main_linear: LinearLayoutCompat? = null
+    var main_relative: RelativeLayout? = null
+
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
+        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val view: View = inflater.inflate(R.layout.activity_add_station, container, false)
         if (!Places.isInitialized()) {
-            Places.initialize(activity!!, getString(R.string.google_maps_key))
+            Places.initialize(requireActivity(), getString(R.string.google_maps_key))
         }
         pref =
-            activity!!.getSharedPreferences("MyPref", 0) // 0 - for private mode
+            requireActivity().getSharedPreferences("MyPref", 0) // 0 - for private mode
         userid = pref!!.getString("userid", null)
-
 
         fullname = pref!!.getString("fname", null) + "\t" + pref!!.getString("lname", null)
 
         mssidn = pref!!.getString("mssdn", null)
 
+        main_linear = view.findViewById<LinearLayoutCompat>(R.id.main_view)
+        main_relative = view.findViewById<RelativeLayout>(R.id.main_relative)
 
+        mtxtView = view.findViewById<TextView>(R.id.textView6)
+        payment_procedure = view.findViewById<TextView>(R.id.payment_procedure)
 
+        mProgressDialog = ProgressDialog(requireActivity())
+        mProgressDialog!!.setMessage("Checking...please wait")
+        mProgressDialog!!.setCancelable(false)
+        mpesa_code = view.findViewById<EditText>(R.id.mpesa_code)
+        btn_back = view.findViewById<Button>(R.id.btn_back)
+        confirmPay = view.findViewById<Button>(R.id.btn_confirm)
+        constraintLayout = view.findViewById<ConstraintLayout>(R.id.view1)
+        constraintLayout2 = view.findViewById<ConstraintLayout>(R.id.view2)
 
 //       Toast.makeText(activity, "WOW"  +   userid, Toast.LENGTH_SHORT).show()
 
-        textInputlocation  = view.findViewById(R.id.mlocation)
+        textInputlocation = view.findViewById(R.id.mlocation)
 
-        textInputname  = view.findViewById(R.id.rg_name)
+        textInputname = view.findViewById(R.id.rg_name)
 
         edit = view.findViewById((R.id.loc2))
 
@@ -162,20 +186,18 @@ class AddStation : Fragment() {
             override fun spinnerIsClosing() {}
         })
         //Adapters
-        val adapter = ArrayAdapter(activity!!, android.R.layout.simple_spinner_item, ITEMS1)
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_spinner_item, ITEMS1)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
 
         btn_submit = view.findViewById(R.id.msubmit)
 
         btn_submit!!.setOnClickListener {
-//            dialogue()
-//            promptPopUpView?.changeStatus(2, "Client Station has been added successfully")
+
             if (!checkContactError()) return@setOnClickListener
             else {
                 createStation()
                 mProgress!!.show()
                 btn_submit!!.setText("Submitting....")
-
             }
         }
 
@@ -186,12 +208,238 @@ class AddStation : Fragment() {
         edit!!.setOnClickListener {
             searchPlace()
         }
-//        getStudent()
+        payment_procedure!!.text = Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>$userid</b> <br/><b>N/B: </b> " +
+                "Account Name is your Alatpres ID <br/>6. Enter amount <b>1200</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)")
+        mtxtView!!.setText(Html.fromHtml("A Fee of Ksh. <b>12,000 is required to proceed on creating a station/department</b>"))
+        confirmPay!!.setOnClickListener(View.OnClickListener { view: View? ->
+            mProgressDialog!!.show()
+            constraintLayout!!.visibility = View.GONE
+            constraintLayout2!!.visibility = View.VISIBLE
+            getPayments()
+        })
+
+        send = view.findViewById<Button>(R.id.send)
+
+        send!!.setOnClickListener {
+            val transaction: String = mpesa_code!!.getText().toString()
+            val length: Int = mpesa_code!!.getText().length
+            if (transaction.isEmpty()) {
+                mpesa_code!!.error = "Transaction code Require"
+                mProgress!!.dismiss()
+            } else if (length < 10 || length > 10) {
+                mpesa_code!!.error = "Code not Valid"
+                mProgress!!.dismiss()
+            } else {
+                enterTransaction()
+            }
+        }
 
         return view
     }
 
 
+    fun enterTransaction() {
+        mProgress!!.show()
+        p = mpesa_code!!.text.toString().trim { it <= ' ' }
+        mProgressDialog!!.show();
+        ConfirmPayment(p)
+    }
+
+    private fun getPayments() {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+
+        val api: CheckPayments = retrofit.create(
+            CheckPayments::class.java
+        )
+        val call: Call<String>? = api.checkPay(userid)
+        call?.enqueue(object : Callback<String?> {
+            @SuppressLint("LogNotTimber")
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                Log.d("Responsestring", response.toString())
+                //Toast.makeText()
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        Log.d("onSuccess", response.body().toString())
+                        //Toast.makeText(this@LoginActivity, "Success"  + response.body(), Toast.LENGTH_LONG).show()
+                        val jsonresponse = response.body().toString()
+                        checkpayment(jsonresponse)
+                    } else {
+                        mProgress!!.dismiss()
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        ) //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress!!.dismiss()
+            }
+        })
+    }
+    @Throws(JSONException::class)
+    private fun checkpayment(json: String) {
+        try {
+            val jsonObject = JSONObject(json)
+            if (jsonObject.getString("status") == "true") {
+                Toast.makeText(requireActivity(), "DONE", Toast.LENGTH_SHORT).show()
+                val dataArray = jsonObject.getJSONArray("postData")
+                for (i in 0 until dataArray.length()) {
+                    if (dataArray.length() == 1) {
+                        val dataobj = dataArray.getJSONObject(i)
+                        mpesa_code!!.setText(dataobj.getString("TransID"))
+                        mProgressDialog!!.dismiss()
+                        p = dataobj.getString("TransID")
+//                        Check
+//                        getJSO("http://167.172.17.121/api/transactions/update.php?phone=$p&userid=$userid&amount=1200")
+                    }
+                }
+            } else {
+//                Toast.makeText(requireActivity(), jsonObject.getString("message"), Toast.LENGTH_SHORT).show();
+                mProgressDialog!!.dismiss()
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
+
+     fun ConfirmPayment(transaction: String?) {
+        val interceptor = HttpLoggingInterceptor()
+        interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
+        val client: OkHttpClient = OkHttpClient.Builder()
+            .addInterceptor(interceptor) //.addInterceptor(REWRITE_CACHE_CONTROL_INTERCEPTOR)
+            .connectTimeout(2, TimeUnit.MINUTES)
+            .writeTimeout(2, TimeUnit.MINUTES) // write timeout
+            .readTimeout(2, TimeUnit.MINUTES) // read timeout
+            .addNetworkInterceptor(object : Interceptor {
+                @Throws(IOException::class)
+                override fun intercept(chain: Interceptor.Chain): okhttp3.Response {
+                    val request: Request =
+                        chain.request().newBuilder() // .addHeader(Constant.Header, authToken)
+                            .build()
+                    return chain.proceed(request)
+                }
+            }).build()
+        val retrofit: Retrofit = Retrofit.Builder()
+            .baseUrl(Constants.API_BASE_URL)
+            .client(client) // This line is important
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .build()
+
+
+        val api: ConfirmPayments = retrofit.create(
+            ConfirmPayments::class.java
+        )
+        val call: Call<String>? = api.confirmPay(transaction,"1200",userid)
+        call?.enqueue(object : Callback<String?> {
+            @SuppressLint("LogNotTimber")
+            override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                Log.d("Responsestring", response.toString())
+                //Toast.makeText()
+                if (response.isSuccessful) {
+                    if (response.body() != null) {
+                        Log.d("onSuccess", response.body().toString())
+                        //Toast.makeText(this@LoginActivity, "Success"  + response.body(), Toast.LENGTH_LONG).show()
+                        val jsonresponse = response.body().toString()
+                        loadIntoListVie(jsonresponse)
+                    } else {
+                        mProgress!!.dismiss()
+                        Log.i(
+                            "onEmptyResponse",
+                            "Returned empty response"
+                        ) //Toast.makeText(getContext(),"Nothing returned",Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+            override fun onFailure(call: Call<String?>, t: Throwable) {
+                Log.i("onEmptyResponse", "" + t) //
+                mProgress!!.dismiss()
+            }
+        })
+    }
+
+
+    @Throws(JSONException::class)
+    private fun loadIntoListVie(json: String) {
+        try {
+            val jsonObject = JSONObject(json)
+            if (jsonObject.getString("status") == "true") {
+                val dataArray = jsonObject.getJSONArray("postData")
+                for (i in 0 until dataArray.length()) {
+                    val dataobj = dataArray.getJSONObject(i)
+                    Toast.makeText(
+                        requireActivity(),
+                        "" + dataobj.getString("TransID"),
+                        Toast.LENGTH_SHORT
+                    )
+                        .show()
+                    val p = mpesa_code!!.text.toString().trim { it <= ' ' }
+                    if (p == dataobj.getString("TransID")) {
+//                        loginUser()
+
+                          ShowStationDiaslogue()
+                        mProgressDialog!!.dismiss()
+                        promptPopUpView?.changeStatus(2, "Payment confirmed successfully")
+
+
+                    } else {
+                        promptPopUpView = PromptPopUpView(requireActivity())
+                        promptPopUpView!!.changeStatus(1, "WRONG CODE")
+                        mProgress!!.dismiss()
+                        val dialog = AlertDialog.Builder(Objects.requireNonNull(requireActivity()))
+                            .setPositiveButton(
+                                "Ok"
+                            ) { dialog, which -> dialog.dismiss() }
+                            .setCancelable(true)
+                            .setView(promptPopUpView)
+                            .show()
+                        val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                        // button.setEnabled(false);
+                        button.setTextColor(resources.getColor(R.color.colorBlack))
+                    }
+                }
+            } else {
+                promptPopUpView = PromptPopUpView(requireActivity())
+                promptPopUpView!!.changeStatus(1, jsonObject.getString("message"))
+                mProgress!!.dismiss()
+                mProgressDialog!!.dismiss()
+                val dialog = AlertDialog.Builder(Objects.requireNonNull(requireActivity()))
+                    .setPositiveButton(
+                        "Ok"
+                    ) { dialog, which -> dialog.dismiss() }
+                    .setCancelable(true)
+                    .setView(promptPopUpView)
+                    .show()
+                val button = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                // button.setEnabled(false);
+                button.setTextColor(resources.getColor(R.color.colorBlack))
+            }
+        } catch (e: JSONException) {
+            e.printStackTrace()
+        }
+    }
 
 
     private fun searchPlace() {
@@ -217,7 +465,7 @@ class AddStation : Fragment() {
                 selecteditem3 = mSimpleListAdapter!!.getItem(position).toString()
             }
 
-           // Toast.makeText(activity, "VALUE" + selecteditem3, Toast.LENGTH_LONG).show();
+            // Toast.makeText(activity, "VALUE" + selecteditem3, Toast.LENGTH_LONG).show();
 
 
         }
@@ -412,13 +660,15 @@ class AddStation : Fragment() {
                             mProgress?.dismiss()
                             btn_submit!!.setText("Submit")
                             promptPopUpView?.changeStatus(1, "Unsuccessfully")
-                        } else if (jsonObject.getString("status") == "normal"){
+                        } else if (jsonObject.getString("status") == "normal") {
                             dialogue_error();
                             mProgress?.dismiss()
                             btn_submit!!.setText("Submit")
-                            promptPopUpView?.changeStatus(1, "Station name is already taken. Please use a different name for the client.")
-                        }
-                        else {
+                            promptPopUpView?.changeStatus(
+                                1,
+                                "Station name is already taken. Please use a different name for the client."
+                            )
+                        } else {
                             dialogue_error();
                             btn_submit!!.setText("Submit")
                             promptPopUpView?.changeStatus(1, "Something went wrong")
@@ -444,11 +694,35 @@ class AddStation : Fragment() {
         })
     }
 
+
+    private fun ShowStationDiaslogue() {
+
+        promptPopUpView = PromptPopUpView(activity)
+
+        AlertDialog.Builder(requireActivity())
+            .setPositiveButton(
+                "ok"
+            ) { dialog, _ ->
+                dialog.dismiss()
+
+                mProgressDialog!!.dismiss()
+                mProgress!!.dismiss()
+                main_relative!!.visibility = View.GONE
+                main_linear!!.visibility = View.VISIBLE
+//
+//                val i = Intent(activity, HomePage::class.java)
+//                startActivity(i)
+            }
+            .setCancelable(false)
+            .setView(promptPopUpView)
+            .show()
+    }
+
     private fun dialogue() {
 
         promptPopUpView = PromptPopUpView(activity)
 
-        AlertDialog.Builder(activity!!)
+        AlertDialog.Builder(requireActivity())
             .setPositiveButton(
                 "ok"
             ) { dialog, _ ->
@@ -500,6 +774,7 @@ class AddStation : Fragment() {
             }
         }
     }
+
     fun onBackPressed() {
 //        val intent = Intent(this@AddClientActivitity, BasicUserActivity::class.java)
 //        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK)

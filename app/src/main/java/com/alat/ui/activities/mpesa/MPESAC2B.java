@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -91,6 +92,10 @@ public class MPESAC2B extends AppCompatActivity {
     private volatile boolean running = true;
 
     SharedPreferences pref;
+    Boolean account_is_payment = false;
+
+    String redirecting_service;
+
 
     private boolean Execute;
 
@@ -114,9 +119,13 @@ public class MPESAC2B extends AppCompatActivity {
         clients = pref.getString("clients", null);
         account_status = pref.getString("account_status", null);
         responseprovider = pref.getString("response_provider", null);
+
+
         price = getIntent().getStringExtra("price");
         time = getIntent().getStringExtra("time");
+        redirecting_service = getIntent().getStringExtra("service_redirecting_url");
 
+        account_is_payment = getIntent().getBooleanExtra("is_account_paid", false);
 
        //Toast.makeText(this,  time, Toast.LENGTH_SHORT).show();
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -145,8 +154,14 @@ public class MPESAC2B extends AppCompatActivity {
 
 
 
-        payment_procedure.setText(Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>"+userid+"</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>"+price+"</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));
-        mtxtView.setText(Html.fromHtml("Payment Due Ksh. <b>"  + price +"</b>"));
+        if(!account_is_payment) {
+            payment_procedure.setText(Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>" + userid + "</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>" + price + "</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));
+            mtxtView.setText(Html.fromHtml("Payment Due Ksh. <b>" + price + "</b>"));
+        }else{
+            payment_procedure.setText(Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>" + userid + "</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>" + price + "</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));
+            mtxtView.setText(Html.fromHtml("A Fee of Ksh. </b>" + price + "</b> is required for you to proceed on getting a service"));
+        }
+
         confirmPay.setOnClickListener(view -> {
             mProgressDialog.show();
             constraintLayout.setVisibility(View.GONE);
@@ -237,6 +252,7 @@ public class MPESAC2B extends AppCompatActivity {
 
     private void getpayments(final String urlWebService) {
 
+        @SuppressLint("StaticFieldLeak")
         class GetJSON extends AsyncTask<Void, Void, String> {
 
             @Override
@@ -345,8 +361,42 @@ public class MPESAC2B extends AppCompatActivity {
                     String p = mpesa_code.getText().toString().trim();
 
                     if (p.equals(dataobj.getString("TransID"))) {
-                        loginUser();
-                        mProgress.show();
+                        if(account_is_payment){
+                            mProgressDialog.dismiss();
+                            mProgress.dismiss();
+
+                            PromptPopUpView promptPopUpView = new PromptPopUpView(MPESAC2B.this);
+                            promptPopUpView.changeStatus(2, "Your Payment was a success");
+                            AlertDialog dialog = new AlertDialog.Builder(MPESAC2B.this)
+                                    .setCancelable(false)
+                                    .setView(promptPopUpView)
+                                    .show();
+
+                            new Handler().postDelayed(new Runnable() {
+                                public void run() {
+//
+                                    finish();
+                                    dialog.dismiss();
+                                }
+                            }, 4000);
+
+                            Intent r = new Intent(Intent.ACTION_VIEW);
+                            r.setData(Uri.parse(redirecting_service));
+                            startActivity(r);
+
+//
+//                        val viewIntent = Intent(
+//                            "android.intent.action.VIEW",
+//                            Uri.parse(url)
+//                        )
+//                        startActivity(viewIntent)
+
+
+                        }else {
+                            mProgress.show();
+                            loginUser();
+
+                        }
 
                     } else {
 
