@@ -91,6 +91,7 @@ class Alert_Enterpris : Fragment(),
 
     private var mAdView: AdView? = null
     private var global_alats: TextView? = null
+    private var responseprovider: String? = null
 
     private var mrandomAlats: LinearLayout? = null
 
@@ -132,6 +133,9 @@ class Alert_Enterpris : Fragment(),
         userid = pref!!.getString("userid", null)
         accounts = pref!!.getString("account_status", null)
         roleID = pref!!.getString("role", null)
+
+        responseprovider = pref!!.getString("response_provider", null)
+
         floatingActionButton =
             view.findViewById<View>(R.id.floating_action_button) as FloatingActionButton
         errorNull = view.findViewById(R.id.texterror)
@@ -142,8 +146,12 @@ class Alert_Enterpris : Fragment(),
             startActivity(Intent(requireActivity(), RandomAlats::class.java))
         }
 
-        linearLayout = view.findViewById(R.id.globalgroup)
 
+        if (responseprovider == "NO") {
+            mrandomAlats!!.visibility = View.GONE
+        }
+
+        linearLayout = view.findViewById(R.id.globalgroup)
         linearLayout!!.setOnClickListener {
             if (accounts == "0") {
                 subscribe()
@@ -152,17 +160,19 @@ class Alert_Enterpris : Fragment(),
                 startActivity(Intent(requireActivity(), JoinGlobal::class.java))
             }
         }
+
 //        global =
 //            view.findViewById<View>(R.id.joinGlobal) as FloatingActionButton
 //        global!!.setOnClickListener {
 //
 //        }
+
         if (accounts == "0"){
              var ADS: String? = null
             var pref2: SharedPreferences? = null
 
             pref2 =
-                context!!.getSharedPreferences("ADS", 0) // 0 - for private mode
+                requireContext().getSharedPreferences("ADS", 0) // 0 - for private mode
             ADS = pref2!!.getString("ads", null)
 
             if(ADS == "0") {
@@ -174,11 +184,8 @@ class Alert_Enterpris : Fragment(),
                 mAdView!!.loadAd(adRequest)
             }
         }
-
          return view
     }
-
-
 
 //    fun BackAlert() {
 //
@@ -217,6 +224,7 @@ class Alert_Enterpris : Fragment(),
 //            }
 //            .show()
 //    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         floatingActionButton!!.setOnClickListener {
@@ -234,9 +242,9 @@ class Alert_Enterpris : Fragment(),
         //you can set the title for your toolbar here for different fragments different title }
         private fun subscribe() {
 
-            promptPopUpView = PromptPopUpView(activity!!)
+            promptPopUpView = PromptPopUpView(requireActivity())
 
-            AlertDialog.Builder(activity!!)
+            AlertDialog.Builder(requireActivity())
                 .setPositiveButton("Ok") { _: DialogInterface?, _: Int ->
 
                 }
@@ -268,10 +276,9 @@ class Alert_Enterpris : Fragment(),
             .baseUrl(Constants.API_BASE_URL)
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
-
             .build()
-        val params: HashMap<String, String> = HashMap()
 
+        val params: HashMap<String, String> = HashMap()
         params["userid"] = userid!!
         val api: ViewGroups = retrofit.create(ViewGroups::class.java)
         val call: Call<ResponseBody>? = api.viewRG(params)

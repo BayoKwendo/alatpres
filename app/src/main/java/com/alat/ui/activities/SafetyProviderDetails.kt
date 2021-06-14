@@ -102,11 +102,11 @@ class SafetyProviderDetails : AppCompatActivity() {
     //strings
     var safety_providdr_name: String? = null
     var services: String? = null
-    var alatpres_id: String? = null
     var areas_of_operations: String? = null
     var url: String? = null
     var RGs: String? = null
     var msisdn_provider: String? = null
+    var alatpres_id: String? = null
 
     var contactName: String? = null
     var msisdn: String? = null
@@ -229,10 +229,13 @@ class SafetyProviderDetails : AppCompatActivity() {
                             msafety_providdr_name!!.text = jsonObject.getString("alert_name")
                             mservices!!.text = jsonObject.getString("services")
                             malatpres_id!!.text = jsonObject.getString("userid")
+
                             mareas_of_operations!!.text = jsonObject.getString("area_operation")
                             mRGs!!.text = jsonObject.getString("rg")
                             url = jsonObject.getString("url")
                             msisdn_provider = jsonObject.getString("msisdn")
+
+                            alatpres_id =jsonObject.getString("userid")
 
                             mProgress!!.dismiss()
 
@@ -318,9 +321,6 @@ class SafetyProviderDetails : AppCompatActivity() {
                         alert!!.dismiss()
                         sendRequest()
                     } else {
-
-
-
 
 
                         val i =
@@ -516,7 +516,7 @@ class SafetyProviderDetails : AppCompatActivity() {
                     params["location"] = location!!
                     params["alat_type"] = type_alat!!
                     params["msisdn_provider"] = msisdn_provider!!
-                    params["user_id"] = user!!
+                    params["user_id"] = alatpres_id!!
 
                     val api: SendAlatRequest = retrofit.create(SendAlatRequest::class.java)
                     val call: Call<ResponseBody> = api.sendRequest(params)
@@ -628,7 +628,7 @@ class SafetyProviderDetails : AppCompatActivity() {
                         location!!,
                         type_alat!!,
                         msisdn_provider!!,
-                        user,
+                        alatpres_id,
                         filename
                     )
                     call.enqueue(object : Callback<String?> {

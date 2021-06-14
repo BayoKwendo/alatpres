@@ -83,7 +83,7 @@ class RandomAlats : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  {
         mToolbar =  findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar!!);
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
-        supportActionBar!!.title = "Random Alats"
+        supportActionBar!!.title = "Guest Alats"
 
         pref = getSharedPreferences("MyPref", 0)
         userid = pref!!.getString("userid", null)
@@ -261,7 +261,7 @@ class RandomAlats : AppCompatActivity(), AlertAdapter.ContactsAdapterListener  {
             Intent(Intent.ACTION_SEND)
         shareIntent.type = "text/plain"
         shareIntent.putExtra(
-            Intent.EXTRA_TEXT, "Random Alat"
+            Intent.EXTRA_TEXT, "Guest Alat"
         )
         val intent =
             Intent.createChooser(shareIntent, "Share Via")

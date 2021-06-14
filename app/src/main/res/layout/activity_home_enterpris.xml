@@ -110,7 +110,7 @@
                     android:textColor="@color/colorBlack"
                     android:layout_gravity="center_vertical"
                     android:layout_marginHorizontal="8dp"
-                    android:text="Random Alats" />
+                    android:text="Guest Alats" />
 
             </LinearLayout>
             <View

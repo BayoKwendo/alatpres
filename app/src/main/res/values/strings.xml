@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name" translatable="false">ALATPRES</string>
-    <string name="forgot_password">Forgot Password?</string>
-    <string name="as_an_enterprise">As an Enterprise</string>
-    <string name="as_a_normal_user_individual">As a Normal User(Individual)</string>
+    <string name="forgot_password" translatable="false">Forgot Password?</string>
+    <string name="as_an_enterprise" translatable="false">As an Enterprise</string>
+    <string name="as_a_normal_user_individual" translatable="false">As a Normal User(Individual)</string>
     <string name="dismiss">Dismiss</string>
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>

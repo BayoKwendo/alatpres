@@ -183,15 +183,15 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
     }
 
     override fun onUpdateNeeded(updateUrl: String) {
-        val dialog = AlertDialog.Builder(this)
-            .setTitle("New version available")
-            .setMessage("Please, update app to new version")
-            .setPositiveButton(
-                "Update"
-            ) { dialog, which -> redirectStore(updateUrl) }.setNegativeButton(
-                "No, thanks"
-            ) { dialog, which ->  }.create()
-        dialog.show()
+//        val dialog = AlertDialog.Builder(this)
+//            .setTitle("New version available")
+//            .setMessage("Please, update app to new version")
+//            .setPositiveButton(
+//                "Update"
+//            ) { dialog, which -> redirectStore(updateUrl) }.setNegativeButton(
+//                "No, thanks"
+//            ) { dialog, which ->  }.create()
+//        dialog.show()
     }
 
     private fun redirectStore(updateUrl: String) {
@@ -258,7 +258,6 @@ class HomePage : AppCompatActivity(), NavigationView.OnNavigationItemSelectedLis
             manage_alert.isVisible = true
             profile.isVisible = true
             SetupGr.isVisible = true
-
         }
         else if (roleID == "2") {
             if (account == "0") {
