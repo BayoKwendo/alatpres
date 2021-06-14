@@ -124,7 +124,7 @@ class enterpriseFAQs : Fragment() {
     private val isNetworkAvailable: Boolean
         private get() {
             // Using ConnectivityManager to check for Network Connection
-            val connectivityManager = activity!!.getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
+            val connectivityManager = requireActivity().getSystemService(CONNECTIVITY_SERVICE) as ConnectivityManager
             val activeNetworkInfo = connectivityManager
                 .activeNetworkInfo
             return activeNetworkInfo != null

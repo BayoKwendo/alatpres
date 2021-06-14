@@ -1,7 +1,5 @@
 package com.alat.ui.activities
 
-import android.R.attr.button
-import android.app.ProgressDialog
 import android.app.SearchManager
 import android.content.Context
 import android.content.Intent
@@ -9,10 +7,8 @@ import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.*
-import android.widget.Button
 import android.widget.LinearLayout
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.widget.SearchView
 import androidx.appcompat.widget.Toolbar
@@ -25,7 +21,6 @@ import com.alat.HomePage
 import com.alat.R
 import com.alat.adapters.ResponseServices
 import com.alat.helpers.MyDividerItemDecoration
-import com.alat.helpers.PromptPopUpView
 import com.alat.model.rgModel
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.google.gson.Gson
@@ -38,33 +33,29 @@ import java.util.*
 
 
 @Suppress("UNREACHABLE_CODE")
-class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  {
+class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener {
 
     var alert_id: String? = null
+
     //var response_group_name: String? = null
-    private val TAG = IntergrationMendu::class.java.simpleName
     private var recyclerView: RecyclerView? = null
     private var contactList: MutableList<rgModel>? = null
     private var mAdapter: ResponseServices? = null
     private var searchView: SearchView? = null
     private var mProgressLayout: LinearLayout? = null
-    private var promptPopUpView: PromptPopUpView? = null
-    private var btnResetPassword: Button? = null
-    private var btnBack: Button? = null
     var errorNull: TextView? = null
     var addMessage: FloatingActionButton? = null
-    private var mProgress: ProgressDialog? = null
     var roleID: String? = null
     var pref: SharedPreferences? = null
     var mToolbar: Toolbar? = null
     var button2: FloatingActionButton? = null
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.activity_alert_menu, container, false)
         setHasOptionsMenu(true)
         button2 = view.findViewById(R.id.fab_add_topic)
-
         recyclerView = view.findViewById(R.id.recycler_view)
         errorNull = view.findViewById(R.id.texterror)
         contactList = ArrayList()
@@ -102,8 +93,7 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
             val bytes = ByteArray(inputStream.available())
             inputStream.read(bytes, 0, bytes.size)
             String(bytes)
-        }
-        catch (e: IOException) {
+        } catch (e: IOException) {
             null
         }
     }
@@ -134,12 +124,11 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
                 errorNull!!.visibility = View.GONE
             }
             //    Log.d("onSuccess1", firstSport.toString())
-         } catch (e: JSONException) {
+        } catch (e: JSONException) {
             e.printStackTrace()
         }
 
     }
-
 
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -168,10 +157,9 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
             .actionView as SearchView
         searchView!!.setSearchableInfo(
             searchManager
-                .getSearchableInfo( requireActivity().componentName)
+                .getSearchableInfo(requireActivity().componentName)
         )
         searchView!!.maxWidth = Int.MAX_VALUE
-
         // listening to search query text change
         searchView!!.setOnQueryTextListener(object :
             SearchView.OnQueryTextListener {
@@ -191,8 +179,6 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
     }
 
 
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -207,12 +193,11 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
             }
             else -> super.onOptionsItemSelected(item)
         }
-
         return true
     }
 
 
-     fun onBackPressed() {
+    fun onBackPressed() {
         // close search view on back button pressed
         if (!searchView!!.isIconified) {
             searchView!!.isIconified = true
@@ -228,7 +213,7 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
                 startActivity(Intent(requireActivity(), HomePage::class.java))
-             }
+            }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()
     }
@@ -236,47 +221,27 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener  
     private fun AlertDialog.withCenteredButtons() {
         val positive = getButton(AlertDialog.BUTTON_POSITIVE)
         val negative = getButton(AlertDialog.BUTTON_NEGATIVE)
-
         //Disable the material spacer view in case there is one
         val parent = positive.parent as? LinearLayout
         parent?.gravity = Gravity.CENTER_HORIZONTAL
         val leftSpacer = parent?.getChildAt(1)
         leftSpacer?.visibility = View.GONE
-
         //Force the default buttons to center
         val layoutParams = LinearLayout.LayoutParams(
             LinearLayout.LayoutParams.MATCH_PARENT,
             LinearLayout.LayoutParams.WRAP_CONTENT
         )
-
         layoutParams.weight = 1f
         layoutParams.gravity = Gravity.CENTER
         positive.layoutParams = layoutParams
         negative.layoutParams = layoutParams
-
     }
 
-
-
-
-
+    //redirect to safety provider services
     override fun onContactSelected(contact: rgModel?) {
-//           Toast.makeText(
-//            requireActivity(),
-//            "Selected: " +contact!!.name,
-//            Toast.LENGTH_LONG
-//        ).show()
-
         val i =
             Intent(activity, Safety_Providers::class.java)
         i.putExtra("safety_provider", contact!!.name.toString())
         startActivity(i)
-
-//
-//        val i =
-//            Intent(this, AlertDetails::class.java)
-//             i.putExtra("alertSelect", contact!!.id.toString())
-//             i.putExtra("level", contact.rl)
-//        startActivity(i)
     }
 }

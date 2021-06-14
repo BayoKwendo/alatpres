@@ -52,23 +52,26 @@ public class MultiSelectionSpinner extends AppCompatSpinner implements
     @Override
     public boolean performClick() {
         final AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
-        String[] itemNames = new String[items.size()];
 
-        for (int i = 0; i < items.size(); i++) {
-            itemNames[i] = items.get(i);
-        }
+        if(items != null ) {
+            String[] itemNames = new String[items.size()];
 
-        builder.setMultiChoiceItems(itemNames, selection, this);
-
-        builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface arg0, int arg1)
-            {
-                // Do nothing
+            for (int i = 0; i < items.size(); i++) {
+                itemNames[i] = items.get(i);
             }
-        });
 
-        builder.show();
+
+            builder.setMultiChoiceItems(itemNames, selection, this);
+
+            builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface arg0, int arg1) {
+                    // Do nothing
+                }
+            });
+
+            builder.show();
+        }
 
         return true;
     }

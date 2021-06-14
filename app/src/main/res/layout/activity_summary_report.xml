@@ -443,7 +443,7 @@
                             android:layout_height="50dp"
                             android:layout_weight=".7"
                             android:text="NEUTRALIZED(0)"
-                            android:visibility="gone"
+                            android:visibility="visible"
                             android:textColor="@color/safe"
                             android:layout_marginBottom="@dimen/_20sdp"
                             android:textSize="18sp"

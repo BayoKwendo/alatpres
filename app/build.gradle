@@ -9,8 +9,8 @@ android {
         applicationId "com.alat"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 19
-        versionName "1.0.1.8"
+        versionCode 20
+        versionName "1.0.1.9"
         multiDexEnabled true
         testInstrumentationRunner config.testDeps.instrumentationRunnerVS
         }

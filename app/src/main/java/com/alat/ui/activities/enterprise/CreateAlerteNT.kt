@@ -1,13 +1,11 @@
 package com.alat.ui.activities.enterprise
 
 import adil.dev.lib.materialnumberpicker.dialog.LevelDialog
-import android.Manifest
 import android.app.ProgressDialog
 import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.content.SharedPreferences
-import android.database.Cursor
 import android.graphics.Bitmap
 import android.graphics.Typeface
 import android.media.MediaScannerConnection
@@ -41,20 +39,12 @@ import com.alat.helpers.FileUtils
 import com.alat.helpers.PromptPopUpView
 import com.alat.helpers.Utils
 import com.alat.interfaces.*
-import com.alat.model.rgModel
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import com.karumi.dexter.Dexter
-import com.karumi.dexter.MultiplePermissionsReport
-import com.karumi.dexter.PermissionToken
-import com.karumi.dexter.listener.PermissionRequest
-import com.karumi.dexter.listener.multi.MultiplePermissionsListener
 import com.rengwuxian.materialedittext.MaterialEditText
 import dmax.dialog.SpotsDialog
 import fr.ganfra.materialspinner.MaterialSpinner
@@ -129,9 +119,6 @@ class CreateAlerteNT : AppCompatActivity() {
 
     var path: String? = null
 
-    var SelectImageGallery: Button? = null
-    var UploadImageServer:Button? = null
-
     var imageView: ImageView? = null
 
     var imageName: EditText? = null
@@ -139,15 +126,6 @@ class CreateAlerteNT : AppCompatActivity() {
     var progressDialog: ProgressDialog? = null
 
     var GetImageNameEditText: String? = null
-
-    var ImageName = "image_name"
-
-    var ImagePath = "image_path"
-
-    var ServerUploadPath = "https://youthsofhope.co.ke/api/upLoad.php"
-
-
-    var AUTOCOMPLETE_REQUEST_CODE = 1
 
     var PICK_FILE_REQUEST = 100;
 
@@ -246,8 +224,7 @@ class CreateAlerteNT : AppCompatActivity() {
 
         spinner_2 = findViewById(R.id.spinner2)
 
-
-        imageView = findViewById(R.id.imageView);
+        imageView = findViewById(R.id.imageView)
         imageView!!.visibility = View.GONE
         loc = findViewById(R.id.loc)
         loc!!.setOnClickListener {
@@ -493,42 +470,11 @@ class CreateAlerteNT : AppCompatActivity() {
                 val jsonobject: JSONObject = jsonarray.getJSONObject(i)
                 catList.add(jsonobject.getString("name"))
             }
-
             spinner_2!!.setItems(catList)
             //data source for drop-down list
             selectedRG = spinner_2!!.selectedItems
             listString = TextUtils.join(", ", spinner_2!!.selectedItems)
             spinner_2!!.setSelection(selectedRG);
-
-
-//
-//            val adapter_2 = ArrayAdapter(this, android.R.layout.simple_spinner_item, catList)
-//            adapter_2.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//
-//            spinner_2 = findViewById<View>(R.id.spinner2) as MultiSelectionSpinner
-//            spinner_2?.adapter = adapter_2
-//            spinner_2!!.isSelected = false;  // otherwise listener will be called on initialization
-//            spinner_2!!.setSelection(0, true)
-//            spinner_2?.onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
-//                override fun onItemSelected(
-//                    arg0: AdapterView<*>?, arg1: View?,
-//                    arg2: Int, arg3: Long
-//                ) {
-//                    if (spinner_2!!.selectedItem == null) {
-//                        // Toast.makeText(this@CreateAlert, "Please select an RG", Toast.LENGTH_LONG).show();
-//                        return
-//                    } else {
-//                        selectedItem2 = spinner_2!!.selectedItem.toString()
-//                        // Toast.makeText(this@NFCWrite, tv, Toast.LENGTH_LONG).show();
-//                    }
-//                    // TODO Auto-generated method stub
-//                }
-//
-//                override fun onNothingSelected(arg0: AdapterView<*>?) {
-//                    // TODO Auto-generated method stub
-//                }
-//            }
-
         } catch (e: JSONException) {
             e.printStackTrace()
         }

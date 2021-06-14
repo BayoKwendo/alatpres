@@ -90,7 +90,7 @@ class GenerateReport : Fragment() ,
         errorNull = view.findViewById(R.id.texterror)
         contactList = java.util.ArrayList()
 
-        mAdapter = AlertAdapter(activity!!, contactList!!, this)
+        mAdapter = AlertAdapter(requireActivity(), contactList!!, this)
 
         mProgressLayout = view.findViewById(R.id.layout_discussions_progress);
 
@@ -132,19 +132,6 @@ class GenerateReport : Fragment() ,
 
         return view
     }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-
-
-
-
-        //you can set the title for your toolbar here for different fragments different title
-    }
-
-
-
 
     private fun getStudent() {
 

@@ -197,66 +197,6 @@ class Safety_Providers : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
         }
     }
 
-
-//
-//    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
-//        mToolbar!!.inflateMenu(R.menu.menu_items);
-//
-//
-//
-//
-//
-//        val item22 = menu?.findItem(R.id.action_share)
-//        val item2 = menu?.findItem(R.id.join)
-//        val item3 = menu?.findItem(R.id.aboutus)
-//        val item9 = menu?.findItem(R.id.invites)
-//        val item4 = menu?.findItem(R.id.about)
-//        val item5 = menu?.findItem(R.id.logout)
-//        val item6 = menu?.findItem(R.id.action_invite)
-//        item22?.isVisible = true
-//        item2?.isVisible = false
-//        item3?.isVisible = false
-//        item4?.isVisible = false
-//        item9?.isVisible = false
-//        item5?.isVisible = false
-//        item6?.isVisible = false
-//        val mShareActionProvider: ShareActionProvider? =
-//            MenuItemCompat.getActionProvider(item22) as ShareActionProvider?
-//        mShareActionProvider?.setShareHistoryFileName(ShareActionProvider.DEFAULT_SHARE_HISTORY_FILE_NAME)
-//
-//        mShareActionProvider?.setShareIntent(createShareIntent())
-//        val searchManager =
-//            getSystemService(Context.SEARCH_SERVICE) as SearchManager
-//        searchView = menu!!.findItem(R.id.action_search)
-//            .actionView as SearchView
-//        searchView!!.setSearchableInfo(
-//            searchManager
-//                .getSearchableInfo(componentName)
-//        )
-//        searchView!!.maxWidth = Int.MAX_VALUE
-//
-//        // listening to search query text change
-//        searchView!!.setOnQueryTextListener(object :
-//            SearchView.OnQueryTextListener {
-//            override fun onQueryTextSubmit(query: String): Boolean {
-//                // filter recycler view when query submitted
-//                mAdapter!!.filter.filter(query)
-//
-//                return false
-//            }
-//
-//            override fun onQueryTextChange(query: String): Boolean {
-//                // filter recycler view when text is changed
-//                mAdapter!!.filter.filter(query)
-//                return false
-//            }
-//        })
-//        return super.onCreateOptionsMenu(menu);
-//    }
-//
-//
-//
-//
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -273,22 +213,6 @@ class Safety_Providers : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
         }
         return true
     }
-
-//    // Create and return the Share Intent
-//    private fun createShareIntent(): Intent? {
-//        val shareIntent =
-//            Intent(Intent.ACTION_SEND)
-//        shareIntent.type = "text/plain"
-//        shareIntent.putExtra(
-//            Intent.EXTRA_TEXT, "Group Name: " + response_group + "\n\nGroup ID: " + group_id
-//        )
-//        val intent =
-//            Intent.createChooser(shareIntent, "Share Via")
-//        return shareIntent
-//    }
-
-
-
     fun BackAlert() {
         AlertDialog.Builder(this)
             .setMessage("Are you sure want to go back?")
@@ -325,23 +249,10 @@ class Safety_Providers : AppCompatActivity(), AlertAdapter.ContactsAdapterListen
 
 
     override fun onBackPressed() {
-        // close search view on back button pressed
-//        if (!searchView!!.isIconified) {
-//            searchView!!.isIconified = true
-//            return
-//        }
         BackAlert()
-
     }
 
     override fun onContactSelected(contact: rgModel?) {
-//           Toast.makeText(
-//            this,
-//            "Selected: " +contact!!.id ,
-//            Toast.LENGTH_LONG
-//        ).show()
-
-
         val i =
             Intent(this, SafetyProviderDetails::class.java)
              i.putExtra("safetyproviderid", contact!!.id.toString())
