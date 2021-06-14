@@ -113,7 +113,7 @@ class basicFAQ : Fragment() {
             webSettings.loadWithOverviewMode = true
             webSettings.setSupportMultipleWindows(true)
             webSettings.setGeolocationEnabled(true)
-            myWebView!!.loadUrl("file:///android_asset/faq/index.html") //URL input
+            myWebView!!.loadUrl("http://167.172.17.121/faq/index.html") //URL input
         } else {
             Toast.makeText(activity, "No internet connection", Toast.LENGTH_SHORT).show()
         }

@@ -59,7 +59,7 @@
             android:id="@+id/random_client"
             android:icon="@drawable/rg"
             android:visible="false"
-            android:title="Random Clients" />
+            android:title="Guest Clients" />
 
         <item
             android:id="@+id/resp_manage"
