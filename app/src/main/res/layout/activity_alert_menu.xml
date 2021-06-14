@@ -67,10 +67,6 @@
 
     </LinearLayout>
 
-    <!--    <TextView-->
-<!--        android:layout_width="wrap_content"-->
-<!--        -->
-<!--        android:layout_height="wrap_content"/>-->
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/fab_add_topic"
         android:layout_width="wrap_content"
@@ -80,17 +76,29 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1"
         android:layout_margin="@dimen/_26ssp"
-
         app:layout_constraintVertical_bias="1"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:srcCompat="@drawable/baseline_add_circle_white_24dp"
         tools:layout_editor_absoluteX="262dp" />
 
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="No Data"
+        android:text="@string/integrate_service"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1"
+        app:layout_constraintTop_toBottomOf="@+id/fab_add_topic"
+        android:paddingHorizontal="16dp"
+        android:textSize="17sp"/>
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_data"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:background="@drawable/error"

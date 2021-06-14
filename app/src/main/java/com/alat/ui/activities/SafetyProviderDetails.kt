@@ -289,7 +289,7 @@ class SafetyProviderDetails : AppCompatActivity() {
 
     fun selectAlert() {
         val alertDialog: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this)
-        alertDialog.setTitle("Options of accessing or requesting an intergrated service")
+        alertDialog.setTitle("Select Preferred Service Access Option")
 
         val inflater: LayoutInflater =
             getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater

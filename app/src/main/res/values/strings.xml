@@ -124,4 +124,6 @@
     <string name="three_d_secure_v2">Version 2</string>
     <string name="three_d_secure_v1_value">1</string>
     <string name="three_d_secure_v2_value">2</string>
+    <string name="no_data">No Data</string>
+    <string name="integrate_service">Integrate Service</string>
 </resources>
