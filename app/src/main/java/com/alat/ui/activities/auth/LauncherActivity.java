@@ -17,8 +17,10 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 
 import com.alat.BasicUserActivity;
+import com.alat.HomePage;
 import com.alat.R;
 import com.alat.helpers.PromptPopUpView;
+import com.alat.ui.activities.mpesa.MPESAExpressActivity;
 import com.firebase.ui.auth.AuthUI;
 import com.firebase.ui.auth.ErrorCodes;
 import com.firebase.ui.auth.IdpResponse;
@@ -128,7 +130,7 @@ public class LauncherActivity extends Activity{
             } else {
                 // Sign in failed
                 if (response == null) {
-                    finishAffinity();
+                    finish();
                     return;
                 }
 
@@ -151,7 +153,6 @@ public class LauncherActivity extends Activity{
         promptPopUpView = new PromptPopUpView(this);
 
         promptPopUpView.changeStatus(1, "Network Error");
-
 
         AlertDialog dialog = new AlertDialog.Builder(Objects.requireNonNull(this))
                 .setPositiveButton("Retry", new DialogInterface.OnClickListener() {
@@ -187,5 +188,12 @@ public class LauncherActivity extends Activity{
         return activeNetworkInfo != null;
     }
 
+     public void onBackPressed() {
+
+        Intent intent = new Intent(LauncherActivity.this, LoginActivity.class);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+
+      }
 
 }

@@ -9,8 +9,8 @@ android {
         applicationId "com.alat"
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 20
-        versionName "1.0.1.9"
+        versionCode 33
+        versionName "1.0.2.3"
         multiDexEnabled true
         testInstrumentationRunner config.testDeps.instrumentationRunnerVS
         }
@@ -122,7 +122,7 @@ android {
         //volley http library
         implementation 'com.android.volley:volley:1.2.0'
         implementation 'com.google.code.gson:gson:2.8.6'
-       implementation 'com.google.firebase:firebase-messaging:21.1.0'
+        implementation 'com.google.firebase:firebase-messaging:21.1.0'
 
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     testImplementation 'junit:junit:4.13.2'

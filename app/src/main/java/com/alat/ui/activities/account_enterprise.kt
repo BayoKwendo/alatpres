@@ -714,17 +714,30 @@ class account_enterprise : AppCompatActivity() {
                     Toast.makeText(this@account_enterprise, "Please select a subscription package", Toast.LENGTH_LONG).show();
                 } else {
 //                    Toast.makeText(this@account_enterprise, date2, Toast.LENGTH_LONG).show();
-
-
                     if (check_first == "0") {
                         CheckFirst()
                     } else {
-                        val i =
-                            Intent(this@account_enterprise, MPESAC2B::class.java)
-                        i.putExtra("price", price)
-                        i.putExtra("time", date)
-                        startActivity(i)
-                    }
+
+                        val alert: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this@account_enterprise)
+                        alert.setTitle("MPESA VIA")
+                        alert.setMessage("Select your preferred mpesa payment method")
+                        alert.setPositiveButton("C2B") { dialog, which ->
+                            val i =
+                                Intent(this@account_enterprise, MPESAC2B::class.java)
+                            i.putExtra("price", price)
+                            i.putExtra("time", date)
+                            startActivity(i)
+                        }
+                        alert.setNeutralButton("STK Push"
+                        ) { dialog, which ->
+
+                            val i =
+                                Intent(this@account_enterprise, MPESAExpressActivity::class.java)
+                            i.putExtra("price", price)
+                            i.putExtra("time", date)
+                            startActivity(i)                        }
+                        alert.show()
+                         }
                 }
               }
             .addButton(

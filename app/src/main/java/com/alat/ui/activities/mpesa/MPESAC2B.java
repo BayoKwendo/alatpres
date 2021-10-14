@@ -155,7 +155,7 @@ public class MPESAC2B extends AppCompatActivity {
 
 
         if(!account_is_payment) {
-            payment_procedure.setText(Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>" + userid + "</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>" + price + "</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));
+            payment_procedure.setText(Html.fromHtml("4" + userid + "</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>" + price + "</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));
             mtxtView.setText(Html.fromHtml("Payment Due Ksh. <b>" + price + "</b>"));
         }else{
             payment_procedure.setText(Html.fromHtml("1. Go to M-Pesa menu<br/>2. Click on Lipa na M-Pesa<br/>3. Click on Paybill Option<br/>4. Enter Businness No. <b>4036601</b><br/>5. Enter Account Name <b>" + userid + "</b> <br/><b>N/B: </b> Account Name is your Alatpres ID <br/>6. Enter amount <b>" + price + "</b> KES<br/>7. Wait for the M-Pesa message<br/>8. Confirm your payment <br/>(Click the button below)"));

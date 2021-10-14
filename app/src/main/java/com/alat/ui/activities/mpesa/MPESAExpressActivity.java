@@ -88,9 +88,7 @@ public class MPESAExpressActivity extends AppCompatActivity {
     Thread thread;
     String userid, firstname, email, sname, dob, role,gender, mssdn, idNo, county, clients, account_status, responseprovider;
     private volatile boolean running = true;
-
     SharedPreferences pref;
-
     private boolean Execute;
 
     @Override

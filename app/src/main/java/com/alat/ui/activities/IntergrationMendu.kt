@@ -203,16 +203,17 @@ class IntergrationMendu : Fragment(), ResponseServices.ContactsAdapterListener {
             searchView!!.isIconified = true
             return
         }
+        startActivity(Intent(requireActivity(), HomePage::class.java))
+
         BackAlert()
     }
 
 
     fun BackAlert() {
         AlertDialog.Builder(requireActivity())
-            .setMessage("Leaving Group for now??")
+            .setMessage("Leaving page for now??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
-                startActivity(Intent(requireActivity(), HomePage::class.java))
             }
             .setNegativeButton("No", null)
             .show().withCenteredButtons()
