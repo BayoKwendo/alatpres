@@ -1328,7 +1328,6 @@ class CreateAlert : AppCompatActivity() {
 
             for (str in mySpinner!!.selectedItems) {
 
-
                 val interceptor = HttpLoggingInterceptor()
                 interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
                 val client: OkHttpClient = OkHttpClient.Builder()

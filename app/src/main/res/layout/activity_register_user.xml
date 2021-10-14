@@ -147,7 +147,7 @@
                                 android:backgroundTint="@color/colorAccent"
                                 android:hint="Name"
                                 android:inputType="text"
-                                android:maxLength="15"
+                                android:maxLength="150000"
                                 android:padding="@dimen/_10sdp"
                                 android:textSize="@dimen/_13ssp" />
                         </com.google.android.material.textfield.TextInputLayout>

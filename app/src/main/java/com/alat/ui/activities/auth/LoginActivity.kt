@@ -66,7 +66,7 @@ class LoginActivity : AppCompatActivity() {
         join = findViewById(R.id.joinalat)
         image = findViewById(R.id.imageview)
         join?.setOnClickListener {
-            startActivity(Intent(this, BasicUserActivity::class.java))
+            startActivity(Intent(this, LauncherActivity::class.java))
         }
         mProgress = ProgressDialog(this);
         mProgress!!.setMessage("Authenticating...");

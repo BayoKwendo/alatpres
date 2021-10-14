@@ -53,7 +53,7 @@ class ForgotPassword : AppCompatActivity() {
         btnResetPassword!!.setOnClickListener(View.OnClickListener {
             val email = edtEmail!!.text.toString().trim { it <= ' ' }
             if (TextUtils.isEmpty(email)) {
-                Toast.makeText(applicationContext, "Enter your email!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(applicationContext, "Enter your alatpres id!", Toast.LENGTH_SHORT).show()
                 return@OnClickListener
             } else {
                 if (!isNetworkAvailable()) {
@@ -62,7 +62,7 @@ class ForgotPassword : AppCompatActivity() {
                 }
                 else {
                 mProgress!!.show()
-                getStudent()
+                    submti()
                 }
             }
             //  Toast.makeText(this@ForgotPassword, "do something", Toast.LENGTH_SHORT).show()
@@ -71,9 +71,8 @@ class ForgotPassword : AppCompatActivity() {
     }
 
 
-    private fun getStudent() {
+    private fun submti() {
         val email = edtEmail!!.text.toString().trim { it <= ' ' }
-
         val interceptor = HttpLoggingInterceptor()
         interceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
         val client: OkHttpClient = OkHttpClient.Builder()
@@ -95,9 +94,8 @@ class ForgotPassword : AppCompatActivity() {
             .client(client) // This line is important
             .addConverterFactory(GsonConverterFactory.create())
             .build()
-
         val params: HashMap<String, String> = HashMap()
-        params["email"] = email
+        params["userid"] = email
 
         val api: RestPassword = retrofit.create(RestPassword::class.java)
         val call: Call<ResponseBody> = api.Update(params)
@@ -119,25 +117,25 @@ class ForgotPassword : AppCompatActivity() {
                     if (response.code() == 200) {
                         mProgress?.dismiss()
                         dialogue()
-                        promptPopUpView?.changeStatus(2, "Success!! \n\nAn email has been send to you!! Check it to continue with resetting")
+                        promptPopUpView?.changeStatus(2, "Success!! \n\nCheck your phone")
                     }else{
 
                         mProgress?.dismiss()
                         dialogue_error()
-                        promptPopUpView?.changeStatus(1, "email not found")
+                        promptPopUpView?.changeStatus(1, "alatpres id not found")
                     }
 
                 } else {
                     mProgress?.dismiss()
                     dialogue_error()
-                    promptPopUpView?.changeStatus(1, "email not found")
+                    promptPopUpView?.changeStatus(1, "alatpres id not found")
                 }
             }
 
             override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
                 mProgress?.dismiss()
                 dialogue_error()
-                promptPopUpView?.changeStatus(1, "email not found")
+                promptPopUpView?.changeStatus(1, "alatpres id not found")
             }
         })
     }

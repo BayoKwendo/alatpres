@@ -566,11 +566,27 @@ private fun dialogue() {
                         Toast.LENGTH_LONG
                     ).show();
                 } else {
-                    val i =
-                        Intent(this@account, MPESAC2B::class.java)
-                    i.putExtra("price", price)
-                    i.putExtra("time", date)
-                    startActivity(i)
+
+                        val alert: android.app.AlertDialog.Builder = android.app.AlertDialog.Builder(this@account)
+                    alert.setTitle("MPESA VIA")
+                    alert.setMessage("Select your preferred mpesa payment method")
+
+                    alert.setPositiveButton("C2B") { dialog, which ->
+                            val i =
+                                Intent(this@account, MPESAC2B::class.java)
+                            i.putExtra("price", price)
+                            i.putExtra("time", date)
+                            startActivity(i)
+                        }
+                        alert.setNeutralButton("STK Push"
+                        ) { dialog, which ->
+
+                            val i =
+                                Intent(this@account, MPESAExpressActivity::class.java)
+                            i.putExtra("price", price)
+                            i.putExtra("time", date)
+                            startActivity(i)                        }
+                        alert.show()
                 }
             }
             .addButton(

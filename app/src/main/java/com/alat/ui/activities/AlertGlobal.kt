@@ -325,7 +325,7 @@ class AlertGlobal : AppCompatActivity(), ResponseAdapter.ContactsAdapterListener
 
     fun BackAlert() {
         AlertDialog.Builder(this)
-            .setMessage("Leaving Group for now??")
+            .setMessage("Leaving this page for now??")
             .setCancelable(false)
             .setPositiveButton("Yes") { _, id ->
                 startActivity(Intent(this@AlertGlobal, HomePage::class.java))

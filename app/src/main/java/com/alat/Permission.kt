@@ -64,7 +64,6 @@ class Permission : Activity() {
                     override fun onPermissionsChecked(report: MultiplePermissionsReport) {
                         // check if all permissions are granted
                         if (report.areAllPermissionsGranted()) {
-
                          if (roleID == "1") {
                             startActivity(Intent(this@Permission, HomePage::class.java))
                          } else if (roleID == "2") {
