@@ -61,3 +61,10 @@ app/release/output\.json
 
 app/release/
 
+
+# keys and per-developer files: never commit
+*.jks
+*.keystore
+local.properties
+.idea/
+app/google-services.json
